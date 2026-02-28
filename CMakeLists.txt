@@ -11,7 +11,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 add_executable(ck
     src/main.cpp
     src/cli/build_cli.cpp
-    src/utils/messages.cpp
+    src/utils/logger.cpp
     src/commands/init.cpp
     src/commands/get.cpp
     src/commands/config.cpp

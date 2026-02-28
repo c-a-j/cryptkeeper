@@ -1,13 +1,13 @@
-#include <iostream>
 #include <string>
 #include <filesystem>
 #include <sstream>
 
 #include "commands/init.hpp"
 #include "global.hpp"
-#include "utils/messages.hpp"
+#include "utils/logger.hpp"
 
 namespace fs = std::filesystem;
+using ck::logger::logger;
 
 static std::string env_or_empty(const char* name) {
   if (const char* value = std::getenv(name)) return value;
@@ -34,19 +34,15 @@ void init_crypt(const char* crypt_name) {
   std::error_code ec;
   bool created = fs::create_directories(dir, ec);
   if (ec) {
-    emit_inline(MsgLevel::Error, "Failed to create config dir: ");
-    std::cerr << dir << "\n";
-    emit(MsgLevel::Error, ec.message());
+    logger.error("Failed to create config dir: ", ec.message());
     return;
   }
   
   if (!created) {
     std::ostringstream ss;
-    emit_inline(MsgLevel::Error, "Crypt already exists: ");
-    std::cout << dir.string() << "\n";
+    logger.error("Crypt already exists: ", dir.string());
   } else {
-    emit_inline(MsgLevel::Success, "Crypt initialized: ");
-    std::cout << dir.string() << "\n";
+    logger.success("Crypt initialized: ", dir.string());
   }
 }
 

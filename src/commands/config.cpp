@@ -6,7 +6,7 @@
 
 #include "commands/config.hpp"
 #include "global.hpp"
-#include "utils/messages.hpp"
+#include "utils/logger.hpp"
 
 namespace fs = std::filesystem;
 

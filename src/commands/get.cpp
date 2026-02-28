@@ -1,5 +1,5 @@
 #include <iostream>
-#include <string>
+
 #include "commands/get.hpp"
 
 void run_get() {
