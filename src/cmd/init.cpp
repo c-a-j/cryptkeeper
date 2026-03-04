@@ -76,6 +76,7 @@ namespace ck::cmd::init {
   int init_store(std::string store_name, std::string store_key) {
     std::expected<void, InitError> r = create_store(store_name, store_key);
     if (!r) { return 1; }
+    logger.success("Store initialized: ", store_name);
     return 0;
   }
 }

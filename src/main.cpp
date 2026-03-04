@@ -1,7 +1,9 @@
 #include <CLI/CLI.hpp>
 #include <string>
 #include <iostream>
+
 #include "cli/build_cli.hpp"
+#include "util/logger.hpp"
 
 #if defined(__has_feature)
 #  if __has_feature(address_sanitizer)
@@ -16,15 +18,24 @@ extern "C" const char* __asan_default_options() {
 #endif
 
 int main(int argc, char** argv) {
-  ck::cli::PasswordStore pstore = {};
+  ck::cli::Vault vault = {};
+  ck::cli::Secret secret = {};
+  ck::cli::Config cfg = {};
   int exit_code = 0;
 
   CLI::App app{"crypt-keeper"};
-  ck::cli::build_cli(app, pstore, exit_code);
+  ck::cli::build_cli(app, vault, secret, cfg, exit_code);
   if (argc == 1) {
     std::cout << app.help() << '\n';
     return 0;
   }
-  CLI11_PARSE(app, argc, argv)
+  
+  try {
+    app.parse(argc,argv);
+    return exit_code;
+  } catch (const CLI::ParseError& e) {
+    ck::util::logger::logger.error(e.what());
+    return e.get_exit_code();
+  }
   return 0;
 }

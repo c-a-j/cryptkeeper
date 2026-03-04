@@ -23,4 +23,5 @@ target_link_libraries(ck PRIVATE
 )
 target_link_libraries(ck_lib PUBLIC
   ${GPGME_LIBRARIES}
+  nlohmann_json::nlohmann_json
 )
