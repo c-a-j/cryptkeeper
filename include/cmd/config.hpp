@@ -1,5 +1,8 @@
 #pragma once
 
+#include "lib/types.hpp"
+
 namespace ck::cmd::config {
-  void run_config();
+using namespace ck::types;
+  void config(Config& cfg);
 }

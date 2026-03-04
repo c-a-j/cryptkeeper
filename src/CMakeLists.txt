@@ -1,5 +1,7 @@
 add_library(ck_lib STATIC
   lib/crypto.cpp
+  lib/index.cpp
+  lib/config.cpp
 )
 add_executable(ck main.cpp)
 
@@ -24,4 +26,5 @@ target_link_libraries(ck PRIVATE
 target_link_libraries(ck_lib PUBLIC
   ${GPGME_LIBRARIES}
   nlohmann_json::nlohmann_json
+  tomlplusplus::tomlplusplus
 )

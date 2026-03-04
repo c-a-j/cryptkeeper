@@ -81,7 +81,9 @@ namespace ck::util::logger {
     out << color_code << msg << theme_.reset;
     if (o.newline) out << "\n";
   }
-  
+ 
+  // This logger function is for printing messages with two colors so only the
+  // most important part (the first part) is colorful.
   void Logger::emit(Level level, std::string_view msg1, std::string_view msg2) {
     emit(level, msg1, Overrides {}.set_newline(false));
     emit(level, msg2, Overrides {}

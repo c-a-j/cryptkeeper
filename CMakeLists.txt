@@ -16,12 +16,20 @@ FetchContent_Declare(
   GIT_TAG v2.6.2
 )
 FetchContent_MakeAvailable(CLI11)
+
 FetchContent_Declare(
   nlohmann_json 
   GIT_REPOSITORY https://github.com/nlohmann/json.git 
   GIT_TAG v3.12.0
 )
 FetchContent_MakeAvailable(nlohmann_json)
+
+FetchContent_Declare(
+  tomlplusplus
+  GIT_REPOSITORY https://github.com/marzer/tomlplusplus.git 
+  GIT_TAG v3.4.0
+)
+FetchContent_MakeAvailable(tomlplusplus)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 include(CompilerOptions)

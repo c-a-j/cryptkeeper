@@ -29,7 +29,7 @@ namespace ck::cmd::init {
     
     auto home = env_or_empty("HOME");
     if (home.empty()) throw std::runtime_error("HOME is not set");
-    return fs::path(home) / ".local" / "share" / APP_NAME_NOSPACE;
+    return fs::path(home) / ".local" / "share" / APP_DIR;
   #endif
   }
   

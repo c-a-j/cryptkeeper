@@ -4,6 +4,7 @@
 
 #include "cli/build_cli.hpp"
 #include "util/logger.hpp"
+#include "lib/types.hpp"
 
 #if defined(__has_feature)
 #  if __has_feature(address_sanitizer)
@@ -18,9 +19,9 @@ extern "C" const char* __asan_default_options() {
 #endif
 
 int main(int argc, char** argv) {
-  ck::cli::Vault vault = {};
-  ck::cli::Secret secret = {};
-  ck::cli::Config cfg = {};
+  ck::types::Vault vault = {};
+  ck::types::Secret secret = {};
+  ck::types::Config cfg = {};
   int exit_code = 0;
 
   CLI::App app{"crypt-keeper"};
@@ -33,9 +34,10 @@ int main(int argc, char** argv) {
   try {
     app.parse(argc,argv);
     return exit_code;
+  } catch (const CLI::Success& e) {
+    return app.exit(e);
   } catch (const CLI::ParseError& e) {
     ck::util::logger::logger.error(e.what());
-    return e.get_exit_code();
   }
   return 0;
 }
