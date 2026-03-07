@@ -20,6 +20,7 @@ namespace ck::lib::config {
   using namespace ck::types;
   namespace fs = std::filesystem;
   using namespace ck::util::logger;
+  using namespace ck::util::error;
   
   static std::string env_or_empty(const char* name) {
     if (const char* value = std::getenv(name)) return value;
@@ -53,8 +54,7 @@ namespace ck::lib::config {
     std::error_code ec;
     std::filesystem::create_directories(dir, ec);
     if (ec) {
-        logger.error("Failed to create config dir: ", std::string(dir)); 
-        logger.error(ec.message());
+      throw Error{ConfigErrc::CreateDirectoryFailed, std::string(dir) };
     }
   }
   
@@ -92,32 +92,84 @@ namespace ck::lib::config {
   }
   
   void set_parameter(Config& cfg, Vault& vault, std::vector<std::string> set_args) {
+    if (set_args.size() < 2) return;
+    const std::string& key = set_args[0];
+    const std::string& val = set_args[1];
+    
+    auto dot = key.find('.');
+    std::string scope = key.substr(0, dot);
+    std::string rest = key.substr(dot + 1);
+    
+    std::string vault_name;
+    std::string field;
+    
+    if (scope == "vaults") {
+      dot = rest.find('.');
+      vault_name = rest.substr(0, dot);
+      field = key.substr(dot + 1);
+    } else {
+      field = rest;
+    }
+    
     fs::path cfg_file = app_config_file();
     auto cfg_toml = toml::parse_file(std::string(cfg_file));
+    
+    // determine if val is a bool
+    bool is_bool = false;
+    for (auto& [k, _] : VaultConfig::bool_fields()) 
+      if (k == field) { is_bool = true; break;}
+      
+    // assignment function
+    auto assign = [&](toml::table& tbl) {
+      if (is_bool) {
+        tbl.insert_or_assign(field, val == "true" || val == "1");
+      } else {
+        tbl.insert_or_assign(field, val);
+      }
+    };
+    
+    if (scope == "global") {
+      if (auto* tbl = cfg_toml[GLOBAL_CONFIGS].as_table()) {
+        assign(*tbl);
+      }
+    } else if (scope == "vaults") {
+      if (auto* vaults = cfg_toml["vaults"].as_table()) {
+        if (auto* tbl = (*vaults)[vault.name].as_table()) {
+          assign(*tbl);
+        }
+      }
+    } else {
+      throw Error{ConfigErrc::InvalidScope, key};
+    }
+    
+    std::ofstream out(cfg_file, std::ios::out | std::ios::trunc);
+    out << cfg_toml << "\n";
+    if (!out) {
+      logger.error("Failed to write config file: ", std::string(cfg_file));
+    }
   }
   
-  void create_default_config_file() {
-    fs::path cfg = app_config_file();
-    if (fs::exists(cfg)) return;
-    
-    std::ofstream out(cfg, std::ios::out | std::ios::trunc);
+  void init_config(Config& cfg, Vault& vault) {
+    fs::path cfg_file = app_config_file();
+    if (fs::exists(cfg_file)) {
+      // only add new vault to config [vaults.new-vault]
+      return;
+      // throw Error{ConfigErrc::AlreadyExists, std::string(cfg_file) };
+    }
+    // create config from new vault
+    std::ofstream out(cfg_file, std::ios::out | std::ios::trunc);
     out << DEFAULT_CONFIG ; 
     if (!out) {
-      logger.error("Failed to create config file: ", std::string(cfg));
+      logger.error("Failed to create config file: ", std::string(cfg_file));
       return;
     }
     out.close();
-  }
-  
-  void init_config_file(std::string vault, std::string vault_dir) {
-    fs::path cfg = app_config_file();
-    if (!fs::exists(cfg)) {
-      logger.error("Config file doesn't exist: ", std::string(cfg));
-      return;
-    }
-    auto tbl = toml::parse_file(cfg.string());
-    tbl[GLOBAL_CONFIGS].as_table() -> insert_or_assign("vault", vault);
-    tbl["directory"].as_table() -> insert_or_assign("directory", vault_dir);
+    
+    std::vector<std::string> set_args;
+    set_args = {"global.directory", vault.directory};
+    set_parameter(cfg, vault, set_args);
+    set_args = {"global.vault", vault.name};
+    set_parameter(cfg, vault, set_args);
   }
   
   void load_str_fields(VaultConfig& obj, const toml::table& tbl){
@@ -136,8 +188,6 @@ namespace ck::lib::config {
       return;
     }
     auto cfg_toml = toml::parse_file(std::string(cfg_file));
-    std::string vault_from_cli;
-    if (cfg.global.vault) { vault_from_cli = *cfg.global.vault; }
     
     // parse global defaults
     if (auto* globals = cfg_toml[GLOBAL_CONFIGS].as_table()) {
@@ -158,17 +208,16 @@ namespace ck::lib::config {
       }
     }
    
-    // if a specific vault is specified, apply it's overrides
-    if (!vault_from_cli.empty()) {
-      auto it = cfg.overrides.find(vault_from_cli);
-      if (it != cfg.overrides.end()) {
-        const auto& ov = it->second;
-        for (auto& [key, member] : VaultConfig::str_fields())
-          if (ov.*member) cfg.global.*member = *(ov.*member);
-        for (auto& [key, member] : VaultConfig::bool_fields())
-          if (ov.*member) cfg.global.*member = *(ov.*member);
-      }
-    }
-
+    // // if a specific vault is specified, apply it's overrides
+    // if (!vault_from_cli.empty()) {
+    //   auto it = cfg.overrides.find(vault_from_cli);
+    //   if (it != cfg.overrides.end()) {
+    //     const auto& ov = it->second;
+    //     for (auto& [key, member] : VaultConfig::str_fields())
+    //       if (ov.*member) cfg.global.*member = *(ov.*member);
+    //     for (auto& [key, member] : VaultConfig::bool_fields())
+    //       if (ov.*member) cfg.global.*member = *(ov.*member);
+    //   }
+    // }
   }
 }

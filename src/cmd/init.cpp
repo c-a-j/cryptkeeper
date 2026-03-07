@@ -15,13 +15,14 @@ namespace ck::cmd::init {
   namespace fs = std::filesystem;
   using namespace ck::util::logger;
   using namespace ck::util::error;
+  using namespace ck::lib::config;
     
   static std::string env_or_empty(const char* name) {
     if (const char* value = std::getenv(name)) return value;
     return {};
   }
   
-  fs::path store_root() {
+  fs::path vault_root() {
     std::string cfg_dir = env_or_empty(VAULT_DIR_ENV_VAR.data());
     if (!cfg_dir.empty()) return fs::path(cfg_dir);
     
@@ -39,12 +40,12 @@ namespace ck::cmd::init {
   #endif
   }
   
-  void init_vault(std::string store_name, std::string key_fpr) {
-    if (!ck::lib::crypto::public_key_exists(key_fpr)) {
-      throw Error{InitErrc::KeyNotFound, key_fpr};
+  void init_vault(Config& cfg, Vault& vault) {
+    if (!ck::lib::crypto::public_key_exists(vault.key_fpr)) {
+      throw Error{InitErrc::KeyNotFound, vault.key_fpr};
     }
     
-    fs::path dir = store_root() / store_name;
+    fs::path dir = vault_root() / vault.name;
     
     std::error_code ec;
     bool created = fs::create_directories(dir, ec);
@@ -62,10 +63,11 @@ namespace ck::cmd::init {
       throw Error{InitErrc::OpenGpgIdFailed, std::string(gpg_id_path)};
     }
     
-    gpg_id_file << key_fpr << '\n';
+    gpg_id_file << vault.key_fpr << '\n';
     if (!gpg_id_file) {
       throw Error{InitErrc::WriteGpgIdFailed, std::string(gpg_id_path)};
     }
+    vault.directory = vault_root();
+    init_config(cfg, vault);
   }
-  
 }

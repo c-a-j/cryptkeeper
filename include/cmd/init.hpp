@@ -1,8 +1,8 @@
 #pragma once
-#include <string>
-#include <expected>
 
+#include "lib/types.hpp"
 
 namespace ck::cmd::init {
-  void init_vault(std::string, std::string);
+using namespace ck::types;
+  void init_vault(Config&, Vault&);
 }

@@ -12,6 +12,7 @@ namespace ck::types {
   struct Vault {
     std::string name;
     std::string key_fpr;
+    std::string directory;
   };
   
   struct Secret {

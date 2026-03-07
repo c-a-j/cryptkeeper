@@ -36,8 +36,27 @@ namespace ck::util::error {
       case InitErrc::OpenGpgIdFailed:       return "Failed to open .gpg-id: ";
       case InitErrc::WriteGpgIdFailed:      return "Failed to write .gpg-id: ";
       case InitErrc::AlreadyExists:         return "Vault already exists: ";
-      case InitErrc::IoError:               return "Public key not found: ";
+      case InitErrc::IoError:               return "I/O error: ";
       default:                              return "Unknown error: ";
+    }
+  }
+  
+  enum class ConfigErrc {
+    CreateDirectoryFailed,
+    AlreadyExists,
+    DoesNotExist,
+    InvalidScope,
+    IoError,
+  };
+  template<>
+  inline std::string_view Error<ConfigErrc>::label(ConfigErrc c) {
+    switch (c) {
+      case ConfigErrc::CreateDirectoryFailed: return "Failed to create vault: ";
+      case ConfigErrc::AlreadyExists:         return "Configuration file already exists: ";
+      case ConfigErrc::DoesNotExist:          return "Configuration file not found: ";
+      case ConfigErrc::InvalidScope:          return "Invalid configuration spec: ";
+      case ConfigErrc::IoError:               return "I/O error: ";
+      default:                                return "Unknown error: ";
     }
   }
   //   struct ConfigError : Error { using Error::Error; };

@@ -34,7 +34,7 @@ using namespace ck::util::logger;
     auto* init = app.add_subcommand("init", "initialize a new password store");
     init -> add_option("-v,--vault", vault.name, "vault name") -> required();
     init -> add_option("-k,--key", vault.key_fpr, "vault key") -> required();
-    init -> callback([&] { cmd::init::init_vault(vault.name, vault.key_fpr); });
+    init -> callback([&] { cmd::init::init_vault(cfg, vault); });
   }
     
   void build_insert(CLI::App& app, Config& cfg, Vault& vault, Secret& secret) {
