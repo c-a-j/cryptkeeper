@@ -22,7 +22,7 @@ using namespace ck::util::logger;
     app.footer("More coming soon");
   } 
     
-  void build_config(CLI::App& app, Config& cfg, Vault& vault, std::vector<std::string>& set_args, int& exit_code) {
+  void build_config(CLI::App& app, Config& cfg, Vault& vault, std::vector<std::string>& set_args) {
     auto* config = app.add_subcommand("config", "Print and edit config file");
     config -> description("Print and edit config file");
     config -> add_option("args", set_args, "Key [value]");
@@ -30,22 +30,22 @@ using namespace ck::util::logger;
     config -> callback([&] { cmd::config::config(cfg, vault, set_args); });
   }
     
-  void build_init(CLI::App& app, Config& cfg, Vault& vault, int& exit_code) {
+  void build_init(CLI::App& app, Config& cfg, Vault& vault) {
     auto* init = app.add_subcommand("init", "initialize a new password store");
     init -> add_option("-v,--vault", vault.name, "vault name") -> required();
     init -> add_option("-k,--key", vault.key_fpr, "vault key") -> required();
-    init -> callback([&] { exit_code = cmd::init::init_store(vault.name, vault.key_fpr); });
+    init -> callback([&] { cmd::init::init_vault(vault.name, vault.key_fpr); });
   }
     
-  void build_insert(CLI::App& app, Config& cfg, Vault& vault, Secret& secret, int& exit_code) {
+  void build_insert(CLI::App& app, Config& cfg, Vault& vault, Secret& secret) {
     auto* insert = app.add_subcommand("insert", "insert a new secret");
     insert -> add_option("-s,--store", vault.name, "store name");
     insert -> add_option("-k,--key", vault.key_fpr, "encryption key");
     insert -> add_option("path, -p,--path", secret.path, "secret path and name (ex cards/mybank/num") -> required();
-    insert -> callback([&] { exit_code = cmd::insert::insert_secret(secret.path, vault.key_fpr); });
+    insert -> callback([&] { cmd::insert::insert_secret(secret.path, vault.key_fpr); });
   }
   
-  void build_get(CLI::App& app, Config& cfg, Vault& vault, Secret& secret, int& exit_code) {
+  void build_get(CLI::App& app, Config& cfg, Vault& vault, Secret& secret) {
     auto* get = app.add_subcommand("get", "Get a secret");
     // std::string key;
     // get -> add_option("key", key, "Secret key path") -> required();

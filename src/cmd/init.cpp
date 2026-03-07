@@ -6,12 +6,15 @@
 #include "global.hpp"
 #include "util/logger.hpp"
 #include "lib/crypto.hpp"
+#include "lib/config.hpp"
+#include "util/error.hpp"
 
 
 
 namespace ck::cmd::init {
   namespace fs = std::filesystem;
   using namespace ck::util::logger;
+  using namespace ck::util::error;
     
   static std::string env_or_empty(const char* name) {
     if (const char* value = std::getenv(name)) return value;
@@ -36,18 +39,9 @@ namespace ck::cmd::init {
   #endif
   }
   
-  std::expected<void, InitError> error(InitErrc code, std::string msg1, std::string msg2 = {}) {
-    if (msg2.empty()) {
-      logger.error(msg1);
-    } else {
-      logger.error(msg1, msg2);
-    }
-    return std::unexpected(InitError{code, msg1, msg2});
-  }
-  
-  std::expected<void, InitError> create_store(std::string store_name, std::string key_fpr) {
+  void init_vault(std::string store_name, std::string key_fpr) {
     if (!ck::lib::crypto::public_key_exists(key_fpr)) {
-      return error(InitErrc::KeyNotFound, "Public key not found: ", key_fpr);
+      throw Error{InitErrc::KeyNotFound, key_fpr};
     }
     
     fs::path dir = store_root() / store_name;
@@ -55,31 +49,23 @@ namespace ck::cmd::init {
     std::error_code ec;
     bool created = fs::create_directories(dir, ec);
     if (ec) {
-      return error(InitErrc::CreateDirectoryFailed, "Failed to create crypt: " + ec.message());
+      throw Error{InitErrc::CreateDirectoryFailed, ec.message()};
     }
     
     if (!created) {
-      return error(InitErrc::AlreadyExists, "Crypt already exists: ", dir);
+      throw Error{InitErrc::AlreadyExists, dir};
     } 
     
     const fs::path gpg_id_path = dir / ".gpg-id";
     std::ofstream gpg_id_file(gpg_id_path, std::ios::out | std::ios::trunc);
     if (!gpg_id_file.is_open()) {
-      return error(InitErrc::OpenGpgIdFailed, "Failed to open .gpg-id for writing: ");
+      throw Error{InitErrc::OpenGpgIdFailed, std::string(gpg_id_path)};
     }
     
     gpg_id_file << key_fpr << '\n';
     if (!gpg_id_file) {
-      return error(InitErrc::WriteGpgIdFailed, "Failed to write .gpg-id: ");
+      throw Error{InitErrc::WriteGpgIdFailed, std::string(gpg_id_path)};
     }
-    
-    return {};
   }
   
-  int init_store(std::string store_name, std::string store_key) {
-    std::expected<void, InitError> r = create_store(store_name, store_key);
-    if (!r) return 1;
-    logger.success("Store initialized: ", store_name);
-    return 0;
-  }
 }

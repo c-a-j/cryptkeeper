@@ -4,6 +4,7 @@
 
 #include "cli/cli.hpp"
 #include "util/logger.hpp"
+#include "util/error.hpp"
 #include "lib/types.hpp"
 
 #if defined(__has_feature)
@@ -23,13 +24,12 @@ int main(int argc, char** argv) {
   ck::types::Secret secret = {};
   ck::types::Config cfg = {};
   std::vector<std::string> set_args;
-  int exit_code = 0;
 
   CLI::App app{"crypt-keeper"};
   ck::cli::build_cli(app);
-  ck::cli::build_config(app, cfg, vault, set_args, exit_code);
-  ck::cli::build_init(app, cfg, vault, exit_code);
-  ck::cli::build_insert(app, cfg, vault, secret, exit_code);
+  ck::cli::build_config(app, cfg, vault, set_args);
+  ck::cli::build_init(app, cfg, vault);
+  ck::cli::build_insert(app, cfg, vault, secret);
   
   
   if (argc == 1) {
@@ -39,11 +39,15 @@ int main(int argc, char** argv) {
   
   try {
     app.parse(argc,argv);
-    return exit_code;
+    return 0;
   } catch (const CLI::Success& e) {
     return app.exit(e);
   } catch (const CLI::ParseError& e) {
     ck::util::logger::logger.error(e.what());
+    return app.exit(e);
+  } catch (const ck::util::error::AppError& e) {
+    ck::util::logger::logger.error(e.msg1, e.msg2);
+    return 1;
   }
   return 0;
 }

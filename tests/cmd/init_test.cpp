@@ -4,6 +4,7 @@
 #include "../util/gen_key.hpp"
 #include "../util/scoped_store_root.hpp"
 #include "lib/crypto.hpp"
+#include "util/error.hpp"
 
 using namespace ck::cmd::init;
 using namespace ck::lib::crypto;
@@ -27,13 +28,13 @@ class InitTest : public ::testing::Test {
     } 
 };
 
-TEST_F(InitTest, InitNewStoreReturnZero) {
-  EXPECT_EQ(init_store("test-store", generated_fpr_), 0);
+TEST_F(InitTest, InitNewVaultNoThrow) {
+  EXPECT_NO_THROW(init_vault("test-store", generated_fpr_));
 }
 
-TEST_F(InitTest, InitExistingStoreReturnOne) {
-  init_store("test-store", generated_fpr_);
-  EXPECT_EQ(init_store("test-store", generated_fpr_), 1);
+TEST_F(InitTest, InitExistingStoreThrows) {
+  init_vault("test-store", generated_fpr_);
+  EXPECT_THROW(init_vault("test-store", generated_fpr_), ck::util::error::AppError);
 }
 
 // TEST_F(CryptoTest, KeyExistsTrueWhenKeyExists) {
