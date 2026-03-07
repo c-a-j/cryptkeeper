@@ -2,7 +2,7 @@
 #include <string>
 #include <iostream>
 
-#include "cli/build_cli.hpp"
+#include "cli/cli.hpp"
 #include "util/logger.hpp"
 #include "lib/types.hpp"
 
@@ -22,10 +22,16 @@ int main(int argc, char** argv) {
   ck::types::Vault vault = {};
   ck::types::Secret secret = {};
   ck::types::Config cfg = {};
+  std::vector<std::string> set_args;
   int exit_code = 0;
 
   CLI::App app{"crypt-keeper"};
-  ck::cli::build_cli(app, vault, secret, cfg, exit_code);
+  ck::cli::build_cli(app);
+  ck::cli::build_config(app, cfg, vault, set_args, exit_code);
+  ck::cli::build_init(app, cfg, vault, exit_code);
+  ck::cli::build_insert(app, cfg, vault, secret, exit_code);
+  
+  
   if (argc == 1) {
     std::cout << app.help() << '\n';
     return 0;

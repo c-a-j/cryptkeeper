@@ -18,40 +18,27 @@ namespace ck::types {
     std::string path;
     std::string key_fpr;
   };
-  
-  struct ConfigOverrides {
-    std::optional<bool> auto_push;
+
+  struct VaultConfig {
+    std::optional<std::string> vault;
     std::optional<std::string> directory;
-    
+    std::optional<bool> auto_push = false;
+
     static constexpr auto str_fields() {
       return std::array{
-        std::pair{"directory"sv, &ConfigOverrides::directory}
+        std::pair{"directory"sv, &VaultConfig::directory},
+        std::pair{"vault"sv, &VaultConfig::vault}
       };
     }
     static constexpr auto bool_fields() {
       return std::array{
-        std::pair{"auto_push"sv, &ConfigOverrides::auto_push}
+        std::pair{"auto_push"sv, &VaultConfig::auto_push}
       };
     }
   };
   
   struct Config {
-    std::optional<std::string> vault;
-    std::optional<std::string> directory;
-    std::optional<bool> auto_push = false;
-    std::vector<std::string> set_args;
-    std::unordered_map<std::string, ConfigOverrides> overrides;
-    
-    static constexpr auto str_fields() {
-      return std::array {
-        std::pair{"vault"sv, &Config::vault},
-        std::pair{"directory"sv, &Config::directory}
-      };
-    }
-    static constexpr auto bool_fields() {
-      return std::array {
-        std::pair{"auto_push"sv, &Config::auto_push}
-      };
-    }
+    VaultConfig global;
+    std::unordered_map<std::string, VaultConfig> overrides;
   };
 }

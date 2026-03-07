@@ -70,20 +70,18 @@ namespace ck::lib::config {
     std::cout << "[vaults." << vault << "." << key << "] = " << value << "\n";
   }
   
-  template<typename T>
-  void print_str_fields(const T& obj, const std::string& vault = {}) {
-    for (auto& [key, member] : T::str_fields())
+  void print_str_fields(const VaultConfig& obj, const std::string& vault = {}) {
+    for (auto& [key, member] : VaultConfig::str_fields())
       if (obj.*member) print_config_ln(std::string(key), *(obj.*member), vault);
   }
-  template<typename T>
-  void print_bool_fields(const T& obj, const std::string& vault = {}) {
-    for (auto& [key, member] : T::bool_fields())
+  void print_bool_fields(const VaultConfig& obj, const std::string& vault = {}) {
+    for (auto& [key, member] : VaultConfig::bool_fields())
       if (obj.*member) print_config_ln(std::string(key), *(obj.*member) ? "true" : "false", vault);
   }
-  void print_config(Vault& vault, Config& cfg) {
+  void print_config(Config& cfg, Vault& vault) {
     if (vault.name.empty()) {
-      print_str_fields(cfg);
-      print_bool_fields(cfg);
+      print_str_fields(cfg.global);
+      print_bool_fields(cfg.global);
     }
     
     for (const auto& [v, ov] : cfg.overrides) {
@@ -93,10 +91,9 @@ namespace ck::lib::config {
     }
   }
   
-  void set_config(Vault& vault, Config& cfg) {
+  void set_parameter(Config& cfg, Vault& vault, std::vector<std::string> set_args) {
     fs::path cfg_file = app_config_file();
     auto cfg_toml = toml::parse_file(std::string(cfg_file));
-    
   }
   
   void create_default_config_file() {
@@ -123,27 +120,29 @@ namespace ck::lib::config {
     tbl["directory"].as_table() -> insert_or_assign("directory", vault_dir);
   }
   
-  template<typename T>
-  void load_str_fields(T& obj, const toml::table& tbl){
-    for (auto& [key, member] : T::str_fields())
-      obj.*member = tbl[key].template value<std::string>();
+  void load_str_fields(VaultConfig& obj, const toml::table& tbl){
+    for (auto& [key, member] : VaultConfig::str_fields())
+      obj.*member = tbl[key].value<std::string>();
   }
-  template<typename T>
-  void load_bool_fields(T& obj, const toml::table& tbl){
-    for (auto& [key, member] : T::bool_fields())
-      obj.*member = tbl[key].template value<bool>();
+  void load_bool_fields(VaultConfig& obj, const toml::table& tbl){
+    for (auto& [key, member] : VaultConfig::bool_fields())
+      obj.*member = tbl[key].value<bool>();
   }
   
   void load_config(Config& cfg) {
     fs::path cfg_file = app_config_file();
+    if (!fs::exists(cfg_file)) {
+      logger.error("Config file not found: ", std::string(cfg_file));
+      return;
+    }
     auto cfg_toml = toml::parse_file(std::string(cfg_file));
     std::string vault_from_cli;
-    if (cfg.vault) { vault_from_cli = *cfg.vault; }
+    if (cfg.global.vault) { vault_from_cli = *cfg.global.vault; }
     
     // parse global defaults
     if (auto* globals = cfg_toml[GLOBAL_CONFIGS].as_table()) {
-      load_str_fields(cfg, *globals);
-      load_bool_fields(cfg, *globals);
+      load_str_fields(cfg.global, *globals);
+      load_bool_fields(cfg.global, *globals);
     }
     
     // parse named vault overrides: [vault.any-name]
@@ -152,7 +151,7 @@ namespace ck::lib::config {
         auto* v = n.as_table();
         if (!v) continue;
         
-        ConfigOverrides ov{};
+        VaultConfig ov{};
         load_str_fields(ov, *v);
         load_bool_fields(ov, *v);
         cfg.overrides[std::string(k.str())] = std::move(ov);
@@ -164,8 +163,10 @@ namespace ck::lib::config {
       auto it = cfg.overrides.find(vault_from_cli);
       if (it != cfg.overrides.end()) {
         const auto& ov = it->second;
-        if (ov.directory) cfg.directory = ov.directory;
-        if (ov.auto_push) cfg.auto_push = ov.auto_push;
+        for (auto& [key, member] : VaultConfig::str_fields())
+          if (ov.*member) cfg.global.*member = *(ov.*member);
+        for (auto& [key, member] : VaultConfig::bool_fields())
+          if (ov.*member) cfg.global.*member = *(ov.*member);
       }
     }
 

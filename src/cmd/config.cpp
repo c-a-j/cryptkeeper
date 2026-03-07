@@ -11,19 +11,19 @@ namespace ck::cmd::config {
   using namespace ck::types;
   using namespace ck::lib::config;
   
-  void config(Vault& vault, Config& cfg) {
+  void config(Config& cfg, Vault& vault, std::vector<std::string>& set_args) {
     load_config(cfg);
     
-    if (cfg.set_args.size() == 0) {
-      print_config(vault, cfg);
+    if (set_args.size() == 0) {
+      print_config(cfg, vault);
       return;
-    } else if (cfg.set_args.size() == 1) {
-      print_config(vault, cfg);
+    } else if (set_args.size() == 1) {
+      print_config(cfg, vault);
       return;
-    } else if (cfg.set_args.size() == 2) {
-      std::cout << "setting " << cfg.set_args[0] << " to " << cfg.set_args[1] << "\n";
+    } else if (set_args.size() == 2) {
+      std::cout << "setting " << set_args[0] << " to " << set_args[1] << "\n";
       return;
-    } else if (cfg.set_args.size() > 2) {
+    } else if (set_args.size() > 2) {
       throw CLI::ValidationError("config", "too many arguments");
     } 
     return;

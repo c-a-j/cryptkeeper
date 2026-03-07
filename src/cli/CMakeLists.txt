@@ -1,1 +1,1 @@
-target_sources(ck PRIVATE build_cli.cpp)
+target_sources(ck PRIVATE cli.cpp)
