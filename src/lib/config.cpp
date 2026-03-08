@@ -10,7 +10,6 @@
 
 #include "cmd/config.hpp"
 #include "util/error.hpp"
-#include "lib/default_config.hpp"
 #include "global.hpp"
 #include "util/logger.hpp"
 
@@ -76,9 +75,9 @@ namespace ck::lib::config {
     }
   }
   
-  void print_default() {
-    std::cout << DEFAULT_CONFIG << std::endl;
-  }
+  // void print_default() {
+  //   std::cout << DEFAULT_CONFIG << std::endl;
+  // }
   
   void print_config_ln(std::string key, std::string value, std::string vault = {}) {
     if (vault.empty()) {
@@ -167,27 +166,53 @@ namespace ck::lib::config {
     }
   }
   
+  void add_new_vault(Config& cfg, Vault& vault) {
+    fs::path cfg_file = app_config_file();
+    auto cfg_toml = toml::parse_file(std::string(cfg_file));
+    
+    if (!cfg_toml["vaults"].as_table()) {
+      cfg_toml.insert("vaults", toml::table{});
+    }
+    
+    auto* vaults = cfg_toml["vaults"].as_table();
+    vaults -> insert(vault.name, toml::table{});
+    
+    std::ofstream out(cfg_file, std::ios::out | std::ios::trunc);
+    out << cfg_toml << "\n";
+    if (!out) {
+      logger.error("Failed to write config file: ", std::string(cfg_file));
+    }
+  }
+  
+  void create_default_config(toml::table& cfg_toml, std::string default_vault) {
+    cfg_toml.insert(GLOBAL_CONFIGS, toml::table{});
+    auto* tbl = cfg_toml[GLOBAL_CONFIGS].as_table();
+    tbl -> insert("vault", default_vault);
+    tbl -> insert("directory", std::string(vault_root()));
+    tbl -> insert("auto_push", false);
+    
+    cfg_toml.insert("vaults", toml::table{});
+    tbl = cfg_toml["vaults"].as_table();
+    tbl -> insert(default_vault, toml::table{});
+  }
+  
   void init_config(Config& cfg, Vault& vault) {
     fs::path cfg_file = app_config_file();
     if (fs::exists(cfg_file)) {
       // only add new vault to config [vaults.new-vault]
+      add_new_vault(cfg, vault);
       return;
-      // throw Error{ConfigErrc::AlreadyExists, std::string(cfg_file) };
     }
     // create new config
     create_config_dir();
+    toml::table cfg_toml;
+    create_default_config(cfg_toml, vault.name);
+    
     std::ofstream out(cfg_file, std::ios::out | std::ios::trunc);
-    out << DEFAULT_CONFIG ; 
+    out << cfg_toml << "\n"; 
     if (!out) {
       throw Error{ConfigErrc::CreateConfigFailed, std::string(cfg_file) };
     }
-    out.close();
-    
-    std::vector<std::string> set_args;
-    set_args = {"global.directory", vault.directory};
-    set_parameter(cfg, vault, set_args);
-    set_args = {"global.vault", vault.name};
-    set_parameter(cfg, vault, set_args);
   }
   
   void load_str_fields(VaultConfig& obj, const toml::table& tbl){

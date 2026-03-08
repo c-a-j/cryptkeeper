@@ -1,5 +1,0 @@
-# Crypt Keeper Configurations
-[global]
-vault = ""
-auto_push = false
-directory = ""
