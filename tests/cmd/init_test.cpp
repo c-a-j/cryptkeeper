@@ -15,7 +15,7 @@ class InitTest : public ::testing::Test {
   protected: 
     std::unique_ptr<ScopedGnupgHome> gnupg_home_;
     std::unique_ptr<ScopedVaultRoot> store_root_;
-    // std::unique_ptr<ScopedConfigDir> config_dir_;
+    std::unique_ptr<ScopedConfigDir> config_dir_;
     Vault vault_;
     Config cfg_;
     
@@ -23,7 +23,7 @@ class InitTest : public ::testing::Test {
       gnupg_home_ = std::make_unique<ScopedGnupgHome>();
       init_gpgme();
       store_root_ = std::make_unique<ScopedVaultRoot>();
-      // config_dir_ = std::make_unique<ScopedConfigDir>();
+      config_dir_ = std::make_unique<ScopedConfigDir>();
       vault_.name = "test-vault";
       vault_.key_fpr = generate_tmp_key();
     }

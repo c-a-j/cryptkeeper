@@ -5,11 +5,13 @@
 #include "cmd/config.hpp"
 #include "cli/cli.hpp"
 #include "lib/types.hpp"
+#include "lib/config.hpp"
 #include "global.hpp"
 #include "util/logger.hpp"
 
 namespace ck::cli {
 namespace cmd = ck::cmd;
+namespace lib = ck::lib;
 using namespace ck::types;
 using namespace ck::util::logger;
   void build_cli(CLI::App& app) {
@@ -34,7 +36,10 @@ using namespace ck::util::logger;
     auto* init = app.add_subcommand("init", "initialize a new password store");
     init -> add_option("-v,--vault", vault.name, "vault name") -> required();
     init -> add_option("-k,--key", vault.key_fpr, "vault key") -> required();
-    init -> callback([&] { cmd::init::init_vault(cfg, vault); });
+    init -> callback([&] { 
+      lib::config::init_config(cfg, vault);
+      cmd::init::init_vault(cfg, vault); 
+    });
   }
     
   void build_insert(CLI::App& app, Config& cfg, Vault& vault, Secret& secret) {

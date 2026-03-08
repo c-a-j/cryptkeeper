@@ -26,23 +26,41 @@ namespace ck::lib::config {
     if (const char* value = std::getenv(name)) return value;
     return {};
   }
+  
+  fs::path vault_root() {
+    std::string vault_dir = env_or_empty(VAULT_DIR_ENV_VAR.data());
+    if (!vault_dir.empty()) return fs::path(vault_dir);
+    
+    #ifdef _WIN32
+      auto appdata = env_or_empty("APPDATA");
+      if (appdata.empty()) throw std::runtime_error("APPDATA is not set");
+      return fs::path(appdata) / APP_NAME;
+    #else
+      auto xdg_data = env_or_empty("XDG_DATA_HOME");
+      if (!xdg_data.empty()) return fs::path(xdg_data);
+      
+      auto home = env_or_empty("HOME");
+      if (home.empty()) throw std::runtime_error("HOME is not set");
+      return fs::path(home) / ".local" / "share" / APP_DIR;
+    #endif
+  }
 
   fs::path app_config_dir() {
     std::string cfg_dir = env_or_empty(CONFIG_DIR_ENV_VAR.data());
     if (!cfg_dir.empty()) return fs::path(cfg_dir);
     
-  #ifdef _WIN32
-    std::string appdata = env_or_empty("APPDATA");
-    if (appdata.empty()) throw std::runtime_error("APPDATA is not set");
-    return fs::path(appdata);
-  #else
-    std::string xdg = env_or_empty("XDG_CONFIG_HOME");
-    if (!xdg.empty()) return fs::path(xdg) / APP_DIR;
-    
-    auto home = env_or_empty("HOME");
-    if (home.empty()) throw std::runtime_error("HOME is not set");
-    return fs::path(home) / ".config" / APP_DIR;
-  #endif
+    #ifdef _WIN32
+      std::string appdata = env_or_empty("APPDATA");
+      if (appdata.empty()) throw std::runtime_error("APPDATA is not set");
+      return fs::path(appdata);
+    #else
+      std::string xdg = env_or_empty("XDG_CONFIG_HOME");
+      if (!xdg.empty()) return fs::path(xdg) / APP_DIR;
+      
+      auto home = env_or_empty("HOME");
+      if (home.empty()) throw std::runtime_error("HOME is not set");
+      return fs::path(home) / ".config" / APP_DIR;
+    #endif
   }
   
   fs::path app_config_file() {
@@ -156,12 +174,12 @@ namespace ck::lib::config {
       return;
       // throw Error{ConfigErrc::AlreadyExists, std::string(cfg_file) };
     }
-    // create config from new vault
+    // create new config
+    create_config_dir();
     std::ofstream out(cfg_file, std::ios::out | std::ios::trunc);
     out << DEFAULT_CONFIG ; 
     if (!out) {
-      logger.error("Failed to create config file: ", std::string(cfg_file));
-      return;
+      throw Error{ConfigErrc::CreateConfigFailed, std::string(cfg_file) };
     }
     out.close();
     

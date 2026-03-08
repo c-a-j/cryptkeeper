@@ -17,29 +17,6 @@ namespace ck::cmd::init {
   using namespace ck::util::error;
   using namespace ck::lib::config;
     
-  static std::string env_or_empty(const char* name) {
-    if (const char* value = std::getenv(name)) return value;
-    return {};
-  }
-  
-  fs::path vault_root() {
-    std::string cfg_dir = env_or_empty(VAULT_DIR_ENV_VAR.data());
-    if (!cfg_dir.empty()) return fs::path(cfg_dir);
-    
-  #ifdef _WIN32
-    auto appdata = env_or_empty("APPDATA");
-    if (appdata.empty()) throw std::runtime_error("APPDATA is not set");
-    return fs::path(appdata) / APP_NAME;
-  #else
-    auto xdg_data = env_or_empty("XDG_DATA_HOME");
-    if (!xdg_data.empty()) return fs::path(xdg_data);
-    
-    auto home = env_or_empty("HOME");
-    if (home.empty()) throw std::runtime_error("HOME is not set");
-    return fs::path(home) / ".local" / "share" / APP_DIR;
-  #endif
-  }
-  
   void init_vault(Config& cfg, Vault& vault) {
     if (!ck::lib::crypto::public_key_exists(vault.key_fpr)) {
       throw Error{InitErrc::KeyNotFound, vault.key_fpr};
@@ -67,7 +44,5 @@ namespace ck::cmd::init {
     if (!gpg_id_file) {
       throw Error{InitErrc::WriteGpgIdFailed, std::string(gpg_id_path)};
     }
-    vault.directory = vault_root();
-    init_config(cfg, vault);
   }
 }

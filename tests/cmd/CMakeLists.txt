@@ -1,6 +1,7 @@
 add_executable(init_test
   init_test.cpp
   ../util/gen_key.cpp
+  ../util/scoped_config_dir.cpp
   ../util/scoped_vault_root.cpp
   ${PROJECT_SOURCE_DIR}/src/cmd/init.cpp
   ${PROJECT_SOURCE_DIR}/src/util/logger.cpp

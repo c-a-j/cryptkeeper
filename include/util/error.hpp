@@ -43,6 +43,7 @@ namespace ck::util::error {
   
   enum class ConfigErrc {
     CreateDirectoryFailed,
+    CreateConfigFailed,
     AlreadyExists,
     DoesNotExist,
     InvalidScope,
@@ -52,6 +53,7 @@ namespace ck::util::error {
   inline std::string_view Error<ConfigErrc>::label(ConfigErrc c) {
     switch (c) {
       case ConfigErrc::CreateDirectoryFailed: return "Failed to create vault: ";
+      case ConfigErrc::CreateConfigFailed:    return "Failed to create conifig file: ";
       case ConfigErrc::AlreadyExists:         return "Configuration file already exists: ";
       case ConfigErrc::DoesNotExist:          return "Configuration file not found: ";
       case ConfigErrc::InvalidScope:          return "Invalid configuration spec: ";
