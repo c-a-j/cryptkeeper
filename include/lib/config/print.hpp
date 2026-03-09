@@ -6,6 +6,6 @@
 namespace ck::lib::config {
   using namespace ck::types;
   
-  void print_config(Config& cfg, Vault& vault);
-  void print_parameter(Config& cfg, Vault& vault, std::string key);
+  void print_config(const Config& cfg, const Vault& vault);
+  void print_parameter(const Config& cfg, const Vault& vault, const std::string& key);
 }

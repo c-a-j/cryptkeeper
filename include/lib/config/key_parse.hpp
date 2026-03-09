@@ -4,12 +4,12 @@
 
 namespace ck::lib::config {
   struct ConfigKey {
-    std::string key;
-    std::string scope;
+    std::optional<std::string> key;
+    std::optional<std::string> scope;
     std::optional<std::string> vault;
-    std::string field;
+    std::optional<std::string> field;
     
-    explicit operator bool() const { return !key.empty(); }
+    explicit operator bool() const { return !key; }
   };
 
   void parse_key(ConfigKey& key);

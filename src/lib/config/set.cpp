@@ -1,5 +1,6 @@
 #include "lib/types.hpp"
 #include <string>
+#include <vector>
 
 #include "lib/types.hpp"
 #include "lib/config/key_parse.hpp"
@@ -58,9 +59,9 @@ namespace ck::lib::config {
     parse_key(cfg_key);
     
     VaultConfig* target = resolve_target(cfg, cfg_key);
-    const auto* field = find_field(cfg_key.field);
+    const auto* field = find_field(*cfg_key.field);
     if (!target || !field) {
-      throw Error{ConfigErrc::InvalidSetParameter, cfg_key.scope};
+      throw Error{ConfigErrc::InvalidSetParameter, *cfg_key.scope};
     }
     set_field(*target, *field, val);
   }

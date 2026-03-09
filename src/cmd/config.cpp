@@ -1,11 +1,9 @@
 #include <CLI/CLI.hpp>
-#include <iostream>
 
 #include "cmd/config.hpp"
 #include "lib/types.hpp"
 #include "lib/config/load.hpp"
 #include "lib/config/print.hpp"
-#include "lib/config/init.hpp"
 #include "lib/config/set.hpp"
 #include "lib/config/save.hpp"
 

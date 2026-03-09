@@ -2,9 +2,7 @@
 #include <string>
 #include <optional>
 #include <unordered_map>
-#include <vector>
 #include <array>
-#include <tuple>
 #include <variant>
 
 
@@ -41,18 +39,6 @@ namespace ck::types {
       }};
     
     static constexpr const std::array<Field, 3>& fields() { return k_fields; }
-    
-    static constexpr auto str_fields() {
-      return std::array{
-        std::pair{"directory"sv, &VaultConfig::directory},
-        std::pair{"vault"sv, &VaultConfig::vault}
-      };
-    }
-    static constexpr auto bool_fields() {
-      return std::array{
-        std::pair{"auto_push"sv, &VaultConfig::auto_push}
-      };
-    }
   };
   
   struct Config {
