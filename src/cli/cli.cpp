@@ -6,14 +6,14 @@
 #include "cli/cli.hpp"
 #include "lib/types.hpp"
 #include "lib/config/init.hpp"
+#include "lib/config/deserialize.hpp"
+#include "lib/config/active.hpp"
 #include "global.hpp"
-#include "util/logger.hpp"
 
 namespace ck::cli {
 namespace cmd = ck::cmd;
 namespace lib = ck::lib;
 using namespace ck::types;
-using namespace ck::util::logger;
   void build_cli(CLI::App& app) {
     // bool verbose = false;
     // app.add_option("-v, --verbose", verbose, "Path verbose output");
@@ -29,7 +29,10 @@ using namespace ck::util::logger;
     config -> description("Print and edit config file");
     config -> add_option("args", set_args, "Key [value]");
     config -> add_option("-v, --vault", vault.name, "Set configs for a specific vault");
-    config -> callback([&] { cmd::config::config(cfg, vault, set_args); });
+    config -> callback([&] { 
+      lib::config::deserialize(cfg); 
+      cmd::config::config(cfg, vault, set_args); 
+    });
   }
     
   void build_init(CLI::App& app, Config& cfg, Vault& vault) {
@@ -44,10 +47,14 @@ using namespace ck::util::logger;
     
   void build_insert(CLI::App& app, Config& cfg, Vault& vault, Secret& secret) {
     auto* insert = app.add_subcommand("insert", "insert a new secret");
-    insert -> add_option("-s,--store", vault.name, "store name");
-    insert -> add_option("-k,--key", vault.key_fpr, "encryption key");
+    insert -> add_option("-v,--vault", vault.name, "store name");
+    insert -> add_option("-k,--key", secret.key_fpr, "encryption key");
     insert -> add_option("path, -p,--path", secret.path, "secret path and name (ex cards/mybank/num") -> required();
-    insert -> callback([&] { cmd::insert::insert_secret(secret.path, vault.key_fpr.value()); });
+    insert -> callback([&] { 
+      lib::config::deserialize(cfg);
+      VaultConfig vcfg = lib::config::get_active_config(cfg, vault);
+      cmd::insert::insert(vcfg, secret); 
+    });
   }
   
   void build_get(CLI::App& app, Config& cfg, Vault& vault, Secret& secret) {

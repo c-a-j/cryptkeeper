@@ -3,8 +3,6 @@
 #include <fstream>
 
 #include "cmd/init.hpp"
-#include "global.hpp"
-#include "util/logger.hpp"
 #include "lib/crypto.hpp"
 #include "lib/config/path.hpp"
 #include "util/error.hpp"
@@ -13,7 +11,6 @@
 
 namespace ck::cmd::init {
   namespace fs = std::filesystem;
-  using namespace ck::util::logger;
   using namespace ck::util::error;
   using namespace ck::lib::config;
     

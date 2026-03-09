@@ -2,7 +2,7 @@
 #include <nlohmann/json.hpp>
 
 #include "util/logger.hpp"
-#include "lib/index.hpp"
+#include "lib/index/index.hpp"
 
 namespace ck::lib::index { 
   using namespace ck::util::logger;

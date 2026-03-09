@@ -1,6 +1,8 @@
 #pragma once
-#include <string>
+
+#include "lib/types.hpp"
 
 namespace ck::cmd::insert {
-  void insert_secret(std::string, std::string);
+  using namespace ck::types;
+  void insert(const VaultConfig&, const Secret&);
 }

@@ -1,9 +1,8 @@
 #pragma once
-#include "toml++/toml.hpp"
 
 #include "lib/types.hpp"
 
 namespace ck::lib::config {
   using namespace ck::types;
-  toml::table serialize(const Config&);
+  VaultConfig get_active_config(const Config&, const Vault&);
 }
