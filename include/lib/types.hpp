@@ -5,6 +5,7 @@
 #include <vector>
 #include <array>
 #include <tuple>
+#include <variant>
 
 
 namespace ck::types {
@@ -25,6 +26,22 @@ namespace ck::types {
     std::optional<std::string> directory;
     std::optional<bool> auto_push;
 
+    using StrMember = std::optional<std::string> VaultConfig::*;
+    using BoolMember = std::optional<bool> VaultConfig::*;
+    
+    struct Field {
+      std::string_view key;
+      std::variant<StrMember, BoolMember> member;
+    };
+    
+    inline static constexpr std::array<Field, 3> k_fields {{
+        {"vault", &VaultConfig::vault},
+        {"directory", &VaultConfig::directory},
+        {"auto_push", &VaultConfig::auto_push},
+      }};
+    
+    static constexpr const std::array<Field, 3>& fields() { return k_fields; }
+    
     static constexpr auto str_fields() {
       return std::array{
         std::pair{"directory"sv, &VaultConfig::directory},
