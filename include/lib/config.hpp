@@ -17,7 +17,8 @@ using namespace ck::types;
   std::filesystem::path vault_root();
   void init_config(Config&, Vault&);
   void load_config(Config&);
-  void print_config(Config&, Vault&, const std::string = {});
+  void print_config(Config&, Vault&);
+  void print_parameter(Config&, Vault&, const std::string = {});
   void set_parameter(Config&, Vault&, std::vector<std::string>);
   void save_config(Config&);
 }

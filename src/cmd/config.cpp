@@ -18,7 +18,7 @@ namespace ck::cmd::config {
       print_config(cfg, vault);
       return;
     } else if (set_args.size() == 1) {
-      print_config(cfg, vault);
+      print_parameter(cfg, vault, set_args[0]);
       return;
     } else if (set_args.size() == 2) {
       set_parameter(cfg, vault, set_args);
