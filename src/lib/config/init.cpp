@@ -16,6 +16,7 @@ namespace ck::lib::config {
     obj.vault = *vault.name;
     obj.directory = vault_root();
     obj.auto_push = false;
+    obj.insert_with_editor = false;
     cfg.overrides[*vault.name] = VaultConfig{};
   }
   

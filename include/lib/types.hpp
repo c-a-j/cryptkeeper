@@ -24,6 +24,7 @@ namespace ck::types {
     std::optional<std::string> vault;
     std::optional<std::string> directory;
     std::optional<bool> auto_push;
+    std::optional<bool> insert_with_editor;
 
     using StrMember = std::optional<std::string> VaultConfig::*;
     using BoolMember = std::optional<bool> VaultConfig::*;
@@ -33,13 +34,14 @@ namespace ck::types {
       std::variant<StrMember, BoolMember> member;
     };
     
-    inline static constexpr std::array<Field, 3> k_fields {{
+    inline static constexpr std::array<Field, 4> k_fields {{
         {"vault", &VaultConfig::vault},
         {"directory", &VaultConfig::directory},
         {"auto_push", &VaultConfig::auto_push},
+        {"insert_with_editor", &VaultConfig::insert_with_editor},
       }};
     
-    static constexpr const std::array<Field, 3>& fields() { return k_fields; }
+    static constexpr const std::array<Field, 4>& fields() { return k_fields; }
   };
   
   struct Config {

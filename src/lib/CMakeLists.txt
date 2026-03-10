@@ -1,6 +1,5 @@
 target_sources(ck_lib PRIVATE 
     crypto.cpp
-    wisper.cpp
     config/path.cpp
     config/print.cpp
     config/serialize.cpp
@@ -10,5 +9,6 @@ target_sources(ck_lib PRIVATE
     config/set.cpp
     config/init.cpp
     config/save.cpp
-    index/index.cpp
+    input/wisper.cpp
+    secret/secret.cpp
 )
