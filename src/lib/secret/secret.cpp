@@ -1,14 +1,18 @@
 #include <nlohmann/json.hpp>
 #include <string>
 #include <iostream>
+#include <filesystem>
+#include <fstream>
 
 #include "util/logger.hpp"
 #include "lib/types.hpp"
 #include "lib/secret/secret.hpp"
 
 namespace ck::secret { 
+  using namespace index;
   using namespace ck::config;
   using namespace ck::util::logger;
+  namespace fs = std::filesystem;
 
   std::vector<std::string> parse_path(const Secret& secret) {
     std::vector<std::string> path_parts;
@@ -24,11 +28,29 @@ namespace ck::secret {
     return(path_parts);
   };
   
-  void create_index_file() {};
+  fs::path get_idx_file(const VaultConfig& cfg) {
+    fs::path idx = fs::path(*cfg.directory) / fs::path(*cfg.vault) / "idx.json";
+    return(idx);
+  }
+  
+  void create_index_file(const VaultConfig& cfg) {
+    fs::path idx = get_idx_file(cfg);
+    if (fs::exists(idx)) { return; }
+    
+    std::ofstream out(idx, std::ios::out | std::ios::trunc);
+    out << "hello" << "\n";
+  }
 
   void serialize() {};
   
   void deserialize() {};
+  
+  IndexEntry create_entry(const Secret& secret) {
+    IndexEntry entry;
+    entry.path = parse_path(secret);
+    
+    return entry;
+  }
   
   void insert(const VaultConfig& cfg, const Secret& secret) {
     std::cout << "secret = " << secret.value << "\n";
@@ -38,6 +60,7 @@ namespace ck::secret {
     for (const std::string& p : path_parts) {
       std::cout << p << "\n";
     }
+    create_index_file(cfg);
   };
   
   
