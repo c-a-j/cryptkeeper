@@ -4,11 +4,11 @@
 #include "../util/gen_key.hpp"
 #include "../util/scoped_vault_root.hpp"
 #include "../util/scoped_config_dir.hpp"
-#include "lib/crypto.hpp"
+#include "lib/crypto/crypto.hpp"
 #include "util/error.hpp"
 
-using namespace ck::cmd::init;
-using namespace ck::lib::crypto;
+using namespace ck::init;
+using namespace ck::crypto;
 using namespace ck::tests::util;
 
 class InitTest : public ::testing::Test {

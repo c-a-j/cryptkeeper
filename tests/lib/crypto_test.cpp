@@ -1,10 +1,10 @@
 #include <gpgme.h>
 #include <gtest/gtest.h>
 
-#include "lib/crypto.hpp"
+#include "lib/crypto/crypto.hpp"
 #include "../util/gen_key.hpp"
 
-using namespace ck::lib::crypto;
+using namespace ck::crypto;
 using namespace ck::tests::util;
 
 class CryptoTest : public ::testing::Test {

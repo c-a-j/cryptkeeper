@@ -3,7 +3,7 @@
 #include <gpgme.h>
 #include <gtest/gtest.h>
 
-#include "lib/crypto.hpp"
+#include "lib/crypto/crypto.hpp"
 #include "gen_key.hpp"
 
 using namespace ck::crypto;

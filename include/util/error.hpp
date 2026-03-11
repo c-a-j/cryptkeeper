@@ -63,7 +63,29 @@ namespace ck::util::error {
       default:                                return "Unknown error: ";
     }
   }
-  //   struct ConfigError : Error { using Error::Error; };
-  //   struct VaultError  : Error { using Error::Error; };
-  //   struct CryptoError : Error { using Error::Error; };
+    
+    enum class CryptoErrc {
+      FillRandomBytesFailed,
+      CreateDirectoryFailed,
+      CreateConfigFailed,
+      SaveConfigFailed,
+      AlreadyExists,
+      DoesNotExist,
+      InvalidSetParameter,
+      IoError,
+    };
+    template<>
+    inline std::string_view Error<CryptoErrc>::label(CryptoErrc c) {
+      switch (c) {
+        case CryptoErrc::FillRandomBytesFailed: return "Fill random bytes failed: ";
+        case CryptoErrc::CreateDirectoryFailed: return "Failed to create vault: ";
+        case CryptoErrc::CreateConfigFailed:    return "Failed to create conifig file: ";
+        case CryptoErrc::SaveConfigFailed:      return "Failed to save conifig file: ";
+        case CryptoErrc::AlreadyExists:         return "Configuration file already exists: ";
+        case CryptoErrc::DoesNotExist:          return "Configuration file not found: ";
+        case CryptoErrc::InvalidSetParameter:   return "Invalid configuration scope: ";
+        case CryptoErrc::IoError:               return "I/O error: ";
+        default:                                return "Unknown error: ";
+      }
+    }
 }

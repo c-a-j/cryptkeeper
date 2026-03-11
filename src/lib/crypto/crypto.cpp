@@ -1,4 +1,4 @@
-#include "lib/crypto.hpp"
+#include "lib/crypto/crypto.hpp"
 #include <gpgme.h>
 #include <stdexcept>
 

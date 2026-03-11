@@ -3,7 +3,7 @@
 #include <fstream>
 
 #include "cmd/init.hpp"
-#include "lib/crypto.hpp"
+#include "lib/crypto/crypto.hpp"
 #include "lib/config/path.hpp"
 #include "util/error.hpp"
 
