@@ -11,5 +11,5 @@ target_sources(ck_lib PRIVATE
     config/init.cpp
     config/save.cpp
     input/wisper.cpp
-    secret/secret.cpp
+    index/index.cpp
 )

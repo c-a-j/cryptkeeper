@@ -28,7 +28,7 @@ namespace ck::config {
   void deserialize(Config& cfg) {
     fs::path cfg_file = app_config_file();
     if (!fs::exists(cfg_file)) {
-      logger.error("Config file not found: ", std::string(cfg_file));
+      logger.warning("Config file not found", std::string(cfg_file));
       return;
     }
     auto cfg_toml = toml::parse_file(std::string(cfg_file));

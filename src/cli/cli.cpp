@@ -1,7 +1,7 @@
 #include <CLI/CLI.hpp>
 #include "cmd/init.hpp"
 #include "cmd/insert.hpp"
-#include "cmd/get.hpp"
+#include "cmd/show.hpp"
 #include "cmd/config.hpp"
 #include "cli/cli.hpp"
 #include "lib/types.hpp"
@@ -46,7 +46,7 @@ using namespace ck;
     
   void build_insert(CLI::App& app, Config& cfg, Vault& vault, Secret& secret) {
     auto* insert = app.add_subcommand("insert", "insert a new secret");
-    insert -> add_option("-v,--vault", vault.name, "store name");
+    insert -> add_option("-v,--vault", vault.name, "vault name");
     insert -> add_option("-k,--key", secret.key_fpr, "encryption key");
     insert -> add_flag("--pwgen", secret.pwgen, "insert a randomly generated password");
     insert -> add_option("path, -p,--path", secret.path, "secret path and name (ex cards/mybank/num") -> required();
@@ -58,10 +58,14 @@ using namespace ck;
     });
   }
   
-  void build_get(CLI::App& app, Config& cfg, Vault& vault, Secret& secret) {
-    auto* get = app.add_subcommand("get", "Get a secret");
-    // std::string key;
-    // get -> add_option("key", key, "Secret key path") -> required();
-    get -> callback([&] { cmd::get::run_get(); });
+  void build_show(CLI::App& app, Config& cfg, Vault& vault, Secret& secret) {
+    auto* show = app.add_subcommand("show", "Show a secret");
+    show -> add_option("path, -p, --path", secret.path, "Secret path");
+    show -> add_option("-v,--vault", vault.name, "vault name");
+    show -> callback([&] { 
+      config::deserialize(cfg);
+      VaultConfig vcfg = config::get_active_config(cfg, vault);
+      show::show(vcfg, secret); 
+    });
   }
 }

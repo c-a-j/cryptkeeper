@@ -45,16 +45,17 @@ namespace ck::config {
     std::unordered_map<std::string, VaultConfig> overrides;
   };
 }
+
 namespace ck::secret {
   struct Secret {
-    std::string path;
-    std::string value;
+    std::optional<std::string> path;
+    std::optional<std::string> value;
     std::optional<std::string> key_fpr;
     bool pwgen = false;
   };
 }
 
-namespace ck::secret::index {
+namespace ck::index {
   struct IndexObj {
     std::vector<std::string> path;
     std::string uuid;

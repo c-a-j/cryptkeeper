@@ -2,7 +2,6 @@
 #include <sstream>
 #include <vector>
 
-
 #include "lib/config/key_parse.hpp"
 #include "util/error.hpp"
 

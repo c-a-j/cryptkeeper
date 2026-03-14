@@ -30,6 +30,7 @@ int main(int argc, char** argv) {
   ck::cli::build_config(app, cfg, vault, set_args);
   ck::cli::build_init(app, cfg, vault);
   ck::cli::build_insert(app, cfg, vault, secret);
+  ck::cli::build_show(app, cfg, vault, secret);
   
   
   if (argc == 1) {

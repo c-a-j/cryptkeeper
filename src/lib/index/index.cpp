@@ -5,22 +5,28 @@
 #include <fstream>
 
 #include "util/logger.hpp"
+#include "util/error.hpp"
 #include "lib/types.hpp"
 #include "lib/crypto/crypto.hpp"
 #include "lib/crypto/random.hpp"
-#include "lib/secret/secret.hpp"
+#include "lib/index/index.hpp"
 
-namespace ck::secret { 
+namespace ck::index { 
   using namespace index;
   using namespace ck::config;
   using namespace ck::util::logger;
+  using ck::util::error::Error;
+  using ck::util::error::IndexErrc;
+  using enum ck::util::error::IndexErrc;
   using namespace ck::crypto;
   namespace fs = std::filesystem;
 
-  std::vector<std::string> parse_path(const Secret& secret) {
-    std::vector<std::string> path_parts;
+  std::optional<std::vector<std::string>> parse_path(const Secret& secret) {
+    if (!secret.path) { return std::nullopt; }
+    
     std::string part;
-    std::stringstream ss(secret.path);
+    std::vector<std::string> path_parts;
+    std::stringstream ss(*secret.path);
     
   
     while (std::getline(ss, part, '/')) {
@@ -74,7 +80,11 @@ namespace ck::secret {
   
   IndexObj create_obj(const Secret& secret) {
     IndexObj obj;
-    obj.path = parse_path(secret);
+    std::optional<std::vector<std::string>> path = parse_path(secret);
+    if (!path) {
+      throw Error<IndexErrc>{NoPath};
+    }
+    obj.path = *path;
     obj.uuid = uuid_v4();
     return obj;
   }
@@ -156,20 +166,60 @@ namespace ck::secret {
     return j;
   }
   
-  
-  void insert(const VaultConfig& cfg, const Secret& secret) {
-    nlohmann::json j = deserialize_idx(cfg);
+  void insert(const VaultConfig& vcfg, const Secret& secret) {
+    nlohmann::json j = deserialize_idx(vcfg);
     Index idx = load_index(j);
     IndexObj obj = create_obj(secret);
     insert_entry(idx, obj);
     j = serialize_index(idx);
-    write_idx(cfg, j);
+    write_idx(vcfg, j);
   };
-}
-
-
-// Entry find_entry(const Index& idx, const std::string& path){
-//   Entry idx_entry;
   
-//   return idx_entry;
-// }
+  void print_tree(const Node& node, const std::string& prefix = "") {
+    std::vector<std::string> names;
+    names.reserve(node.children.size());
+    
+    for (const auto& [name, _] : node.children) {
+      names.push_back(name);
+    }
+    
+    std::sort(names.begin(), names.end());
+    
+    for (std::size_t i = 0; i < names.size(); ++i) {
+      const bool is_last = (i + 1 == names.size());
+      const auto& name = names[i];
+      const Node& child = node.children.at(name);
+      
+      std::cout << prefix
+        << (is_last ? "└── " : "├── " )
+        << name << "\n";
+        
+      print_tree(child, prefix + (is_last ? "    " : "│   "));
+    }
+  }
+  
+  void find(const VaultConfig& vcfg, const Secret& secret){
+    Entry idx_entry;
+    if (!vcfg.vault) {
+      throw Error<IndexErrc>{VaultUnspecified, "vault must be specified as argument or in config file"};
+    }
+    std::cout << "finding a secret" << "\n";
+    nlohmann::json j = deserialize_idx(vcfg);
+    Index idx = load_index(j);
+    std::optional<std::vector<std::string>> path = parse_path(secret);
+    if (!path) {
+      std::cout << *vcfg.vault << "\n";
+      std::cout << "├──"<< "\n";
+      print_tree(idx.root);
+      return;
+    }
+    Node* node = &idx.root;
+    for (std::size_t i = 0; i < (*path).size(); ++i) {
+      node = &node->children[(*path)[i]];
+    }
+    if (node->children.empty() && !node->entry) {
+      throw Error<IndexErrc>{SecretNotFound, secret.path.value_or("")};
+    }
+    print_tree(*node);
+  }
+}
