@@ -1,7 +1,10 @@
 #pragma once
 #include <string_view>
 
+#include "util/term.hpp"
+
 namespace  ck::util::logger {
+  using namespace ck::util::term;
   enum class Stream { Out, Err, Default };
   
   enum class Level {
@@ -10,18 +13,6 @@ namespace  ck::util::logger {
     Warning,
     Error,
     Debug
-  };
-  
-  enum class Color { 
-    Default,
-    Gray,
-    Red,
-    Green,
-    Yellow,
-    Blue,
-    Aqua,
-    Orange,
-    Purple
   };
   
   struct Overrides {

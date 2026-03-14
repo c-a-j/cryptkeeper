@@ -1,24 +1,12 @@
 #include <iostream>
 
 #include "util/logger.hpp"
+#include "util/term.hpp"
 #include "global.hpp"
 
-namespace ck::util::logger {
-  const char* ansi(Color c) {
-    switch (c) {
-      case Color::Gray:   return "\033[38;2;146;131;116m";
-      case Color::Red:    return "\033[38;2;251;73;52m";
-      case Color::Green:  return "\033[38;2;184;187;38m";
-      case Color::Yellow: return "\033[38;2;250;189;47m";
-      case Color::Blue:   return "\033[38;2;131;165;152m";
-      case Color::Aqua:   return "\033[38;2;142;192;124m";
-      case Color::Orange: return "\033[38;2;254;128;25m";
-      case Color::Purple: return "\033[38;2;211;134;155m";
-      case Color::Default: return "";
-    }
-    return "";
-  }
-  
+namespace {
+  using namespace ck::util::logger;
+  using namespace ck::util::term;
   Color get_level_color(Level level) {
     switch (level) {
       case Level::Info:     return Color::Gray;
@@ -56,14 +44,18 @@ namespace ck::util::logger {
     }
     return t.info;
   }
+}
+
+namespace ck::util::logger {
+using namespace ck::util::term;
 
   void Logger::emit(Level level, std::string_view msg, Overrides o) {
     const ThemeEntry& e = theme_entry(theme_, level);
-    const char* color_code = (o.color == Color::Default) 
+    std::string color_code = (o.color == Color::Default) 
       ? ansi(e.color)
       : ansi(o.color);
     
-    const char* prefix_color_code = ansi(theme_.prefix);
+    std::string prefix_color_code = ansi(theme_.prefix);
     
     Stream stream = (o.stream == Stream::Default)
       ? e.stream

@@ -5,6 +5,7 @@
 #include <fstream>
 
 #include "util/logger.hpp"
+#include "util/term.hpp"
 #include "util/error.hpp"
 #include "lib/types.hpp"
 #include "lib/crypto/crypto.hpp"
@@ -19,6 +20,7 @@ namespace ck::index {
   using ck::util::error::IndexErrc;
   using enum ck::util::error::IndexErrc;
   using namespace ck::crypto;
+  using namespace ck::util::term;
   namespace fs = std::filesystem;
 
   std::optional<std::vector<std::string>> parse_path(const Secret& secret) {
@@ -175,6 +177,29 @@ namespace ck::index {
     write_idx(vcfg, j);
   };
   
+  enum class PrintComponent {
+    VaultName,
+    NodeName,
+    EntryName,
+    Line
+  };
+  
+  Color get_scheme_color(PrintComponent c) {
+    switch (c) {
+      case PrintComponent::VaultName:       return Color::Purple;
+      case PrintComponent::NodeName:        return Color::Blue;
+      case PrintComponent::EntryName:       return Color::Yellow;
+      case PrintComponent::Line:            return Color::Gray;
+    }
+    return Color::Gray;
+  }
+  
+  std::string get_scheme_ansi(PrintComponent c) {
+    return ansi(get_scheme_color(c));
+  }
+  
+  using enum PrintComponent;
+  
   void print_tree(const Node& node, const std::string& prefix = "") {
     std::vector<std::string> names;
     names.reserve(node.children.size());
@@ -190,9 +215,14 @@ namespace ck::index {
       const auto& name = names[i];
       const Node& child = node.children.at(name);
       
-      std::cout << prefix
+      std::cout 
+        << get_scheme_ansi(Line)
+        << prefix 
         << (is_last ? "└── " : "├── " )
-        << name << "\n";
+        << ansi(Color::Reset)
+        << (child.entry ? get_scheme_ansi(EntryName) : get_scheme_ansi(NodeName)) 
+        << name 
+        << ansi(Color::Reset) << "\n";
         
       print_tree(child, prefix + (is_last ? "    " : "│   "));
     }
@@ -203,14 +233,16 @@ namespace ck::index {
     if (!vcfg.vault) {
       throw Error<IndexErrc>{VaultUnspecified, "vault must be specified as argument or in config file"};
     }
-    std::cout << "finding a secret" << "\n";
     nlohmann::json j = deserialize_idx(vcfg);
     Index idx = load_index(j);
     std::optional<std::vector<std::string>> path = parse_path(secret);
     if (!path) {
-      std::cout << *vcfg.vault << "\n";
-      std::cout << "├──"<< "\n";
-      print_tree(idx.root);
+      std::cout 
+        << get_scheme_ansi(VaultName) 
+        << *vcfg.vault 
+        << ansi(Color::Reset) 
+        << "\n";
+        print_tree(idx.root);
       return;
     }
     Node* node = &idx.root;
@@ -220,6 +252,11 @@ namespace ck::index {
     if (node->children.empty() && !node->entry) {
       throw Error<IndexErrc>{SecretNotFound, secret.path.value_or("")};
     }
+    std::cout 
+      << get_scheme_ansi(NodeName) 
+      << path->back()
+      << ansi(Color::Reset) 
+      << "\n";
     print_tree(*node);
   }
 }
