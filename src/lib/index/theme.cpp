@@ -1,4 +1,3 @@
-
 #include "lib/index/theme.hpp"
 #include "util/term.hpp"
 

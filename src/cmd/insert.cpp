@@ -1,12 +1,9 @@
 #include "cmd/insert.hpp"
-#include "lib/index/index.hpp"
 #include "lib/types.hpp"
-
-#include <iostream>
+#include "lib/index/insert_entry.hpp"
 
 namespace ck::insert {
-  using namespace ck::config;
-  void insert(const VaultConfig& cfg, const Secret& secret) {
+  void insert(const ck::config::VaultConfig& cfg, const ck::secret::Secret& secret) {
     ck::index::insert(cfg, secret);
   }
 }

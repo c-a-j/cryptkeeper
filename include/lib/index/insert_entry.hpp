@@ -1,7 +1,7 @@
-#pragma once
+#include <nlohmann/json.hpp>
 
 #include "lib/types.hpp"
 
-namespace ck::insert {
+namespace ck::index { 
   void insert(const ck::config::VaultConfig&, const ck::secret::Secret&);
 }
