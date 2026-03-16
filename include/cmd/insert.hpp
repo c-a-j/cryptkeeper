@@ -3,5 +3,5 @@
 #include "lib/types.hpp"
 
 namespace ck::insert {
-  void insert(const ck::config::VaultConfig&, const ck::secret::Secret&);
+  void insert(ck::config::Config&, ck::config::Vault&, const ck::secret::Secret&);
 }

@@ -2,7 +2,7 @@
 #include <sstream>
 #include <vector>
 
-#include "lib/config/parse_key.hpp"
+#include "./parse_key.hpp"
 #include "util/error.hpp"
 
 namespace ck::config {

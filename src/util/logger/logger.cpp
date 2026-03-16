@@ -15,9 +15,7 @@ using namespace ck::util::term;
     
     std::string prefix_color_code = ansi(s.colors.prefix);
     
-    Stream stream = (!o.stream)
-      ? s.stream
-      : *o.stream;
+    Stream stream = o.stream.value_or(s.stream);
     
     std::ostream& out = (stream == Stream::Out) 
       ? std::cout 

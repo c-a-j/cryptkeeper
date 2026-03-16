@@ -1,6 +1,8 @@
 target_sources(ck_lib PRIVATE 
     crypto/crypto.cpp
     crypto/random.cpp
+    crypto/fingerprint.cpp
+    
     config/path.cpp
     config/print.cpp
     config/serialize.cpp
@@ -8,7 +10,8 @@ target_sources(ck_lib PRIVATE
     config/active.cpp
     config/parse_key.cpp
     config/set.cpp
-    config/init.cpp
+    config/insert_vault.cpp
+    config/default.cpp
     config/save.cpp
     
     input/wisper.cpp

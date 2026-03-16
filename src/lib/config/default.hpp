@@ -2,5 +2,5 @@
 #include "lib/types.hpp"
 
 namespace ck::config {
-  void init_config(Config& cfg, Vault& vault);
+  void load_default(Config& cfg, const Vault& = {});
 }

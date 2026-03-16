@@ -3,6 +3,7 @@
 #include <cstdlib>
 
 #include "util/error.hpp"
+#include "util/logger/logger.hpp"
 #include "lib/types.hpp"
 #include "global.hpp"
 
@@ -14,6 +15,7 @@ namespace ck::config {
   using ck::util::error::Error;
   using ck::util::error::ConfigErrc;
   using enum ck::util::error::ConfigErrc;
+  using ck::util::logger::logger;
 
   static std::string env_or_empty(const char* name) {
     if (const char* value = std::getenv(name)) return value;
@@ -63,9 +65,12 @@ namespace ck::config {
   void create_config_dir() {
     fs::path dir = app_config_dir();
     std::error_code ec;
-    std::filesystem::create_directories(dir, ec);
+    bool created = std::filesystem::create_directories(dir, ec);
     if (ec) {
       throw Error<ConfigErrc>{CreateDirectoryFailed, std::string(dir) };
+    }
+    if (created) {
+      logger.info("Created new config directory", std::string(dir));
     }
   }
 }

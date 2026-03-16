@@ -3,7 +3,7 @@
 #include <vector>
 
 #include "lib/types.hpp"
-#include "lib/config/parse_key.hpp"
+#include "./parse_key.hpp"
 #include "util/error.hpp"
 
 namespace ck::config {

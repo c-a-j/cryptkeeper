@@ -2,7 +2,8 @@
 #include <string>
 #include <filesystem>
 
-#include "lib/config/path.hpp"
+#include "./path.hpp"
+#include "./default.hpp"
 #include "lib/types.hpp"
 #include "util/logger/logger.hpp"
 
@@ -28,7 +29,8 @@ namespace ck::config {
   void deserialize(Config& cfg) {
     fs::path cfg_file = app_config_file();
     if (!fs::exists(cfg_file)) {
-      logger.warning("Config file not found", std::string(cfg_file));
+      logger.info("Config file not found", std::string(cfg_file));
+      load_default(cfg);
       return;
     }
     auto cfg_toml = toml::parse_file(std::string(cfg_file));

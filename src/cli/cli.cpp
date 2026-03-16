@@ -1,14 +1,11 @@
 #include <CLI/CLI.hpp>
+#include "cli/cli.hpp"
 #include "cmd/init.hpp"
 #include "cmd/insert.hpp"
 #include "cmd/show.hpp"
 #include "cmd/config.hpp"
-#include "cli/cli.hpp"
 #include "lib/types.hpp"
-#include "lib/input/wisper.hpp"
-#include "lib/config/init.hpp"
-#include "lib/config/deserialize.hpp"
-#include "lib/config/active.hpp"
+
 #include "global.hpp"
 
 namespace ck::cli {
@@ -28,20 +25,15 @@ using namespace ck;
     config -> description("Print and edit config file");
     config -> add_option("args", set_args, "Key [value]");
     config -> add_option("-v, --vault", vault.name, "Set configs for a specific vault");
-    config -> callback([&] { 
-      config::deserialize(cfg); 
-      config::config(cfg, vault, set_args); 
-    });
+    config -> callback([&] { config::config(cfg, vault, set_args); });
   }
     
   void build_init(CLI::App& app, Config& cfg, Vault& vault) {
     auto* init = app.add_subcommand("init", "initialize a new password store");
     init -> add_option("-v,--vault", vault.name, "vault name") -> required();
+    init -> add_option("-d,--directory", vault.directory, "vault root directory");
     init -> add_option("-k,--key", vault.key_fpr, "vault key") -> required();
-    init -> callback([&] { 
-      config::init_config(cfg, vault);
-      init::init_vault(cfg, vault); 
-    });
+    init -> callback([&] { init::init(cfg, vault); });
   }
     
   void build_insert(CLI::App& app, Config& cfg, Vault& vault, Secret& secret) {
@@ -50,22 +42,13 @@ using namespace ck;
     insert -> add_option("-k,--key", secret.key_fpr, "encryption key");
     insert -> add_flag("--pwgen", secret.pwgen, "insert a randomly generated password");
     insert -> add_option("path, -p,--path", secret.path, "secret path and name (ex cards/mybank/num") -> required();
-    insert -> callback([&] { 
-      config::deserialize(cfg);
-      VaultConfig vcfg = config::get_active_config(cfg, vault);
-      // secret::wisper(secret);
-      insert::insert(vcfg, secret); 
-    });
+    insert -> callback([&] { insert::insert(cfg, vault, secret); });
   }
   
   void build_show(CLI::App& app, Config& cfg, Vault& vault, Secret& secret) {
     auto* show = app.add_subcommand("show", "Show a secret");
     show -> add_option("path, -p, --path", secret.path, "Secret path");
     show -> add_option("-v,--vault", vault.name, "vault name");
-    show -> callback([&] { 
-      config::deserialize(cfg);
-      VaultConfig vcfg = config::get_active_config(cfg, vault);
-      show::show(vcfg, secret); 
-    });
+    show -> callback([&] { show::show(cfg, vault, secret); });
   }
 }

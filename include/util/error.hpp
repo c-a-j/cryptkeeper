@@ -73,6 +73,7 @@ namespace ck::util::error {
       GpgmeOpGenKeyFailed,
       GpgmeOpGenKeyResultFailed,
       InvalidPwSpec,
+      GpgIdFileNotFound
     };
     template<>
     inline std::string_view Error<CryptoErrc>::label(CryptoErrc c) {
@@ -85,6 +86,7 @@ namespace ck::util::error {
         case CryptoErrc::GpgmeOpGenKeyFailed:       return "gpgme_op_genkey failure";
         case CryptoErrc::GpgmeOpGenKeyResultFailed: return "gpgme_op_genkey_result failure";
         case CryptoErrc::InvalidPwSpec:             return "invalid password specification";
+        case CryptoErrc::GpgIdFileNotFound:         return ".gpg-id file not found";
         default:                                    return "Unknown error";
       }
     }

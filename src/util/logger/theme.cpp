@@ -60,17 +60,17 @@ namespace ck::util::logger {
     return ls;
   }
   
-  namespace {
-    const Theme theme{
+  
+  const Theme& default_theme() {
+    static const Theme theme{
       .info = get_level_style(Info),
       .success = get_level_style(Success),
       .warning = get_level_style(Warning),
       .error = get_level_style(Error),
       .debug = get_level_style(Debug)
     };
+    return theme;
   }
-  
-  const Theme& default_theme() { return theme; }
   
   const LevelStyle& style_for(const Theme& t, Level l) {
     switch (l) {

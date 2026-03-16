@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include "cmd/show.hpp"
+#include "lib/config/active.hpp"
 #include "lib/index/find.hpp"
 
 namespace ck::show {
@@ -8,7 +9,10 @@ namespace ck::show {
   using namespace ck::config;
   using namespace ck::secret;
   
-  void show(VaultConfig& vcfg, Secret& secret){
-    find(vcfg, secret);
+  void show(Config& cfg, Vault& vault, const Secret& secret){
+    VaultConfig acfg;
+    config::get_active_config(cfg, acfg, vault);
+    
+    find(acfg, secret);
   }
 }

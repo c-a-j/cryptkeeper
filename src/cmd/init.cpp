@@ -3,9 +3,13 @@
 #include <fstream>
 
 #include "cmd/init.hpp"
-#include "lib/crypto/crypto.hpp"
-#include "lib/config/path.hpp"
 #include "util/error.hpp"
+
+#include "lib/config/insert_vault.hpp"
+#include "lib/config/active.hpp"
+#include "lib/config/save.hpp"
+
+#include "lib/crypto/crypto.hpp"
 
 
 
@@ -16,12 +20,18 @@ namespace ck::init {
   using enum ck::util::error::InitErrc;
   using namespace ck::config;
     
-  void init_vault(Config& cfg, Vault& vault) {
-    if (!ck::crypto::public_key_exists(vault.key_fpr.value())) {
+  void init(Config& cfg, Vault& vault) {
+    
+    VaultConfig acfg;
+    get_active_config(cfg, acfg, vault);
+    
+    std::string key_fpr = ck::crypto::fingerprint(vault);
+    
+    if (!ck::crypto::public_key_exists(key_fpr)) {
       throw Error<InitErrc>{KeyNotFound, vault.key_fpr.value()};
     }
     
-    fs::path dir = vault_root() / vault.name.value();
+    fs::path dir = fs::path(*acfg.directory) / *acfg.vault;
     
     std::error_code ec;
     bool created = fs::create_directories(dir, ec);
@@ -43,5 +53,8 @@ namespace ck::init {
     if (!gpg_id_file) {
       throw Error<InitErrc>{WriteGpgIdFailed, std::string(gpg_id_path)};
     }
+    
+    insert_vault(cfg, vault);
+    save_config(cfg);
   }
 }

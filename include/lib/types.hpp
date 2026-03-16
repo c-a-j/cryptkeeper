@@ -12,8 +12,8 @@ namespace ck::config {
   using namespace std::string_view_literals;
   struct Vault {
     std::optional<std::string> name;
-    std::optional<std::string> key_fpr;
     std::optional<std::string> directory;
+    std::optional<std::string> key_fpr;
   };
   
   struct VaultConfig {

@@ -16,7 +16,7 @@ namespace ck::util::logger {
   
   struct Overrides {
     std::optional<ck::util::term::TextStyle> style;
-    std::optional<Stream> stream = Stream::Default;
+    std::optional<Stream> stream;
     bool prefix = true;
     bool newline = true;
     
