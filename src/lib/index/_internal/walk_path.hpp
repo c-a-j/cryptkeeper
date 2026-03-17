@@ -4,5 +4,5 @@
 #include "./types.hpp"
 
 namespace ck::index { 
-  void walk_path(Node*, Entry&, const std::vector<std::string>);
+  Node* walk_path(Node*, const std::vector<std::string>);
 }

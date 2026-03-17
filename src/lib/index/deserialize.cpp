@@ -40,8 +40,8 @@ namespace ck::index {
       Entry entry = deserialize_entry(obj);
       std::vector<std::string> path = obj["path"];
       
-      Node* node = &idx.root;
-      walk_path(node, entry, path);
+      Node* node = walk_path(&idx.root, path);
+      node->entry = std::move(entry);
     }
     
     return idx;

@@ -1,7 +1,8 @@
-#include <string>
 #include <iostream>
 #include <csignal>
+#include <vector>
 
+#include "lib/crypto/secure_bytes.hpp"
 #include "util/logger/logger.hpp"
 
 #ifdef _WIN32
@@ -12,7 +13,7 @@
 #endif
 
 namespace ck::input {
-  using namespace ck::util::logger;
+  using ck::util::logger::logger;
 
 #ifndef _WIN32
   struct TerminalInputGuard {
@@ -45,10 +46,28 @@ namespace ck::input {
   };
 #endif
 
-  std::string wisper() {
+  namespace {
+    void erase_last_masked_char(std::vector<char>& value) {
+      if (value.empty()) {
+        return;
+      }
+
+      value.pop_back();
+      std::cout << "\b \b";
+      std::cout.flush();
+    }
+
+    void append_masked_char(std::vector<char>& value, const char ch) {
+      value.push_back(ch);
+      std::cout << '*';
+      std::cout.flush();
+    }
+  }
+
+  ck::crypto::SecureBytes wisper() {
     logger.info("Enter secret:");
     
-    std::string value;
+    std::vector<char> value;
     bool interrupted = false;
 
 #ifdef _WIN32
@@ -70,18 +89,12 @@ namespace ck::input {
       }
 
       if (ch == '\b') {
-        if (!value.empty()) {
-          value.pop_back();
-          std::cout << "\b \b";
-          std::cout.flush();
-        }
+        erase_last_masked_char(value);
         continue;
       }
 
       if (ch >= 32 && ch <= 126) {
-        value.push_back(static_cast<char>(ch));
-        std::cout << '*';
-        std::cout.flush();
+        append_masked_char(value, static_cast<char>(ch));
       }
     }
     std::cout << "\n";
@@ -106,11 +119,7 @@ namespace ck::input {
         }
 
         if (ch == 127 || ch == '\b') {
-          if (!value.empty()) {
-            value.pop_back();
-            std::cout << "\b \b";
-            std::cout.flush();
-          }
+          erase_last_masked_char(value);
           continue;
         }
 
@@ -118,18 +127,20 @@ namespace ck::input {
           continue;
         }
 
-        value.push_back(static_cast<char>(ch));
-        std::cout << '*';
-        std::cout.flush();
+        append_masked_char(value, ch);
       }
     }
     std::cout << "\n";
 #endif
 
     if (interrupted) {
+      ck::crypto::secure_wipe(value.data(), value.size());
       std::raise(SIGINT);
     }
 
-    return value;
+    ck::crypto::SecureBytes result;
+    result.assign(value.data(), value.size());
+    ck::crypto::secure_wipe(value.data(), value.size());
+    return result;
   }
 }

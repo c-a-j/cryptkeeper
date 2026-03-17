@@ -1,7 +1,7 @@
 #pragma once
 
-#include "lib/types.hpp"
+#include "lib/crypto/secure_bytes.hpp"
 
 namespace ck::input {
-  std::string wisper();
+  ck::crypto::SecureBytes wisper();
 }

@@ -73,7 +73,10 @@ namespace ck::util::error {
       GpgmeOpGenKeyFailed,
       GpgmeOpGenKeyResultFailed,
       InvalidPwSpec,
-      GpgIdFileNotFound
+      GpgKeyNotFound,
+      InvalidSecureBytesArgs,
+      FailedToReadFile,
+      FailedToOpenFile,
     };
     template<>
     inline std::string_view Error<CryptoErrc>::label(CryptoErrc c) {
@@ -85,8 +88,11 @@ namespace ck::util::error {
         case CryptoErrc::GpgmeSetProtocolFailed:    return "gpgme_set_protocol failure";
         case CryptoErrc::GpgmeOpGenKeyFailed:       return "gpgme_op_genkey failure";
         case CryptoErrc::GpgmeOpGenKeyResultFailed: return "gpgme_op_genkey_result failure";
+        case CryptoErrc::GpgKeyNotFound:            return "gpg key not found";
         case CryptoErrc::InvalidPwSpec:             return "invalid password specification";
-        case CryptoErrc::GpgIdFileNotFound:         return ".gpg-id file not found";
+        case CryptoErrc::InvalidSecureBytesArgs:    return "Invalid SecureBytes.assign() arguments";
+        case CryptoErrc::FailedToReadFile:          return "Failed to read file";
+        case CryptoErrc::FailedToOpenFile:          return "Failed to Open file";
         default:                                    return "Unknown error";
       }
     }
@@ -94,14 +100,22 @@ namespace ck::util::error {
     enum class IndexErrc {
       VaultUnspecified,
       NoPath,
+      SecretExists,
+      PathConflict,
       SecretNotFound,
+      UndefinedOptional,
+      GpgIdFileNotFound
     };
     template<>
     inline std::string_view Error<IndexErrc>::label(IndexErrc c) {
       switch (c) {
         case IndexErrc::VaultUnspecified:           return "Vault unspecified";
         case IndexErrc::NoPath:                     return "Path unspecified";
+        case IndexErrc::SecretExists:               return "Secret already exists";
+        case IndexErrc::PathConflict:               return "Path conflict";
         case IndexErrc::SecretNotFound:             return "Secret or path not found";
+        case IndexErrc::UndefinedOptional:          return "Undefined optional value";
+        case IndexErrc::GpgIdFileNotFound:          return "Gpg ID file not found";
         default:                                    return "Unknown error";
       }
     }

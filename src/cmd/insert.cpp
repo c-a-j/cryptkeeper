@@ -9,7 +9,6 @@ namespace ck::cmd {
     ck::config::Config cfg;
     ck::config::VaultConfig acfg;
     config::get_active_config(cfg, acfg, args);
-    // secret::wisper(secret);
     ck::index::insert(acfg, args);
   }
 }

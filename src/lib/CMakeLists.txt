@@ -1,7 +1,7 @@
 target_sources(ck_lib PRIVATE 
     crypto/crypto.cpp
     crypto/random.cpp
-    crypto/fingerprint.cpp
+    crypto/secure_wipe.cpp
     
     config/path.cpp
     config/print.cpp
@@ -26,4 +26,5 @@ target_sources(ck_lib PRIVATE
     index/get_idx_file.cpp
     index/insert_entry.cpp
     index/write_index.cpp
+    index/fingerprints.cpp
 )

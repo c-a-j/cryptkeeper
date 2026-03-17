@@ -4,7 +4,6 @@
 
 #include "util/error.hpp"
 #include "util/logger/logger.hpp"
-#include "lib/types.hpp"
 #include "global.hpp"
 
 inline constexpr std::string_view GLOBAL_CONFIGS = "global";
