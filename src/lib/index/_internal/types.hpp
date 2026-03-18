@@ -9,12 +9,10 @@ namespace ck::index {
   struct IndexObj {
     std::vector<std::string> path;
     std::string uuid;
-    std::optional<std::string> key_fpr;
   };
   
   struct Entry {
     std::string uuid;
-    std::optional<std::string> key_fpr;
   };
   
   struct Node {

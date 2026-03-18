@@ -29,23 +29,22 @@ namespace ck::index {
   IndexObj create_obj(
     const VaultConfig& acfg,
     const std::optional<std::string>& path, 
-    std::optional<std::string> key_fpr
+    std::optional<std::string> group_id
   ) {
     IndexObj obj;
     std::optional<std::vector<std::string>> path_components = parse_path(path);
-    std::vector<std::string> key_fprs;
+    std::vector<std::string> gid;
     
     if (!path_components) {
       throw Error<IndexErrc>{NoPath};
     }
     
-    if (!key_fpr) {
-      key_fprs = get_fingerprints(acfg);
+    if (!group_id) {
+      // key_fprs = get_fingerprints(acfg);
     }
     
     obj.path = *path_components;
     obj.uuid = uuid_v4();
-    obj.key_fpr = key_fprs[0];
     return obj;
   }
   fs::path secret_file_path(
@@ -56,23 +55,20 @@ namespace ck::index {
     if (!root_dir || !vault_name) {
       throw Error<IndexErrc>{UndefinedOptional, "vault directory or vault name unspecified"};
     }
-    fs::path sfp = fs::path(*root_dir) / fs::path(*vault_name) / fs::path(uuid);
+    fs::path sfp = fs::path(*root_dir) / fs::path(*vault_name) / fs::path(uuid + ".gpg");
     return sfp;
   }
   
   void insert_entry(
     Index& idx, 
     const IndexObj& obj, 
-    const fs::path& file_path
+    const fs::path& file_path,
+    std::vector<std::string>& keys
   ) {
     Entry entry;
     entry.uuid = obj.uuid;
-    entry.key_fpr = obj.key_fpr;
     std::vector<std::string> path_components = obj.path;
     Node* node = walk_path(&idx.root, path_components);
-    
-    std::vector<std::string> keys;
-    keys.push_back(*obj.key_fpr);
     
     ck::crypto::write_file(
       ck::input::wisper(), 
@@ -87,8 +83,9 @@ namespace ck::index {
     IndexObj obj = create_obj(vcfg, args.path, args.key_fpr);
     
     fs::path sfp = secret_file_path(vcfg.directory, vcfg.vault, obj.uuid);
+    std::vector<std::string> keys = get_fingerprints(vcfg);
     
-    insert_entry(idx, obj, sfp);
+    insert_entry(idx, obj, sfp, keys);
     write_idx(vcfg, serialize(idx));
   }
 }

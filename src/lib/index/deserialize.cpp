@@ -26,7 +26,6 @@ namespace ck::index {
   Entry deserialize_entry(const nlohmann::json& j) {
     Entry obj;
     obj.uuid = j["uuid"];
-    if (j.contains("key_fpr")) obj.key_fpr = j["key_fpr"];
     return obj;
   }
   

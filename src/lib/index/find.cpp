@@ -1,15 +1,11 @@
 #include <nlohmann/json.hpp>
 #include <string>
 #include <iostream>
-#include <filesystem>
-#include <fstream>
 
 #include "cli/types.hpp"
-#include "util/logger/logger.hpp"
 #include "util/error.hpp"
+#include "util/logger/logger.hpp"
 #include "lib/types.hpp"
-#include "lib/crypto/crypto.hpp"
-#include "lib/crypto/random.hpp"
 
 #include "lib/index/find.hpp"
 
@@ -23,7 +19,7 @@
 namespace ck::index { 
   using namespace index;
   using namespace ck::config;
-  using namespace ck::util::logger;
+  using ck::util::logger::logger;
   using ck::util::error::Error;
   using ck::util::error::IndexErrc;
   using enum ck::util::error::IndexErrc;

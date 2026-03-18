@@ -32,9 +32,6 @@ namespace ck::index {
       {"path", entry.path},
       {"uuid", entry.uuid},
     };
-    if (entry.key_fpr) {
-      j["key_fpr"] = *entry.key_fpr;
-    }
     return j;
   }
   
@@ -43,7 +40,6 @@ namespace ck::index {
       IndexObj obj;
       obj.path = path;
       obj.uuid = node.entry->uuid;
-      obj.key_fpr = node.entry->key_fpr;
       out.push_back(serialize_obj(obj));
     }
     
@@ -58,7 +54,6 @@ namespace ck::index {
     nlohmann::json j = nlohmann::json::array();
     std::vector<std::string> path;
     dfs(idx.root, path, j);
-    
     return j;
   }
 }
