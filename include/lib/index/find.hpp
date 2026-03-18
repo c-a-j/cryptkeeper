@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 
-#include "lib/types.hpp"
+#include "lib/config/types.hpp"
 #include "cli/types.hpp"
 
 namespace ck::index {

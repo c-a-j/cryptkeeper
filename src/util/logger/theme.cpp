@@ -38,6 +38,7 @@ namespace ck::util::logger {
   Stream get_level_stream(Level level) {
     switch (level) {
       case Error:   return Stream::Err;
+      case Debug:   return Stream::Err;
       default:      return Stream::Out;
     }
   }

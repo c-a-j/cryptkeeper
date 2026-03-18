@@ -1,4 +1,4 @@
-#include "lib/types.hpp"
+#include "lib/config/types.hpp"
 #include "./_internal/path.hpp"
 
 namespace ck::config {

@@ -1,9 +1,8 @@
-#include "lib/types.hpp"
 #include <iostream>
 #include <string>
 #include <optional>
 
-#include "lib/types.hpp"
+#include "lib/config/types.hpp"
 #include "cli/types.hpp"
 #include "./_internal/parse_key.hpp"
 

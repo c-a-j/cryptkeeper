@@ -1,17 +1,23 @@
 #include <CLI/CLI.hpp>
 #include "cli/cli.hpp"
+#include <string>
 
 #include "cli/types.hpp"
+#include "util/logger/logger.hpp"
 
 #include "global.hpp"
 
 namespace ck::cli {
+  using ck::util::logger::logger;
+  
   namespace {
     struct ParsedCmdArgs {
       InitArgs init;
       ConfigArgs config;
       InsertArgs insert;
       ShowArgs show;
+      MountArgs mount;
+      UmountArgs umount;
     };
     
     void configure_root(CLI::App& app, RootArgs& args) {
@@ -19,7 +25,7 @@ namespace ck::cli {
       app.description(std::string(APP_NAME) + " is a command-line tool for managing encrypted secrets.");
       app.footer("More coming soon");
       
-      app.add_option("-v, --verbose", args.verbose, "Path verbose output");
+      app.add_flag("--no-color", args.no_color, "Disable ANSI code color insertion");
     } 
     
     CLI::App* add_init(CLI::App& app, ParsedCmdArgs& args) {
@@ -52,6 +58,20 @@ namespace ck::cli {
       show -> add_option("path, -p, --path", args.show.path, "Secret path");
       return show;
     }
+    
+    CLI::App* add_mount(CLI::App& app, ParsedCmdArgs& args) {
+      auto* mount = app.add_subcommand("mount", "Mount a vault");
+      mount -> add_option("args", args.mount.mount, "Secret path");
+      mount -> add_flag("-l, --list", args.mount.list, "List mounts");
+      mount -> add_option("-p, --path", args.mount.path, "Secret path");
+      return mount;
+    }
+    
+    CLI::App* add_umount(CLI::App& app, ParsedCmdArgs& args) {
+      auto* umount = app.add_subcommand("umount", "Unmount a vault");
+      umount -> add_option("path, -p, --path", args.mount.path, "Secret path");
+      return umount;
+    }
   }
   
   CliArgs parse_cli(CLI::App& app, int argc, char** argv) {
@@ -63,6 +83,8 @@ namespace ck::cli {
     auto* config = add_config(app, cargs);
     auto* insert = add_insert(app, cargs);
     auto* show = add_show(app, cargs);
+    auto* mount = add_mount(app, cargs);
+    auto* umount = add_umount(app, cargs);
     
     CliArgs args = CliArgs{
       .root = RootArgs{},
@@ -90,6 +112,14 @@ namespace ck::cli {
     }
     if (show->parsed()) { 
       args.cmd = cargs.show;
+      return args; 
+    }
+    if (mount->parsed()) { 
+      args.cmd = cargs.mount;
+      return args; 
+    }
+    if (umount->parsed()) { 
+      args.cmd = cargs.mount;
       return args; 
     }
     

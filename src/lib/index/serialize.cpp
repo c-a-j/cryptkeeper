@@ -5,7 +5,7 @@
 #include <fstream>
 
 #include "util/error.hpp"
-#include "lib/types.hpp"
+#include "lib/config/types.hpp"
 #include "lib/crypto/random.hpp"
 
 

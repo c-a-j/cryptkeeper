@@ -7,9 +7,7 @@
 
 namespace ck::cli {
   struct RootArgs {
-    bool verbose = false;
-    bool colors = true;
-    bool debug = false;
+    bool no_color = false;
   };
   
   struct InitArgs {
@@ -34,12 +32,24 @@ namespace ck::cli {
     std::optional<std::string> path;
   };
   
+  struct MountArgs {
+    std::optional<std::vector<std::string>> mount;
+    std::optional<std::string> path;
+    std::optional<bool> list;
+  };
+  
+  struct UmountArgs {
+    std::optional<std::string> mount_name;
+  };
+  
   using CmdArgs = std::variant<
     std::monostate,
     InitArgs,
     ConfigArgs,
     InsertArgs,
-    ShowArgs
+    ShowArgs,
+    MountArgs,
+    UmountArgs
   >;
   
   struct CliArgs {

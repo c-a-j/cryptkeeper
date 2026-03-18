@@ -2,7 +2,7 @@
 #include <filesystem>
 
 #include "global.hpp"
-#include "lib/types.hpp"
+#include "lib/config/types.hpp"
 #include "cli/types.hpp"
 #include "util/error.hpp"
 

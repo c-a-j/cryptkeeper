@@ -4,7 +4,7 @@
 #include <fstream>
 
 #include "util/error.hpp"
-#include "lib/types.hpp"
+#include "lib/config/types.hpp"
 
 #include "./_internal/get_idx_file.hpp"
 #include "./_internal/deserialize.hpp"

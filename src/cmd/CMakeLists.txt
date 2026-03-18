@@ -3,5 +3,8 @@ target_sources(ck PRIVATE
   insert.cpp
   show.cpp
   config.cpp
+  mount.cpp
+  umount.cpp
+  
   run_command.cpp
 )

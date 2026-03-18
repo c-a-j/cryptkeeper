@@ -23,6 +23,12 @@ int main(int argc, char** argv) {
   CLI::App app{"crypt-keeper"};
   ck::cli::CliArgs args = ck::cli::parse_cli(app, argc, argv);
   
+  ck::util::logger::logger.set_debug(true);
+  
+  if (args.root.no_color) {
+    ck::util::logger::logger.set_no_color();
+  }
+  
   try {
     ck::cmd::run_command(args);
     return 0;

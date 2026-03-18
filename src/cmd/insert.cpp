@@ -1,6 +1,6 @@
 #include "./_internal.hpp"
 #include "cli/types.hpp"
-#include "lib/types.hpp"
+#include "lib/config/types.hpp"
 #include "lib/config/active.hpp"
 #include "lib/index/insert_entry.hpp"
 

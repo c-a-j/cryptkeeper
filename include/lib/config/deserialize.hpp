@@ -1,5 +1,5 @@
 #pragma once
-#include "lib/types.hpp"
+#include "lib/config/types.hpp"
 
 namespace ck::config {
   void deserialize(Config& cfg);

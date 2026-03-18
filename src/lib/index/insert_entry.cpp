@@ -6,7 +6,7 @@
 
 #include "util/error.hpp"
 
-#include "lib/types.hpp"
+#include "lib/config/types.hpp"
 #include "lib/crypto/crypto.hpp"
 #include "lib/crypto/random.hpp"
 #include "lib/input/wisper.hpp"

@@ -15,10 +15,10 @@ Agents should preserve this architectural direction in proposals and implementat
 - `src/` contains implementation code:
   - `src/main.cpp` is the CLI entrypoint.
   - `src/cli/` builds and wires CLI commands/options.
-  - `src/commands/` contains command handlers (`init`, `get`, `config`).
-  - `src/utils/` contains shared utilities (currently logging).
+  - `src/cmd/` contains command handlers (`init`, `get`, `config`, etc).
+  - `src/util/` contains shared utilities (currently logging).
 - `include/` mirrors the source layout for public/internal headers:
-  - `include/cli/`, `include/commands/`, `include/utils/`, and `include/global.hpp`.
+  - `include/cli/`, `include/cmd/`, `include/utils/`, etc.
 - Root project files:
   - `CMakeLists.txt` defines the build.
   - `justfile` contains convenience task shortcuts.
@@ -56,7 +56,7 @@ Agents should preserve this architectural direction in proposals and implementat
   - Prefer small focused functions.
   - Favor straightforward control flow and early returns.
   - Keep logging and error handling consistent with existing command modules.
-- Preserve naming and file organization patterns (`src/commands`, `include/commands`, `utils`, etc.).
+- Preserve naming and file organization patterns (`src/cmd`, `include/cmd`, `utils`, etc.).
 - Avoid adding new frameworks, abstractions, or dependencies unless clearly justified and requested.
 
 ## Guidance for Architectural Suggestions

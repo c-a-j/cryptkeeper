@@ -4,7 +4,7 @@
 #include <string>
 #include <filesystem>
 
-#include "lib/types.hpp"
+#include "lib/config/types.hpp"
 #include "./_internal/path.hpp"
 #include "./_internal/serialize.hpp"
 #include "util/error.hpp"

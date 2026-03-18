@@ -5,7 +5,7 @@
 #include "cli/types.hpp"
 #include "util/error.hpp"
 #include "util/logger/logger.hpp"
-#include "lib/types.hpp"
+#include "lib/config/types.hpp"
 
 #include "lib/index/find.hpp"
 

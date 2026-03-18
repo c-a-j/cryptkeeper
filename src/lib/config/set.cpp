@@ -1,7 +1,7 @@
 #include <string>
 #include <vector>
 
-#include "lib/types.hpp"
+#include "lib/config/types.hpp"
 #include "cli/types.hpp"
 #include "./_internal/parse_key.hpp"
 #include "util/error.hpp"

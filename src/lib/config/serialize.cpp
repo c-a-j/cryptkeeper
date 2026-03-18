@@ -1,6 +1,6 @@
 #include "toml++/toml.hpp"
 
-#include "lib/types.hpp"
+#include "lib/config/types.hpp"
 
 inline constexpr std::string_view GLOBAL_CONFIGS = "global";
 

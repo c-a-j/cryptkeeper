@@ -1,5 +1,5 @@
 #pragma once
-#include "../types.hpp"
+#include "lib/config/types.hpp"
 
 namespace ck::config {
   void save_config(Config& cfg);

@@ -27,4 +27,6 @@ target_sources(ck_lib PRIVATE
     index/insert_entry.cpp
     index/write_index.cpp
     index/fingerprints.cpp
+    
+    mount/mount.cpp
 )

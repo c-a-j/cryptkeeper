@@ -1,6 +1,6 @@
 #include <optional>
 
-#include "lib/types.hpp"
+#include "lib/config/types.hpp"
 #include "cli/types.hpp"
 #include "lib/config/deserialize.hpp"
 
@@ -24,6 +24,10 @@ namespace ck::config {
         using T = std::decay_t<decltype(args)>;
   
         if constexpr (std::is_same_v<T, std::monostate>) {
+          return std::nullopt;
+        } else if constexpr (std::is_same_v<T, MountArgs>) {
+          return std::nullopt;
+        } else if constexpr (std::is_same_v<T, UmountArgs>) {
           return std::nullopt;
         } else {
           return args.vault_name;

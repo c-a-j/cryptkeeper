@@ -3,7 +3,7 @@
 #include <fstream>
 #include <filesystem>
 
-#include "lib/types.hpp"
+#include "lib/config/types.hpp"
 
 #include "./_internal/types.hpp"
 #include "./_internal/get_idx_file.hpp"

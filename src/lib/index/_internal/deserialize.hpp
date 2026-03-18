@@ -1,6 +1,6 @@
 #include <nlohmann/json.hpp>
 
-#include "lib/types.hpp"
+#include "lib/config/types.hpp"
 
 #include "./types.hpp"
 

@@ -1,6 +1,6 @@
 #include <filesystem>
 
-#include "lib/types.hpp"
+#include "lib/config/types.hpp"
 
 namespace ck::index { 
   namespace fs = std::filesystem;

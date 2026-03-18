@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 #include <optional>
-#include "lib/types.hpp"
+#include "lib/config/types.hpp"
 
 namespace ck::config {
   struct ConfigKey {

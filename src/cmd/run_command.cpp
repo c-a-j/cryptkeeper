@@ -20,6 +20,10 @@ namespace ck::cmd {
         insert(ctx, args);
       } else if constexpr (std::is_same_v<T, ck::cli::ShowArgs>) {
         show(ctx, args);
+      } else if constexpr (std::is_same_v<T, ck::cli::MountArgs>) {
+        mount(ctx, args);
+      } else if constexpr (std::is_same_v<T, ck::cli::UmountArgs>) {
+        umount(ctx, args);
       }
       return 0;
     }, cargs);

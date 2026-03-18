@@ -21,6 +21,11 @@ using namespace ck::util::term;
       ? std::cout 
       : std::cerr;
     
+    if (cfg_.no_color) {
+      color_code = "";
+      prefix_color_code = "";
+    }
+    
     if (o.prefix) {
       out << prefix_color_code << CLI_ABBR << "  " << reset()
         << color_code << s.tag << reset() << "  ";
@@ -69,10 +74,24 @@ using namespace ck::util::term;
   }
   
   void Logger::debug(std::string_view msg, Overrides o) {
+    if (!cfg_.debug) { return; }
     emit(Level::Debug, msg, o);
   }
   void Logger::debug(std::string_view msg1, std::string_view msg2) {
+    if (!cfg_.debug) { return; }
     emit(Level::Debug, msg1, msg2);
+  }
+  
+  void Logger::configure(const LoggerConfig& cfg) {
+    cfg_ = cfg;
+  }
+  
+  void Logger::set_no_color() {
+    cfg_.no_color = true;
+  }
+  
+  void Logger::set_debug(const bool debug) {
+    cfg_.debug = debug;
   }
   
   Logger logger(default_theme());

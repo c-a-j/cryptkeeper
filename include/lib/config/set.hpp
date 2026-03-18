@@ -1,5 +1,5 @@
 #pragma once
-#include "lib/types.hpp"
+#include "lib/config/types.hpp"
 #include "cli/types.hpp"
 
 namespace ck::config {
