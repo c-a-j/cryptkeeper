@@ -4,9 +4,9 @@
 
 namespace ck::cmd {
   void show(const ck::cli::Context& ctx, const ck::cli::ShowArgs& args){
-    ck::config::Config cfg;
-    ck::config::VaultConfig acfg;
-    ck::config::get_active_config(cfg, acfg, args);
-    ck::index::find(acfg, args);
+    // ck::config::Config cfg;
+    // ck::config::VaultConfig acfg;
+    // ck::config::get_active_config(cfg, acfg, args);
+    // ck::index::find(acfg, args);
   }
 }

@@ -6,8 +6,6 @@
 #include "util/logger/logger.hpp"
 #include "global.hpp"
 
-inline constexpr std::string_view GLOBAL_CONFIGS = "global";
-
 // path functions
 namespace ck::config {
   namespace fs = std::filesystem;

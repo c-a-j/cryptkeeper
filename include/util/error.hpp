@@ -48,6 +48,8 @@ namespace ck::util::error {
     AlreadyExists,
     DoesNotExist,
     InvalidSetParameter,
+    InvalidConfigFile,
+    InvalidConfigKey,
     IoError,
   };
   template<>
@@ -59,6 +61,8 @@ namespace ck::util::error {
       case ConfigErrc::AlreadyExists:         return "Configuration file already exists";
       case ConfigErrc::DoesNotExist:          return "Configuration file not found";
       case ConfigErrc::InvalidSetParameter:   return "Invalid configuration scope";
+      case ConfigErrc::InvalidConfigFile:     return "Invalid configuration file";
+      case ConfigErrc::InvalidConfigKey:      return "Invalid configuration key";
       case ConfigErrc::IoError:               return "I/O error";
       default:                                return "Unknown error";
     }

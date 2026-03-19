@@ -3,6 +3,7 @@ target_sources(ck_lib PRIVATE
     crypto/random.cpp
     crypto/secure_wipe.cpp
     
+    config/config.cpp
     config/path.cpp
     config/print.cpp
     config/serialize.cpp

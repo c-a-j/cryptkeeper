@@ -4,6 +4,6 @@
 
 namespace ck::cmd {
   void mount(const ck::cli::Context& ctx, const ck::cli::MountArgs& args) {
-    ck::mount::mount(ctx, args);
+    // ck::mount::mount(ctx, args);
   };
 }
