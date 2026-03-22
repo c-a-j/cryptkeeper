@@ -1,11 +1,13 @@
 #include <iostream>
 #include <filesystem>
+#include <unordered_map>
 #include <optional>
 
 #include "global.hpp"
+#include "lib/mount/types.hpp"
+
 #include "../path/path.hpp"
 #include "../path/parse_path.hpp"
-#include "./_internal/mount.hpp"
 #include "./_internal/theme.hpp"
 
 namespace fs = std::filesystem;

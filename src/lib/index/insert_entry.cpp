@@ -27,7 +27,6 @@ namespace ck::index {
   using enum ck::util::error::IndexErrc;
   
   IndexObj create_obj(
-    const VaultConfig& acfg,
     const std::optional<std::string>& path
   ) {
     IndexObj obj;
@@ -41,17 +40,6 @@ namespace ck::index {
     obj.path = *path_components;
     obj.uuid = uuid_v4();
     return obj;
-  }
-  fs::path secret_file_path(
-    std::optional<std::string> root_dir, 
-    std::optional<std::string> vault_name, 
-    std::string uuid
-  ) {
-    if (!root_dir || !vault_name) {
-      throw Error<IndexErrc>{UndefinedOptional, "vault directory or vault name unspecified"};
-    }
-    fs::path sfp = fs::path(*root_dir) / fs::path(*vault_name) / fs::path(uuid + ".gpg");
-    return sfp;
   }
   
   void insert_entry(

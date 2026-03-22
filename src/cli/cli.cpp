@@ -39,14 +39,13 @@ namespace ck::cli {
     CLI::App* add_config(CLI::App& app, ParsedCmdArgs& args) {
       auto* config = app.add_subcommand("config", "Print and edit config file");
       config -> description("Print and edit config file");
-      config -> add_option("-v, --vault", args.config.vault_name, "Set configs for a specific vault");
+      // config -> add_option("-v, --vault", args.config.vault_name, "Set configs for a specific vault");
       config -> add_option("args", args.config.set_args, "Key [value]");
       return config;
     }
       
     CLI::App* add_insert(CLI::App& app, ParsedCmdArgs& args) {
       auto* insert = app.add_subcommand("insert", "insert a new secret");
-      insert -> add_option("-v,--vault", args.insert.vault_name, "vault name");
       insert -> add_flag("--pwgen", args.insert.pwgen, "insert a randomly generated password");
       insert -> add_option("path, -p,--path", args.insert.path, "secret path and name (ex cards/mybank/num") -> required();
       return insert;
@@ -54,7 +53,6 @@ namespace ck::cli {
     
     CLI::App* add_show(CLI::App& app, ParsedCmdArgs& args) {
       auto* show = app.add_subcommand("show", "Show a secret");
-      show -> add_option("-v,--vault", args.show.vault_name, "vault name");
       show -> add_option("path, -p, --path", args.show.path, "Secret path");
       return show;
     }

@@ -4,14 +4,14 @@
 #include "util/term.hpp" 
 
 #include "./_internal/types.hpp"
-#include "./_internal/print_tree.hpp" 
 #include "./_internal/theme.hpp" 
  
-namespace ck::index {
+namespace {
   using ck::util::term::reset;
+  using ck::index::OutputComponent;
   using enum OutputComponent;
-  
-  void print_tree(const Node& node, const std::string& prefix) {
+
+  void print_tree(const ck::index::Node& node, const std::string& prefix) {
     std::vector<std::string> names;
     names.reserve(node.children.size());
     
@@ -24,7 +24,7 @@ namespace ck::index {
     for (std::size_t i = 0; i < names.size(); ++i) {
       const bool is_last = (i + 1 == names.size());
       const auto& name = names[i];
-      const Node& child = node.children.at(name);
+      const ck::index::Node& child = node.children.at(name);
       
       std::cout 
         << get_scheme_ansi(Line)
@@ -37,5 +37,11 @@ namespace ck::index {
         
       print_tree(child, prefix + (is_last ? "    " : "│   "));
     }
+  }
+}
+
+namespace ck::index {
+  void Index::print() {
+    print_tree(this->root_, "");
   }
 }

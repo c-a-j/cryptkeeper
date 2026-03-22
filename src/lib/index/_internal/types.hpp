@@ -1,16 +1,12 @@
 #pragma once
 
+#include <filesystem>
 #include <string>
-#include <vector>
 #include <optional>
 #include <unordered_map>
 
 namespace ck::index {
-  struct IndexObj {
-    std::vector<std::string> path;
-    std::string uuid;
-  };
-  
+  namespace fs = std::filesystem;
   struct Entry {
     std::string uuid;
   };
@@ -22,14 +18,17 @@ namespace ck::index {
   
   class Index {
     public:
-      explicit Index();
+      explicit Index(const std::string& path = {});
+
+      const Node root() const;
+      Node root();
       
       void print();
-      
+      void write(const std::string&);
+      void find(const std::string&);
+      void deserialize(const std::string&);
     
     private:
       Node root_;
-      void deserialize();
-      
   };
 }

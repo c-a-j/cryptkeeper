@@ -74,6 +74,7 @@ namespace ck::util::error {
     NoAlias,
     AliasExists,
     AliasDoesNotExist,
+    NoRoot,
   };
   template<>
   inline std::string_view Error<MountErrc>::label(MountErrc c) {
@@ -84,6 +85,7 @@ namespace ck::util::error {
       case MountErrc::NoAlias:                return "Invalid mount file, every mount needs an alias";
       case MountErrc::AliasExists:            return "Alias already exists";
       case MountErrc::AliasDoesNotExist:      return "Alias does not exist";
+      case MountErrc::NoRoot:                 return "There is no root vault";
       default:                                return "Unknown error";
     }
   }
@@ -128,7 +130,10 @@ namespace ck::util::error {
     PathConflict,
     SecretNotFound,
     UndefinedOptional,
-    GpgIdFileNotFound
+    GpgIdFileNotFound,
+    OpenIndexFailed,
+    IndexFileNotFound,
+    CorruptedIndex
   };
   template<>
   inline std::string_view Error<IndexErrc>::label(IndexErrc c) {
@@ -140,6 +145,9 @@ namespace ck::util::error {
       case IndexErrc::SecretNotFound:             return "Secret or path not found";
       case IndexErrc::UndefinedOptional:          return "Undefined optional value";
       case IndexErrc::GpgIdFileNotFound:          return "Gpg ID file not found";
+      case IndexErrc::OpenIndexFailed:            return "Failed to open index file";
+      case IndexErrc::IndexFileNotFound:          return "Index file not found";
+      case IndexErrc::CorruptedIndex:             return "Corrupted index";
       default:                                    return "Unknown error";
     }
   }
