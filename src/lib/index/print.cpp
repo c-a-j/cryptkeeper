@@ -21,18 +21,22 @@ namespace {
 
   inline const std::string_view ARROW = " \u27F6  ";
 
-  void print_root(const std::string& path) {
+  void print_mount(const std::string& name, const std::string& path) {
     std::cout 
       << get_scheme_ansi(RootMountAlias)
-      << APP_NAME 
+      << name
       << reset()
       << get_scheme_ansi(RootMountArrow)
       << ARROW
       << reset()
       << get_scheme_ansi(RootMountPath)
       << "(" << path << ")" 
-      << reset()
-      << "\n";
+      << reset();
+  }
+
+  void print_root(const std::string& path) {
+    print_mount(std::string(APP_NAME), path);
+    std::cout << "\n";
   }
 
   void print_top_node(const std::string& node_name) {
@@ -74,10 +78,22 @@ namespace {
         << get_scheme_ansi(Line)
         << prefix 
         << (is_last ? "└── " : "├── " )
-        << reset()
-        << (child.entry ? get_scheme_ansi(EntryName) : get_scheme_ansi(NodeName)) 
-        << name 
-        << reset() << "\n";
+        << reset();
+
+      if (child.entry) {
+        std::cout
+          << get_scheme_ansi(EntryName) 
+          << name 
+          << reset();
+      } else if (!child.entry) {
+        std::cout
+          << get_scheme_ansi(NodeName) 
+          << name 
+          << reset();
+      } else if (child.path) {
+        print_mount(name, *child.path);
+      }
+      std::cout << "\n";
         
       print_tree(child, prefix + (is_last ? "    " : "│   "));
     }

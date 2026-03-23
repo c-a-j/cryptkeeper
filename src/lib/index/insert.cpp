@@ -54,7 +54,7 @@ namespace ck::index {
 
     ck::index::Entry entry;
     entry.uuid = flat.uuid;
-    Node* node = walk_path(&this->root_, flat.path);
+    Node* node = this->break_trail(flat.path);
     
     const SecureBytes secret = (pwgen) 
         ? ck::crypto::pwgen() 
@@ -69,5 +69,9 @@ namespace ck::index {
     );
     node->entry = std::move(entry);
     this->write();
+  }
+
+  void Index::insert_node(const Node& node, const std::string& path) {
+     
   }
 }

@@ -2,6 +2,7 @@
 
 #include <filesystem>
 #include <string>
+#include <vector>
 #include <optional>
 #include <unordered_map>
 
@@ -14,6 +15,7 @@ namespace ck::index {
   struct Node {
     std::optional<Entry> entry;
     std::unordered_map<std::string, Node> children;
+    std::optional<std::string> path; // vault path, only defined at root node
   };
   
   class Index {
@@ -28,6 +30,7 @@ namespace ck::index {
       void insert(const std::string&, const bool);
       void show(const std::optional<std::string>&);
       void write();
+      void insert_node(const Node&, const std::string&);
       void print();
       void print(const std::string&);
     
@@ -36,5 +39,14 @@ namespace ck::index {
       std::string alias_; // mount alias
       fs::path path_; // vault path
       fs::path file_; // full path to index file
+
+      Node* break_trail(const std::vector<std::string>&);
+      Node* break_trail(const std::string&);
+
+      Node* walk_path(const std::vector<std::string>&);
+      Node* walk_path(const std::string&);
+
+      Node* get_parent(const std::vector<std::string>&);
+      Node* get_parent(const std::string&);
   };
 }

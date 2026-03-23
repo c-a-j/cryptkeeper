@@ -61,9 +61,10 @@ namespace ck::index {
           }
         }
         
-        Node* node = walk_path(&this->root_, path);
+        Node* node = this->break_trail(path);
         node->entry = std::move(e);
       }
     }
+    this->root_.path = this->path_;
   }
 }
