@@ -29,9 +29,11 @@ namespace ck::index {
       void show(const std::optional<std::string>&);
       void write();
       void print();
+      void print(const std::string&);
     
     private:
       Node root_;
+      std::string alias_; // mount alias
       fs::path path_; // vault path
       fs::path file_; // full path to index file
   };

@@ -26,6 +26,7 @@ namespace ck::cli {
       app.description(std::string(APP_NAME) + " is a command-line tool for managing encrypted secrets.");
       app.footer("More coming soon");
       
+      app.add_flag("--version", args.version, "Disable ANSI code color insertion");
       app.add_flag("--no-color", args.no_color, "Disable ANSI code color insertion");
     } 
     

@@ -8,6 +8,13 @@ namespace ck::index {
     VaultName,
     NodeName,
     EntryName,
+    RootMountPath,
+    RootMountAlias,
+    RootMountArrow,
+    MountPath,
+    MountSubDir,
+    MountAlias,
+    MountArrow,
     Line
   };
   ck::util::term::TextStyle get_scheme_style(OutputComponent);

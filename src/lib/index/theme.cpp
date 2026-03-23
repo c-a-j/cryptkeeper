@@ -13,7 +13,14 @@ namespace ck::index {
       case VaultName: return { Blue, { Bold } };
       case NodeName:  return { Blue, { Bold } };
       case EntryName: return { Yellow, { Faint } };
-      case Line:      return { Gray, { Faint } };
+      case RootMountPath:   return { Green, { Bold } };
+      case RootMountAlias:  return { Green, { Bold } };
+      case RootMountArrow:  return { Orange, { Bold } };
+      case MountPath:       return { Aqua, { Bold } };
+      case MountAlias:      return { Aqua, { Bold } };
+      case MountArrow:      return { Orange, { Bold } };
+      case MountSubDir:     return { Blue, { Bold } };
+      case Line:            return { Gray, { Faint } };
     }
     return { Gray };
   }

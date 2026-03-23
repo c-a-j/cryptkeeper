@@ -4,10 +4,12 @@
 #include "global.hpp"
 #include "lib/index/types.hpp"
 #include "./util/error.hpp"
+#include "./util/logger/logger.hpp"
 #include "./_internal/walk_path.hpp"
 #include "./_internal/vars.hpp"
 
 namespace ck::index { 
+  using ck::util::logger::logger;
   using ck::util::error::Error;
   using ck::util::error::IndexErrc;
   using enum ck::util::error::IndexErrc;
@@ -16,6 +18,7 @@ namespace ck::index {
 
   toml::table parse_file(const fs::path& idx_file) {
     if (!fs::exists(idx_file)) { 
+      logger.debug("Index::deserialize() -> parse_file()");
       throw Error<IndexErrc>{IndexFileNotFound, std::string(idx_file)};
     }
     toml::table tbl = toml::parse_file(std::string(idx_file));
@@ -26,6 +29,7 @@ namespace ck::index {
     Entry obj;
     std::optional<std::string> uuid = tbl["uuid"].value<std::string>();
     if (!uuid) {
+      logger.debug("parse_entry()");
       throw Error<IndexErrc>{CorruptedIndex, "an entry is missing a uuid mapping"};
     }
     obj.uuid = *uuid;

@@ -12,7 +12,6 @@ target_sources(ck_lib PRIVATE
     index/index.cpp
     index/insert.cpp
     index/print.cpp
-    index/show.cpp
     index/theme.cpp
     index/walk_path.cpp
     index/write.cpp

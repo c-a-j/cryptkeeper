@@ -8,6 +8,7 @@
 namespace ck::cli {
   struct RootArgs {
     bool no_color = false;
+    bool version = false;
   };
   
   struct InitArgs {
