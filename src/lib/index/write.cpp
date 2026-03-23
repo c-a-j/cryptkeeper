@@ -55,14 +55,16 @@ namespace ck::index {
   using ck::util::error::IndexErrc;
   using enum ck::util::error::IndexErrc;
   
-  void Index::write(const std::string& path) {
-    fs::path idx = get_idx_file(path);
-
+  void Index::write() {
     toml::table idx_toml = serialize(*this);
+
+    if (this->file_.empty()) {
+      throw Error<IndexErrc>{NoPathToIndex, std::string("Index::write()")}; 
+    }
     
-    std::ofstream out(idx);
+    std::ofstream out(this->file_);
     if (!out) { 
-      throw Error<IndexErrc>{OpenIndexFailed, std::string(idx)}; 
+      throw Error<IndexErrc>{OpenIndexFailed, std::string(this->file_)}; 
     }
     
     out << idx_toml << "\n";

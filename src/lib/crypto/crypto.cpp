@@ -216,7 +216,7 @@ namespace ck::crypto {
     return encrypt_bytes(bytes, fprs);
   }
   
-  void write_file(const SecureBytes& plain, const std::vector<std::string>& key_fprs, const std::filesystem::path& path) {
+  void write(const SecureBytes& plain, const std::vector<std::string>& key_fprs, const std::filesystem::path& path) {
     std::ofstream file(path, std::ios::binary | std::ios::trunc);
     if (!file) {
       throw Error<CryptoErrc>{FailedToOpenFile, std::string(path)};

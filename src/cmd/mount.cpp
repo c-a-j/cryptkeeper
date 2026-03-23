@@ -4,7 +4,7 @@
 namespace ck::cmd {
   using ck::mount::mnt;
 
-  void mount(const ck::cli::Context& ctx, const ck::cli::MountArgs& args) {
+  void mount(const ck::cli::Context& _, const ck::cli::MountArgs& args) {
     bool list = args.list;
 
     if (!args.alias && !args.path) { list = true; }

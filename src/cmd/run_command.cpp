@@ -7,6 +7,7 @@ namespace ck::cmd {
     ck::cli::Context ctx = {
       .root_args = args.root,
     };
+    
     return std::visit([&](const auto& args) -> int {
       using T = std::decay_t<decltype(args)>;
       

@@ -7,8 +7,6 @@
 #include "../path/parse_path.hpp"
 #include "../path/join.hpp"
 
-
-
 namespace {
 }
 

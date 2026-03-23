@@ -54,6 +54,17 @@ namespace ck::cmd {
       throw Error<InitErrc>{WriteGpgIdFailed, std::string(gpg_id_path)};
     }
 
+    const fs::path idx_path = vault_path / INDEX_FILE;
+    std::ofstream idx_file(idx_path, std::ios::out | std::ios::trunc);
+    if (!idx_file.is_open()) {
+      throw Error<InitErrc>{OpenIndexFailed, std::string(idx_path)};
+    }
+    
+    idx_file << "" << '\n';
+    if (!idx_file) {
+      throw Error<InitErrc>{WriteIndexFailed, std::string(idx_path)};
+    }
+
     std::string msg1;
     msg1 += "Vault " + args.vault_name + " has been initialized: ";
     std::string msg2;

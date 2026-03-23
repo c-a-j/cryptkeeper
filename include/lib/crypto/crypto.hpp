@@ -14,7 +14,7 @@ namespace ck::crypto {
   SecureBytes decrypt_bytes(const SecureBytes&);
   SecureBytes encrypt_bytes(const SecureBytes&, const std::vector<std::string>&);
   SecureBytes encrypt_bytes(const SecureBytes&, const std::string&);
-  void write_file(const SecureBytes&, const std::vector<std::string>&, const std::filesystem::path&);
+  void write(const SecureBytes&, const std::vector<std::string>&, const std::filesystem::path&);
   
   template<typename F>
   auto with_decrypted_bytes(const std::filesystem::path& path, F&& fn)

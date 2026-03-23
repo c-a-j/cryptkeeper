@@ -8,10 +8,20 @@ namespace {
 }
 
 namespace ck::index { 
-  namespace fs = std::filesystem; 
   using ck::util::error::Error;
   using ck::util::error::IndexErrc;
   using enum ck::util::error::IndexErrc;
 
-  Index::Index(const std::string& alias) {}
+  Index::Index(const std::string& vault_path) { 
+    this->deserialize(vault_path); 
+  }
+  Index::Index() {}
+
+  Node Index::root() {
+    return this->root_;
+  }
+
+  const Node Index::root() const {
+    return this->root_;
+  }
 }

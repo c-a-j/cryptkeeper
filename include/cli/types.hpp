@@ -22,7 +22,6 @@ namespace ck::cli {
   };
 
   struct InsertArgs {
-    std::optional<std::string> vault_name;
     std::string path;
     bool pwgen = false;
   };

@@ -11,7 +11,7 @@ target_sources(ck_lib PRIVATE
     index/find.cpp
     index/fingerprints.cpp
     index/index.cpp
-    index/insert_entry.cpp
+    index/insert.cpp
     index/print.cpp
     index/theme.cpp
     index/walk_path.cpp
@@ -26,4 +26,5 @@ target_sources(ck_lib PRIVATE
     
     path/path.cpp
     path/parse_path.cpp
+    path/join.cpp
 )

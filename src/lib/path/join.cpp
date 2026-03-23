@@ -16,7 +16,7 @@ namespace ck::path {
     return out;
   }
 
-  std::string join_prefix(std::vector<std::string> parts, std::size_t end) {
+  std::string join_prefix(const std::vector<std::string>& parts, const std::size_t end) {
     std::string out;
     for (std::size_t i = 0; i < end; ++i) {
       if (i > 0) {
@@ -27,7 +27,7 @@ namespace ck::path {
     return out;
   }
 
-  std::string join_suffix(std::vector<std::string> parts, std::size_t start) {
+  std::string join_suffix(const std::vector<std::string>& parts, const std::size_t start) {
     std::string out;
     for (std::size_t i = start; i < parts.size(); ++i) {
       if (i > start) {

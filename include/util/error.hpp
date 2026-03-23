@@ -25,8 +25,11 @@ namespace ck::util::error {
     CreateDirectoryFailed,
     OpenGpgIdFailed,
     WriteGpgIdFailed,
+    OpenIndexFailed,
     AlreadyExists,
     IoError,
+    NoPathToIndex,
+    WriteIndexFailed
   };
   template<>
   inline std::string_view Error<InitErrc>::label(InitErrc c) {
@@ -37,6 +40,8 @@ namespace ck::util::error {
       case InitErrc::WriteGpgIdFailed:      return "Failed to write .gpg-id";
       case InitErrc::AlreadyExists:         return "Vault already exists";
       case InitErrc::IoError:               return "I/O error";
+      case InitErrc::OpenIndexFailed:       return "Failed to open index file";
+      case InitErrc::WriteIndexFailed:      return "Failed to create a new index file";
       default:                              return "Unknown error";
     }
   }
@@ -135,6 +140,7 @@ namespace ck::util::error {
     GpgIdFileNotFound,
     OpenIndexFailed,
     IndexFileNotFound,
+    NoPathToIndex,
     CorruptedIndex
   };
   template<>
@@ -149,6 +155,7 @@ namespace ck::util::error {
       case IndexErrc::GpgIdFileNotFound:          return "Gpg ID file not found";
       case IndexErrc::OpenIndexFailed:            return "Failed to open index file";
       case IndexErrc::IndexFileNotFound:          return "Index file not found";
+      case IndexErrc::NoPathToIndex:              return "No path to index file";
       case IndexErrc::CorruptedIndex:             return "Corrupted index";
       default:                                    return "Unknown error";
     }
