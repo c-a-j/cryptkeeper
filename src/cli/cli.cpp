@@ -106,6 +106,8 @@ namespace ck::cli {
     
     app.parse(argc, argv);
     
+    args.root = rargs;
+    
     if (init->parsed()) { 
       args.cmd = cargs.init;
       return args; 

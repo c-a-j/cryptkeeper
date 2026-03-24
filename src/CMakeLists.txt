@@ -14,6 +14,9 @@ target_include_directories(ck_lib PUBLIC
   ${PROJECT_SOURCE_DIR}/include
   ${GPGME_INCLUDE_DIRS}
 )
+target_compile_definitions(ck PRIVATE
+  CK_ENABLE_DEBUG_LOGS=$<BOOL:${CK_ENABLE_DEBUG_LOGS}>
+)
 
 target_link_libraries(ck PRIVATE
   ck_lib

@@ -22,8 +22,11 @@ extern "C" const char* __asan_default_options() {
 int main(int argc, char** argv) {
   CLI::App app{"crypt-keeper"};
   
-  ck::util::logger::logger.set_debug(true);
-  
+  #if CK_ENABLE_DEBUG_LOGS
+    ck::util::logger::logger.set_debug(true);
+  #else
+    ck::util::logger::logger.set_debug(false);
+  #endif
   
   try {
     ck::cli::CliArgs args = ck::cli::parse_cli(app, argc, argv);

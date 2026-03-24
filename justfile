@@ -7,14 +7,19 @@ vault_dir := "~/.local/share/crypt-keeper"
 config_dir := "~/.config/crypt-keeper"
 asan_env := "ASAN_SYMBOLIZER_PATH=" + `which llvm-symbolizer` + " ASAN_OPTIONS=symbolize=1"
 
-configure sanitizers="OFF" tests="OFF":
-  cmake -S . -B {{ build_dir }} -DCMAKE_CXX_COMPILER=clang++ -DCK_ENABLE_SANITIZERS={{ sanitizers }} -DCMAKE_BUILD_TYPE={{ build_type }} -DBUILD_TESTING={{ tests }}
+configure build_type="Debug" sanitizers="OFF" tests="OFF" debug_logs="ON":
+  cmake -S . -B {{ build_dir }} \
+    -DCMAKE_CXX_COMPILER=clang++ \
+    -DCK_ENABLE_SANITIZERS={{ sanitizers }} \
+    -DCMAKE_BUILD_TYPE={{ build_type }} \
+    -DCK_ENABLE_DEBUG_LOGS={{ debug_logs }} \
+    -DBUILD_TESTING={{ tests }}
 
-build tests="OFF": (configure "ON" (tests))
+build tests="OFF": (configure "Debug" "ON" (tests) "ON")
   cmake --build {{ build_dir }} -- -j$(nproc)
 
-release: (configure ("OFF"))
-  cmake --build {{ build_dir }}
+release: (configure "Release" "OFF" "OFF" "OFF")
+  cmake --build {{ build_dir }} -- -j$(nproc)
 
 run *args: build
  {{ asan_env }} ./{{binary}} {{ args }}

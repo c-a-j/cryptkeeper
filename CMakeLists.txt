@@ -5,6 +5,12 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 option(CK_WARNINGS_AS_ERRORS "Treat warnings as errors" ON)
 option(CK_ENABLE_SANITIZERS "Enable ASan/UBSan in Debug (GCC/Clang)" ON)
+option(CK_ENABLE_DEBUG_LOGS "Enable debug logging" ${CK_ENABLE_DEBUG_LOGS_DEFAULT})
+
+set (CK_ENABLE_DEGUB_LOGS_DEFAULT OFF)
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+  set(CK_ENABLE_DEBUG_LOGS_DEFAULT ON)
+endif()
 
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(GPGME REQUIRED gpgme)
