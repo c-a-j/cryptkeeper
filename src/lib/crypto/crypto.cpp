@@ -75,14 +75,14 @@ namespace ck::crypto {
     gpgme_error_t err = gpgme_data_new_from_mem(&cipher, bytes.char_data(), bytes.size(), 0);
     if (err) {
       gpgme_release(ctx);
-      throw std::runtime_error(gpgme_strerror(err));
+      throw Error<CryptoErrc>{GpgmeNewFromMemFailed, gpgme_strerror(err)};
     }
     
     err = gpgme_data_new(&plain);
     if (err) {
       gpgme_release(ctx);
       gpgme_data_release(cipher);
-      throw std::runtime_error(gpgme_strerror(err));
+      throw Error<CryptoErrc>{GpgmeDataNewFailed, gpgme_strerror(err)};
     }
     
     err = gpgme_op_decrypt(ctx, cipher, plain);
@@ -90,14 +90,14 @@ namespace ck::crypto {
     if (err) {
       gpgme_release(ctx);
       gpgme_data_release(plain);
-      throw std::runtime_error(gpgme_strerror(err));
+      throw Error<CryptoErrc>{GpgmeDataReleaseFailed, gpgme_strerror(err)};
     }
     
     size_t plain_len = 0;
     char* plain_buf = gpgme_data_release_and_get_mem(plain, &plain_len);
     if (!plain_buf) {
       gpgme_release(ctx);
-      throw std::runtime_error("failed to extract decrypted buffer");
+      throw Error<CryptoErrc>{GpgmeDataReleaseAndGetMemFailed, gpgme_strerror(err)};
     }
     
     SecureBytes result;
@@ -154,7 +154,7 @@ namespace ck::crypto {
       if (err) {
         gpgme_release(ctx);
         release_keys(recipients);
-        throw std::runtime_error(gpgme_strerror(err));
+        throw Error<CryptoErrc>{GpgmeGetKeyFailed, gpgme_strerror(err)};
       }
       if (!key) {
         gpgme_release(ctx);
@@ -168,7 +168,7 @@ namespace ck::crypto {
     if (err) {
       gpgme_release(ctx);
       release_keys(recipients);
-      throw std::runtime_error(gpgme_strerror(err));
+      throw Error<CryptoErrc>{GpgmeDataNewFromMemFailed, gpgme_strerror(err)};
     }
     
     err = gpgme_data_new(&cipher);
@@ -176,7 +176,7 @@ namespace ck::crypto {
       gpgme_release(ctx);
       gpgme_data_release(plain);
       release_keys(recipients);
-      throw std::runtime_error(gpgme_strerror(err));
+      throw Error<CryptoErrc>{GpgmeDataNewFailed, gpgme_strerror(err)};
     }
     
     gpgme_encrypt_flags_t flags{};
@@ -192,14 +192,14 @@ namespace ck::crypto {
     if (err) {
       gpgme_release(ctx);
       gpgme_data_release(cipher);
-      throw std::runtime_error(gpgme_strerror(err));
+      throw Error<CryptoErrc>{GpgmeDataReleaseFailed, gpgme_strerror(err)};
     }
     
     size_t cipher_len = 0;
     char* cipher_buf = gpgme_data_release_and_get_mem(cipher, &cipher_len);
     if (!cipher_buf) {
       gpgme_release(ctx);
-      throw std::runtime_error("failed to extract encrypted buffer");
+      throw Error<CryptoErrc>{GpgmeDataReleaseAndGetMemFailed, gpgme_strerror(err)};
     }
    
     SecureBytes result;

@@ -21,7 +21,14 @@ namespace ck::index {
       logger.debug("Index::deserialize() -> parse_file()");
       throw Error<IndexErrc>{IndexFileNotFound, std::string(idx_file)};
     }
-    toml::table tbl = toml::parse_file(std::string(idx_file));
+
+    toml::table tbl;
+    try {
+      tbl = toml::parse_file(std::string(idx_file));
+    } catch (const toml::parse_error& e) {
+      throw Error<IndexErrc>{InvalidIndexFile, std::string(idx_file)};
+    }
+
     return tbl;
   };
 

@@ -55,6 +55,7 @@ namespace ck::util::error {
     InvalidSetParameter,
     InvalidConfigFile,
     InvalidConfigKey,
+    InvalidConfigValue,
     IoError,
   };
   template<>
@@ -68,6 +69,7 @@ namespace ck::util::error {
       case ConfigErrc::InvalidSetParameter:   return "Invalid configuration scope";
       case ConfigErrc::InvalidConfigFile:     return "Invalid configuration file";
       case ConfigErrc::InvalidConfigKey:      return "Invalid configuration key";
+      case ConfigErrc::InvalidConfigValue:    return "Invalid configuration value";
       case ConfigErrc::IoError:               return "I/O error";
       default:                                return "Unknown error";
     }
@@ -81,6 +83,7 @@ namespace ck::util::error {
     AliasDoesNotExist,
     NoRoot,
     InvalidArguments,
+    InvalidMountFile,
     SecretAlongAlias,
   };
   template<>
@@ -94,6 +97,7 @@ namespace ck::util::error {
       case MountErrc::AliasDoesNotExist:      return "Alias does not exist";
       case MountErrc::NoRoot:                 return "There is no root vault";
       case MountErrc::InvalidArguments:       return "Invalid arguments";
+      case MountErrc::InvalidMountFile:       return "Invalid mount file";
       case MountErrc::SecretAlongAlias:       return "There is a secret along this alias path";
       default:                                return "Unknown error";
     }
@@ -102,7 +106,12 @@ namespace ck::util::error {
   enum class CryptoErrc {
     FillRandomBytesFailed,
     GpgmeFailed,
+    GpgmeDataNewFailed,
+    GpgmeDataNewFromMemFailed,
+    GpgmeDataReleaseFailed,
+    GpgmeDataReleaseAndGetMemFailed,
     GpgmeNewFailed,
+    GpgmeNewFromMemFailed,
     GpgmeGetKeyFailed,
     GpgmeSetProtocolFailed,
     GpgmeOpGenKeyFailed,
@@ -118,7 +127,12 @@ namespace ck::util::error {
     switch (c) {
       case CryptoErrc::FillRandomBytesFailed:     return "Fill random bytes failure";
       case CryptoErrc::GpgmeFailed:               return "gpgme failure";
+      case CryptoErrc::GpgmeDataNewFailed:        return "gpgme_data_new failure";
+      case CryptoErrc::GpgmeDataNewFromMemFailed: return "gpgme_data_new_from_mem failure";
+      case CryptoErrc::GpgmeDataReleaseFailed:    return "gpgme_data_release failure";
+      case CryptoErrc::GpgmeDataReleaseAndGetMemFailed: return "gpgme_data_release_and_get_mem failure";
       case CryptoErrc::GpgmeNewFailed:            return "gpgme_new failure";
+      case CryptoErrc::GpgmeNewFromMemFailed:     return "gpgme_new_from_mem failure";
       case CryptoErrc::GpgmeGetKeyFailed:         return "gpgme_get_key failure";
       case CryptoErrc::GpgmeSetProtocolFailed:    return "gpgme_set_protocol failure";
       case CryptoErrc::GpgmeOpGenKeyFailed:       return "gpgme_op_genkey failure";
@@ -143,6 +157,7 @@ namespace ck::util::error {
     OpenIndexFailed,
     IndexFileNotFound,
     NoPathToIndex,
+    InvalidIndexFile,
     CorruptedIndex
   };
   template<>
@@ -159,6 +174,7 @@ namespace ck::util::error {
       case IndexErrc::IndexFileNotFound:          return "Index file not found";
       case IndexErrc::NoPathToIndex:              return "No path to index file";
       case IndexErrc::CorruptedIndex:             return "Corrupted index";
+      case IndexErrc::InvalidIndexFile:             return "Corrupted index";
       default:                                    return "Unknown error";
     }
   }

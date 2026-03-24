@@ -181,6 +181,23 @@ namespace ck::config {
     }
   }
   
+  int parse_int(const std::string& key, const std::string& value) {
+    std::size_t pos = 0;
+    int out;
+    try {
+      out = std::stoi(value, &pos);
+    } catch (const std::invalid_argument&) {
+      throw Error<ConfigErrc>{InvalidConfigValue, key + " = " + value};
+    } catch (const std::out_of_range&) {
+      throw Error<ConfigErrc>{InvalidConfigValue, key + " = " + value};
+    }
+    
+    if (pos != value.size()) {
+      throw Error<ConfigErrc>{InvalidConfigValue, key + " = " + value};
+    }
+    return out;
+  }
+  
   void Config::set(std::vector<std::string> args) {
     std::vector<std::string> key_parts = parse_key(args[0]);
     std::string value = args[1];
@@ -194,7 +211,7 @@ namespace ck::config {
       } else if constexpr (std::is_same_v<T, bool>) {
         member = (value == "true");
       } else if constexpr (std::is_same_v<T, int>) {
-        member = std::stoi(value);
+        member = parse_int(args[0], value);
       }
     });
   }

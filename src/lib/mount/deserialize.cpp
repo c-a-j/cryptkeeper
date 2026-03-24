@@ -21,7 +21,14 @@ namespace ck::mount {
       logger.debug("Mounts::deserialize()");
       throw Error<MountErrc>{MountFileNotFound, "Initialize a vault or mount an existing one"};
     }
-    auto mount_toml = toml::parse_file(std::string(path));
+
+    toml::table mount_toml;
+    try {
+      mount_toml = toml::parse_file(std::string(path));
+    } catch (const toml::parse_error& e) {
+      throw Error<MountErrc>{InvalidMountFile, std::string(e.description())};
+    }
+
     if (auto* tbl = mount_toml["root"].as_table()) {
       Mount m{};
       for (const auto& field : Mount::fields()) {

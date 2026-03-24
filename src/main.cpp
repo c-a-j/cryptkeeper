@@ -42,6 +42,9 @@ int main(int argc, char** argv) {
   } catch (const ck::util::error::AppError& e) {
     ck::util::logger::logger.error(e.msg1, e.msg2);
     return 1;
+  } catch (const std::exception& e) {
+    ck::util::logger::logger.error(e.what());
+    return 1;
   }
   return 0;
 }
