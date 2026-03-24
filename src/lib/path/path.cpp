@@ -80,10 +80,10 @@ namespace ck::path {
     std::error_code ec;
     bool created = std::filesystem::create_directories(dir, ec);
     if (ec) {
-      throw Error<PathErrc>{CreateDirectoryFailed, std::string(dir) };
+      throw Error<PathErrc>{CreateDirectoryFailed, dir.string() };
     }
     if (created) {
-      logger.info("Created new config directory", std::string(dir));
+      logger.info("Created new config directory", dir.string());
     }
   }
 }

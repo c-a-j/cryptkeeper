@@ -37,7 +37,7 @@ namespace ck::mount {
     this->root_.path = vault_path;
     this->root_.hash = hash();
     this->write();
-    logger.info("Root vault has been set to " + std::string(vault_path));
+    logger.info("Root vault has been set to " + vault_path.string());
     this->print();
     return;
   }

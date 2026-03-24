@@ -40,29 +40,29 @@ namespace ck::cmd {
     }
     
     if (!created) {
-      throw Error<InitErrc>{AlreadyExists, std::string(vault_path)};
+      throw Error<InitErrc>{AlreadyExists, vault_path.string()};
     } 
     
     const fs::path gpg_id_path = vault_path / GPG_ID_FILE;
     std::ofstream gpg_id_file(gpg_id_path, std::ios::out | std::ios::trunc);
     if (!gpg_id_file.is_open()) {
-      throw Error<InitErrc>{OpenGpgIdFailed, std::string(gpg_id_path)};
+      throw Error<InitErrc>{OpenGpgIdFailed, gpg_id_path.string()};
     }
     
     gpg_id_file << args.key_fpr << '\n';
     if (!gpg_id_file) {
-      throw Error<InitErrc>{WriteGpgIdFailed, std::string(gpg_id_path)};
+      throw Error<InitErrc>{WriteGpgIdFailed, gpg_id_path.string()};
     }
 
     const fs::path idx_path = vault_path / INDEX_FILE;
     std::ofstream idx_file(idx_path, std::ios::out | std::ios::trunc);
     if (!idx_file.is_open()) {
-      throw Error<InitErrc>{OpenIndexFailed, std::string(idx_path)};
+      throw Error<InitErrc>{OpenIndexFailed, idx_path.string()};
     }
     
     idx_file << "" << '\n';
     if (!idx_file) {
-      throw Error<InitErrc>{WriteIndexFailed, std::string(idx_path)};
+      throw Error<InitErrc>{WriteIndexFailed, idx_path.string()};
     }
 
     std::string msg1;

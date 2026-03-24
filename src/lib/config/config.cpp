@@ -144,7 +144,7 @@ namespace ck::config {
     
     toml::table cfg_toml;
     try {
-      cfg_toml = toml::parse_file(std::string(path));
+      cfg_toml = toml::parse_file(path.string());
     } catch (const toml::parse_error& e) {
       throw Error<ConfigErrc>{InvalidConfigFile, std::string(e.description())};
     }
@@ -227,12 +227,12 @@ namespace ck::config {
     std::ofstream out(cfg_file, std::ios::out | std::ios::trunc);
     out << tbl << "\n";
     if (!out) {
-      throw Error<ConfigErrc>{WriteConfigFailed, std::string(cfg_file)};
+      throw Error<ConfigErrc>{WriteConfigFailed, cfg_file.string()};
     }
     if (!exists) {
-      logger.info("Created new config file", std::string(cfg_file));
+      logger.info("Created new config file", cfg_file.string());
     } else {
-      logger.info("Updated config file", std::string(cfg_file));
+      logger.info("Updated config file", cfg_file.string());
     }
   }
   

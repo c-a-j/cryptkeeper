@@ -57,7 +57,7 @@ namespace ck::cmd {
     } else {
       ck::mount::ResolvedPath rp = mnt.resolve(*args.path);
       logger.debug("resolved alias", std::string(rp.alias));
-      logger.debug("resolved vault path", std::string(rp.vault_path));
+      logger.debug("resolved vault path", rp.vault_path.string());
       logger.debug("resolved relative path", std::string(rp.relative_path));
 
       if (rp.alias.empty()) {

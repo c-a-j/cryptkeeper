@@ -64,7 +64,7 @@ namespace ck::index {
     
     std::ofstream out(this->file_);
     if (!out) { 
-      throw Error<IndexErrc>{OpenIndexFailed, std::string(this->file_)}; 
+      throw Error<IndexErrc>{OpenIndexFailed, this->file_.string()}; 
     }
     
     out << idx_toml << "\n";

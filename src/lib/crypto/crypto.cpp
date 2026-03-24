@@ -111,7 +111,7 @@ namespace ck::crypto {
   SecureBytes read_file(const std::filesystem::path& path) {
     std::ifstream file(path);
     if (!file) {
-      throw Error<CryptoErrc>{FailedToOpenFile, std::string(path)};
+      throw Error<CryptoErrc>{FailedToOpenFile, path.string()};
     }
     file.seekg(0, std::ios::end);
     const auto size = static_cast<std::size_t>(file.tellg());
@@ -121,7 +121,7 @@ namespace ck::crypto {
     file.read(bytes.char_data(), static_cast<std::streamsize>(size));
     
     if (!file) {
-      throw Error<CryptoErrc>{FailedToReadFile, std::string(path)};
+      throw Error<CryptoErrc>{FailedToReadFile, path.string()};
     }
     return bytes;
   };
@@ -219,13 +219,13 @@ namespace ck::crypto {
   void write(const SecureBytes& plain, const std::vector<std::string>& key_fprs, const std::filesystem::path& path) {
     std::ofstream file(path, std::ios::binary | std::ios::trunc);
     if (!file) {
-      throw Error<CryptoErrc>{FailedToOpenFile, std::string(path)};
+      throw Error<CryptoErrc>{FailedToOpenFile, path.string()};
     }
     const SecureBytes cipher = encrypt_bytes(plain, key_fprs);
     
     file.write(cipher.char_data(), static_cast<std::streamsize>(cipher.size()));
     if (!file) {
-      throw Error<CryptoErrc>{FailedToReadFile, std::string(path)};
+      throw Error<CryptoErrc>{FailedToReadFile, path.string()};
     }
   };
   

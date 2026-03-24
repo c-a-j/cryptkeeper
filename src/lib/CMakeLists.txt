@@ -31,4 +31,19 @@ target_sources(ck_lib PRIVATE
     path/path.cpp
     path/parse_path.cpp
     path/join.cpp
+    path/existence.cpp
+    
+    fs/msg.cpp
+    fs/write_atomic.cpp
 )
+
+if (WIN32)
+  target_sources(ck_lib PRIVATE
+    fs/tempfile_win32.cpp
+  )
+else()
+  target_sources(ck_lib PRIVATE
+    fs/tempfile_posix.cpp
+    fs/write_all.cpp
+  )
+endif()

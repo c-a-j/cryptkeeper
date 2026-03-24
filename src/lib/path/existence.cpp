@@ -13,7 +13,7 @@ namespace ck::path {
     std::error_code ec;
     bool exists = fs::exists(path, ec);
     if (ec) {
-      throw Error<PathErrc>{FileSystemError, std::string(path) + ": " + ec.message()};
+      throw Error<PathErrc>{FileSystemError, path.string() + ": " + ec.message()};
     }
     return exists;
   }
@@ -21,7 +21,7 @@ namespace ck::path {
   bool exists_or_throw(const fs::path& path) {
     bool exists = ck::path::exists(path);
     if (!exists) {
-      throw Error<PathErrc>{DoesNotExist, std::string(path)};
+      throw Error<PathErrc>{DoesNotExist, path.string()};
     }
     return exists;
   }
@@ -30,7 +30,7 @@ namespace ck::path {
     std::error_code ec;
     bool exists = fs::is_regular_file(path, ec);
     if (ec) {
-      throw Error<PathErrc>{FileSystemError, std::string(path) + ": " + ec.message()};
+      throw Error<PathErrc>{FileSystemError, path.string() + ": " + ec.message()};
     }
     return exists;
   }
@@ -38,7 +38,7 @@ namespace ck::path {
   bool file_exists_or_throw(const fs::path& path) {
     bool exists = file_exists(path);
     if (!exists) {
-      throw Error<PathErrc>{FileDoesNotExist, std::string(path)};
+      throw Error<PathErrc>{FileDoesNotExist, path.string()};
     }
     return exists;
   }
@@ -47,7 +47,7 @@ namespace ck::path {
     std::error_code ec;
     bool exists = fs::is_directory(path, ec);
     if (ec) {
-      throw Error<PathErrc>{FileSystemError, std::string(path) + ": " + ec.message()};
+      throw Error<PathErrc>{FileSystemError, path.string() + ": " + ec.message()};
     }
     return exists;
   }
@@ -55,7 +55,7 @@ namespace ck::path {
   bool directory_exists_or_throw(const fs::path& path) {
     bool exists = directory_exists(path);
     if (!exists) {
-      throw Error<PathErrc>{DirectoryDoesNotExist, std::string(path)};
+      throw Error<PathErrc>{DirectoryDoesNotExist, path.string()};
     }
     return exists;
   }

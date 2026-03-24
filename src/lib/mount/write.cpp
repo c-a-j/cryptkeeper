@@ -48,10 +48,10 @@ namespace ck::mount {
     toml::table tbl = serialize(*this);
     out << tbl << "\n";
     if (!out) {
-      throw Error<MountErrc>{WriteMountFailed, std::string(mnt_file)};
+      throw Error<MountErrc>{WriteMountFailed, mnt_file.string()};
     }
     if (!exists) {
-      logger.info("Created new mount file", std::string(mnt_file));
+      logger.info("Created new mount file", mnt_file.string());
     }
   }
 }

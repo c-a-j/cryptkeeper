@@ -24,7 +24,7 @@ namespace ck::mount {
 
     toml::table mount_toml;
     try {
-      mount_toml = toml::parse_file(std::string(path));
+      mount_toml = toml::parse_file(path.string());
     } catch (const toml::parse_error& e) {
       throw Error<MountErrc>{InvalidMountFile, std::string(e.description())};
     }

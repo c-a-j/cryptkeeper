@@ -16,7 +16,7 @@ namespace ck::mount {
     if (fs::exists(mnt_file)) {
       deserialize();
     } else {
-      throw Error<MountErrc>{MountFileNotFound, std::string(mnt_file)};
+      throw Error<MountErrc>{MountFileNotFound, mnt_file.string()};
     }
     if (mounts_.contains(alias)) {
       mounts_.erase(alias);

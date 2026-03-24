@@ -30,7 +30,7 @@ namespace ck::index {
     fs::path key_path = get_key_path(vault_path);
     std::ifstream file(key_path);
     if (!file.is_open()) {
-      throw Error<IndexErrc>{GpgIdFileNotFound, std::string(key_path)};
+      throw Error<IndexErrc>{GpgIdFileNotFound, key_path.string()};
     }
     std::vector<std::string> fingerprints;
     std::string buf;
