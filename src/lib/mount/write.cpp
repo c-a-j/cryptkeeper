@@ -8,6 +8,7 @@
 #include "lib/mount/types.hpp"
 #include "../fs/atomic_write.hpp"
 #include "../path/path.hpp"
+#include "../path/existence.hpp"
 
 
 namespace {
@@ -40,7 +41,7 @@ namespace ck::mount {
   void Mounts::write() {
     ck::path::create_config_dir();
     fs::path mnt_file = ck::path::mount_file();
-    bool existed = fs::exists(mnt_file);
+    bool existed = ck::path::file_exists(mnt_file);
     
     std::ostringstream contents;
     toml::table tbl = serialize(*this);

@@ -5,6 +5,7 @@
 #include "util/error.hpp"
 #include "util/logger/logger.hpp"
 #include "../path/path.hpp"
+#include "../path/existence.hpp"
 #include "lib/mount/types.hpp"
 
 
@@ -17,7 +18,7 @@ namespace ck::mount {
 
   void Mounts::deserialize() {
     fs::path path = ck::path::mount_file();
-    if (!fs::exists(path)) {
+    if (!ck::path::file_exists(path)) {
       logger.debug("Mounts::deserialize()");
       throw Error<MountErrc>{MountFileNotFound, "Initialize a vault or mount an existing one"};
     }

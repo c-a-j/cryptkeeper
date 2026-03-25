@@ -68,14 +68,16 @@ namespace ck::mount {
   // 'ck mount foo' will attempt to mount a vault on disk at cfg.core_.home/foo
   // supplying an alias comprised of more than one component, ex foo/bar is not supported
     std::vector<std::string> alias_parts = ck::path::parse_path(alias);
+    logger.debug("Mounts::mount() - adding a mount with a single argument");
     if (alias_parts.size() > 1) {
-      logger.debug("Mounts::mount()");
       throw Error<MountErrc>{InvalidArguments, "a path must be specified for this alias"};
     }
 
     fs::path vault_path = fs::path(cfg.home()) / fs::path(alias);
     if (initialized(vault_path)) {
       this->mount(alias, vault_path);
+      return;
     }
+    throw Error<MountErrc>{VaultNotInitialized, vault_path};
   }
 }

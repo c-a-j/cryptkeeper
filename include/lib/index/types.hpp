@@ -22,11 +22,12 @@ namespace ck::index {
     public:
       explicit Index(const std::string&);
       explicit Index(const std::string&, const std::string&);
-      explicit Index();
+      explicit Index() = default;
 
       const Node root() const;
       Node root();
       
+      static Index empty(const std::string&);
       void deserialize(const std::string&);
       void deserialize(const std::string&, const std::string&);
       void insert(const std::string&, const bool);
@@ -43,7 +44,7 @@ namespace ck::index {
       std::string alias_; // mount alias
       fs::path path_; // vault path
       fs::path file_; // full path to index file
-
+      
       Node* break_trail(const std::vector<std::string>&);
       Node* break_trail(const std::string&);
 

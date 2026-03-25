@@ -1,15 +1,12 @@
-#include <filesystem>
-
 #include "util/error.hpp"
 #include "lib/index/types.hpp"
+#include "global.hpp"
 #include "../path/get_idx_file.hpp"
 
 namespace {
 }
 
 namespace ck::index { 
-  using ck::util::error::Error;
-  using ck::util::error::IndexErrc;
   using enum ck::util::error::IndexErrc;
 
   Index::Index(const std::string& vault_path) { 
@@ -21,7 +18,14 @@ namespace ck::index {
     this->alias_ = alias;
   }
 
-  Index::Index() {}
+  Index Index::empty(const std::string& vault_path) {
+    Index idx;
+    idx.path_ = fs::path(vault_path);
+    idx.file_ = idx.path_ / fs::path(INDEX_FILE);
+    idx.root_ = Node{};
+    idx.root_.path = vault_path;
+    return idx;
+  }
 
   Node Index::root() {
     return this->root_;

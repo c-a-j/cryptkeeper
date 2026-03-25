@@ -158,6 +158,7 @@ namespace ck::util::error {
     IndexFileNotFound,
     NoPathToIndex,
     InvalidIndexFile,
+    InvalidOrEmptyIndexFile,
     CorruptedIndex
   };
   template<>
@@ -174,7 +175,8 @@ namespace ck::util::error {
       case IndexErrc::IndexFileNotFound:          return "Index file not found";
       case IndexErrc::NoPathToIndex:              return "No path to index file";
       case IndexErrc::CorruptedIndex:             return "Corrupted index";
-      case IndexErrc::InvalidIndexFile:             return "Corrupted index";
+      case IndexErrc::InvalidIndexFile:           return "Corrupted index";
+      case IndexErrc::InvalidOrEmptyIndexFile:    return "Invalid or empty index file";
       default:                                    return "Unknown error";
     }
   }

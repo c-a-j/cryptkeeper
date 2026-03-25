@@ -4,6 +4,7 @@
 #include "util/logger/logger.hpp"
 #include "../path/path.hpp"
 #include "../path/parse_path.hpp"
+#include "../path/existence.hpp"
 #include "lib/mount/types.hpp"
 #include "lib/config/types.hpp"
 #include "./_internal/initialized.hpp"
@@ -31,7 +32,7 @@ namespace ck::mount {
       throw Error<MountErrc>{VaultNotInitialized, path};
     }
 
-    if (fs::exists(mnt_file)) {
+    if (ck::path::file_exists(mnt_file)) {
       this->deserialize();
     }
     this->root_.path = vault_path;

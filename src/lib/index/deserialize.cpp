@@ -5,6 +5,7 @@
 #include "lib/index/types.hpp"
 #include "./util/error.hpp"
 #include "./util/logger/logger.hpp"
+#include "../path/existence.hpp"
 #include "./_internal/walk_path.hpp"
 #include "./_internal/vars.hpp"
 
@@ -17,7 +18,7 @@ namespace ck::index {
   namespace fs = std::filesystem;
 
   toml::table parse_file(const fs::path& idx_file) {
-    if (!fs::exists(idx_file)) { 
+    if (!ck::path::file_exists(idx_file)) { 
       logger.debug("Index::deserialize() -> parse_file()");
       throw Error<IndexErrc>{IndexFileNotFound, idx_file.string()};
     }
@@ -26,7 +27,7 @@ namespace ck::index {
     try {
       tbl = toml::parse_file(idx_file.string());
     } catch (const toml::parse_error& e) {
-      throw Error<IndexErrc>{InvalidIndexFile, idx_file.string()};
+      throw Error<IndexErrc>{InvalidIndexFile, e.what()};
     }
 
     return tbl;
@@ -71,6 +72,8 @@ namespace ck::index {
         Node* node = this->break_trail(path);
         node->entry = std::move(e);
       }
+    } else {
+      throw Error<IndexErrc>{InvalidOrEmptyIndexFile, this->file_};
     }
     this->root_.path = this->path_;
   }

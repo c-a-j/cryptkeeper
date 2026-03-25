@@ -3,12 +3,15 @@
 #include <fstream>
 
 #include "global.hpp"
-#include "./_internal.hpp"
 #include "util/error.hpp"
 #include "util/logger/logger.hpp"
 #include "lib/crypto/crypto.hpp"
 #include "lib/config/types.hpp"
 #include "lib/mount/types.hpp"
+#include "lib/index/types.hpp"
+#include "./_internal.hpp"
+#include "../lib/path/existence.hpp"
+#include "../lib/fs/atomic_write.hpp"
 
 namespace ck::cmd {
   namespace fs = std::filesystem;
@@ -33,40 +36,19 @@ namespace ck::cmd {
       vault_path = *args.path;
     }
     
-    std::error_code ec;
-    bool created = fs::create_directories(vault_path, ec);
-    if (ec) {
-      throw Error<InitErrc>{CreateDirectoryFailed, ec.message()};
-    }
-    
-    if (!created) {
+    bool exists = ck::path::directory_exists(vault_path);
+    if (exists) {
       throw Error<InitErrc>{AlreadyExists, vault_path.string()};
     } 
     
     const fs::path gpg_id_path = vault_path / GPG_ID_FILE;
-    std::ofstream gpg_id_file(gpg_id_path, std::ios::out | std::ios::trunc);
-    if (!gpg_id_file.is_open()) {
-      throw Error<InitErrc>{OpenGpgIdFailed, gpg_id_path.string()};
-    }
-    
-    gpg_id_file << args.key_fpr << '\n';
-    if (!gpg_id_file) {
-      throw Error<InitErrc>{WriteGpgIdFailed, gpg_id_path.string()};
-    }
+    ck::fs::atomic_write(gpg_id_path, args.key_fpr);
 
-    const fs::path idx_path = vault_path / INDEX_FILE;
-    std::ofstream idx_file(idx_path, std::ios::out | std::ios::trunc);
-    if (!idx_file.is_open()) {
-      throw Error<InitErrc>{OpenIndexFailed, idx_path.string()};
-    }
-    
-    idx_file << "" << '\n';
-    if (!idx_file) {
-      throw Error<InitErrc>{WriteIndexFailed, idx_path.string()};
-    }
+    ck::index::Index idx = ck::index::Index::empty(vault_path);
+    idx.write();
 
     std::string msg1;
-    msg1 += "Vault " + args.vault_name + " has been initialized: ";
+    msg1 += "Vault " + args.vault_name + " has been initialized";
     std::string msg2;
     msg2 += "use 'ck mount' to mount it";
     

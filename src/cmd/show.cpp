@@ -47,7 +47,8 @@ namespace ck::cmd {
     ck::index::Index idx;
 
     if (!args.path) {
-      logger.info("Printing the whole tree");
+      logger.debug("Printing the whole tree");
+      
       idx.deserialize(mnt.root().path);
       for (auto [alias, mount] : mnt.mounts()) {
         ck::index::Index i(mount.path);
@@ -55,10 +56,9 @@ namespace ck::cmd {
       }
       idx.print();
     } else {
+      logger.debug("Printing the subtree tree or secret");
+      
       ck::mount::ResolvedPath rp = mnt.resolve(*args.path);
-      logger.debug("resolved alias", std::string(rp.alias));
-      logger.debug("resolved vault path", rp.vault_path.string());
-      logger.debug("resolved relative path", std::string(rp.relative_path));
 
       if (rp.alias.empty()) {
         idx.deserialize(rp.vault_path);

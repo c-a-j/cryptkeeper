@@ -1,8 +1,6 @@
 #include "toml++/toml.hpp"
-#include <iostream>
 #include <sstream>
 #include <filesystem>
-#include <fstream>
 
 #include "util/error.hpp"
 #include "lib/index/types.hpp"
