@@ -5,16 +5,12 @@
 #include "util/error.hpp"
 #include "lib/index/types.hpp"
 #include "./_internal/vars.hpp"
+#include "./_internal/types.hpp"
 #include "../fs/atomic_write.hpp"
 #include "../path/get_idx_file.hpp"
 
 namespace {
-  struct IndexObj {
-    std::vector<std::string> path;
-    std::string uuid;
-  };
-
-  toml::table serialize(const IndexObj& obj) {
+  toml::table serialize(const ck::index::IndexObj& obj) {
     toml::table tbl; 
     toml::array path;
     for (const auto& part : obj.path) {
@@ -27,7 +23,7 @@ namespace {
 
   void dfs (const ck::index::Node& node, std::vector<std::string>& path, toml::array& out) {
     if (node.entry) {
-      IndexObj obj;
+      ck::index::IndexObj obj;
       obj.path = path;
       obj.uuid = node.entry->uuid;
       out.push_back(serialize(obj));

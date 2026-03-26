@@ -8,6 +8,7 @@
 
 namespace ck::index {
   namespace fs = std::filesystem;
+  // entry in index tree
   struct Entry {
     std::string uuid;
   };
