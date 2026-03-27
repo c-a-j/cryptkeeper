@@ -4,7 +4,7 @@
 
 namespace ck::mount {
   Mounts::Mounts() {
-    this->path_ = ck::path::mount_file();
+    this->file_ = ck::path::mount_file();
   }
 
   Mount& Mounts::root() {
@@ -28,7 +28,7 @@ namespace ck::mount {
   }
   
   bool Mounts::file_exists() const noexcept {
-    return (ck::path::file_exists(this->path_));
+    return (ck::path::file_exists(this->file_));
   }
 
   Mounts mnt;

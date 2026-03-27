@@ -61,7 +61,7 @@ namespace ck::mount {
       Mount root_;
       std::unordered_map<std::string, Mount> mounts_;
       void write();
-      fs::path path_;
+      fs::path file_;
   };
 
   extern Mounts mnt;

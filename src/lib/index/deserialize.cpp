@@ -129,7 +129,7 @@ namespace {
     const toml::table* tbl = node.as_table();
     if (!tbl) { 
       std::string msg = std::string(file_path) 
-        + std::string(": all entries must be a toml table");
+        + std::string(" -> all entries must be a valid toml table");
       throw Error<IndexErrc>{CorruptedIndex, msg}; 
     }
 
