@@ -6,7 +6,7 @@
 #include "./tempfile.hpp"
 #include "./sync_dir.hpp"
 
-namespace ck::fs {
+namespace ck::fio {
   namespace fs = std::filesystem;
   using ck::util::error::Error;
   using ck::util::error::FsErrc;

@@ -70,7 +70,7 @@ namespace ck::index {
       secret_file
     );
     node->entry = std::move(entry);
-    this->write();
+    this->save();
   }
 
   void Index::insert_node(const Node& node, const std::string& path) {

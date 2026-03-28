@@ -7,3 +7,8 @@ namespace ck::index {
   Node* walk_path(Node*, const std::vector<std::string>&);
   Node* break_trail(Node&, const std::vector<std::string>&);
 }
+
+namespace ck::index::tree { 
+  // Node* walk_path(Node*, const std::vector<std::string>&);
+  Node* break_trail(Node*, const std::vector<std::string>&);
+}

@@ -1,11 +1,9 @@
 #include <toml++/toml.hpp>
 #include <filesystem>
 
-#include "global.hpp"
 #include "lib/index/types.hpp"
 #include "./util/error.hpp"
 #include "./util/logger/logger.hpp"
-#include "../path/existence.hpp"
 #include "./_internal/walk_path.hpp"
 #include "./_internal/types.hpp"
 #include "./_internal/vars.hpp"
@@ -17,22 +15,6 @@ namespace {
   using ck::util::error::Error;
   using ck::util::error::IndexErrc;
   using enum ck::util::error::IndexErrc;
-
-  toml::table parse_file(const fs::path& idx_file) {
-    if (!ck::path::file_exists(idx_file)) { 
-      logger.debug("Index::deserialize() -> parse_file()");
-      throw Error<IndexErrc>{IndexFileNotFound, idx_file.string()};
-    }
-
-    toml::table tbl;
-    try {
-      tbl = toml::parse_file(idx_file.string());
-    } catch (const toml::parse_error& e) {
-      throw Error<IndexErrc>{InvalidIndexFile, e.what()};
-    }
-
-    return tbl;
-  };
   
   bool is_valid_uuid(std::string_view uuid) {
     if (uuid.size() != 36) {
@@ -141,39 +123,27 @@ namespace {
 
 }
 
-namespace ck::index { 
+namespace ck::index::codec { 
   using ck::util::logger::logger;
   using ck::util::error::Error;
   using ck::util::error::IndexErrc;
   using enum ck::util::error::IndexErrc;
-
   namespace fs = std::filesystem;
 
-  void Index::deserialize(const std::string& vault_path) {
-    fs::path path = fs::path(vault_path);
-    fs::path file = path / fs::path(INDEX_FILE);
-    toml::table tbl = parse_file(file);
+  Node deserialize(std::string_view toml_text, const fs::path& file_path) {
+    toml::table tbl = toml::parse(toml_text);
 
     logger.debug("deserialize() - parsing index file");
     Node root;
     if (toml::array* entries = tbl[IDX_ARR_NAME].as_array()) {
       for (toml::node& n : *entries) {
-        IndexObj obj = parse_entry(n, file);
-        Node* node = ck::index::break_trail(root, obj.path);
+        IndexObj obj = parse_entry(n, file_path);
+        Node* node = ck::index::tree::break_trail(&root, obj.path);
         node->entry = Entry{obj.uuid};
       }
     } else {
-      throw Error<IndexErrc>{InvalidOrEmptyIndexFile, file};
+      throw Error<IndexErrc>{InvalidOrEmptyIndexFile, file_path};
     }
-
-    this->root_ = root;
-    this->path_ = path;
-    this->root_.path = path;
-    this->file_ = file;
-  }
-
-  void Index::deserialize(const std::string& alias, const std::string& vault_path) {
-    this->deserialize(vault_path);
-    this->alias_ = alias;
+    return root;
   }
 }

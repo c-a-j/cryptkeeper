@@ -9,7 +9,7 @@
   #include <windows.h>
 #endif
 
-namespace ck::fs {
+namespace ck::fio {
   namespace fs = std::filesystem;
   
   struct TempFile {

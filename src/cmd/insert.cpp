@@ -11,6 +11,7 @@ namespace ck::cmd {
   void insert(const ck::cli::Context& _, const ck::cli::InsertArgs& args) {
     logger.debug("Inserting a new secret");
     ck::mount::ResolvedPath rp = mnt.resolve(args.path);
+
     ck::index::Index idx(rp.vault_path);
     idx.insert(rp.relative_path, args.pwgen);
   }

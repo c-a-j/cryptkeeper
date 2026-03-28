@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <cstddef>
+#include <span>
 
 #include "util/error.hpp"
 #include "./secure_wipe.hpp"
@@ -32,6 +33,13 @@ namespace ck::crypto {
       
       char* char_data() { return reinterpret_cast<char*>(data_.data()); }
       const char* char_data() const { return reinterpret_cast<const char*>(data_.data()); }
+
+      std::span<std::byte> bytes() { 
+        return std::span<std::byte>{data_.data(), data_.size()}; 
+      }
+      std::span<const std::byte> bytes() const { 
+        return std::span< const std::byte>{data_.data(), data_.size()}; 
+      }
       
       void assign(const char* src, std::size_t len) {
         if (src == nullptr && len != 0) {

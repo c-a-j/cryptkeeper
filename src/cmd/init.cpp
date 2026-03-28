@@ -11,7 +11,7 @@
 #include "lib/index/types.hpp"
 #include "./_internal.hpp"
 #include "../lib/path/existence.hpp"
-#include "../lib/fs/atomic_write.hpp"
+#include "../lib/fio/atomic_write.hpp"
 
 namespace ck::cmd {
   namespace fs = std::filesystem;
@@ -43,10 +43,10 @@ namespace ck::cmd {
     } 
     
     const fs::path gpg_id_path = vault_path / GPG_ID_FILE;
-    ck::fs::atomic_write(gpg_id_path, args.key_fpr);
+    ck::fio::atomic_write(gpg_id_path, args.key_fpr);
 
     ck::index::Index idx = ck::index::Index::empty(vault_path);
-    idx.write();
+    idx.save();
 
     std::string msg1;
     msg1 += "Vault " + args.vault_name + " has been initialized";

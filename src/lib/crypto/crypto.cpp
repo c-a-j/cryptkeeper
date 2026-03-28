@@ -5,11 +5,13 @@
 #include <fstream>
 
 #include "util/error.hpp"
+#include "util/logger/logger.hpp"
 #include "./lib/crypto/secure_wipe.hpp"
 #include "./lib/crypto/secure_bytes.hpp"
-#include "../fs/atomic_write.hpp"
+#include "../fio/atomic_write.hpp"
 
 namespace {
+  using ck::util::logger::logger;
   using ck::util::error::Error;
   using ck::util::error::CryptoErrc;
   using enum ck::util::error::CryptoErrc;
@@ -111,6 +113,7 @@ namespace ck::crypto {
   SecureBytes read_file(const std::filesystem::path& path) {
     std::ifstream file(path);
     if (!file) {
+      logger.debug("ck::crypto::read_file()");
       throw Error<CryptoErrc>{FailedToOpenFile, path.string()};
     }
     file.seekg(0, std::ios::end);
@@ -218,7 +221,7 @@ namespace ck::crypto {
   
   void write(const SecureBytes& plain, const std::vector<std::string>& key_fprs, const std::filesystem::path& path) {
     const SecureBytes cipher = encrypt_bytes(plain, key_fprs);
-    ck::fs::atomic_write(path, std::span(cipher.data(), cipher.size()));
+    ck::fio::atomic_write(path, std::span(cipher.data(), cipher.size()));
   };
   
 }

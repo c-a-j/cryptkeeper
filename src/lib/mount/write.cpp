@@ -6,7 +6,7 @@
 #include "util/error.hpp"
 #include "util/logger/logger.hpp"
 #include "lib/mount/types.hpp"
-#include "../fs/atomic_write.hpp"
+#include "../fio/atomic_write.hpp"
 #include "../path/path.hpp"
 #include "../path/existence.hpp"
 
@@ -47,7 +47,7 @@ namespace ck::mount {
     toml::table tbl = serialize(*this);
     contents << tbl << "\n";
     
-    ck::fs::atomic_write(mnt_file, contents.str());
+    ck::fio::atomic_write(mnt_file, contents.str());
     
     if (!existed) {
       logger.info("Created new mount file", mnt_file.string());

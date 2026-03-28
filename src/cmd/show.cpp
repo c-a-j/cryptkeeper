@@ -44,12 +44,13 @@ namespace ck::cmd {
     // root nodes will need to be inserted in their alias locations for printing
 
     mnt.deserialize();
-    ck::index::Index idx;
+    
 
     if (!args.path) {
       logger.debug("Printing the whole tree");
+      logger.debug("path = ", mnt.root().path);
       
-      idx.deserialize(mnt.root().path);
+      ck::index::Index idx(mnt.root().path);
       for (auto [alias, mount] : mnt.mounts()) {
         ck::index::Index i(mount.path);
         idx.insert_node(i.root(), alias);
@@ -59,12 +60,7 @@ namespace ck::cmd {
       logger.debug("Printing the subtree tree or secret");
       
       ck::mount::ResolvedPath rp = mnt.resolve(*args.path);
-
-      if (rp.alias.empty()) {
-        idx.deserialize(rp.vault_path);
-      } else {
-        idx.deserialize(rp.alias, rp.vault_path);
-      }
+      ck::index::Index idx(rp.vault_path, rp.alias);
 
       if (rp.relative_path.empty()) {
         idx.print(false);

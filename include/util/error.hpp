@@ -190,6 +190,7 @@ namespace ck::util::error {
     FileSystemError,
     HomeNotSet,
     LocalAppDataNotSet,
+    VaultUnspecified,
   };
   template<>
   inline std::string_view Error<PathErrc>::label(PathErrc c) {
@@ -202,6 +203,7 @@ namespace ck::util::error {
       case PathErrc::FileSystemError:         return "Filesystem error";
       case PathErrc::HomeNotSet:              return "HOME not set";
       case PathErrc::LocalAppDataNotSet:      return "LOCALAPPDATA not set";
+      case PathErrc::VaultUnspecified:        return "Vault unspecified";
       default:                                return "Unknown error";
     }
   }

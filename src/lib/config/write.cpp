@@ -7,7 +7,7 @@
 #include "lib/config/types.hpp"
 #include "util/logger/logger.hpp"
 
-#include "../fs/atomic_write.hpp"
+#include "../fio/atomic_write.hpp"
 #include "../path/path.hpp"
 
 namespace {
@@ -62,7 +62,7 @@ namespace ck::config {
     contents << tbl << "\n";
     
     logger.debug("Writing config file");
-    ck::fs::atomic_write(cfg_file, contents.str());
+    ck::fio::atomic_write(cfg_file, contents.str());
     
     if (!existed) {
       logger.info("Created new config file", cfg_file.string());

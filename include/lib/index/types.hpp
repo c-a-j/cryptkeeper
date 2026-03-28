@@ -18,6 +18,10 @@ namespace ck::index {
     std::unordered_map<std::string, Node> children;
     std::optional<std::string> path; // vault path, only defined at root node
   };
+
+  struct IndexTree {
+    Node root;
+  };
   
   class Index {
     public:
@@ -29,16 +33,16 @@ namespace ck::index {
       Node root();
       
       static Index empty(const std::string&);
-      void deserialize(const std::string&);
-      void deserialize(const std::string&, const std::string&);
       void insert(const std::string&, const bool);
       void show(const std::optional<std::string>&);
-      void write();
       void insert_node(const Node&, const std::string&);
       void print(const bool = true);
       void print(const std::string&);
       bool secret_along_path(const std::vector<std::string>&);
       bool secret_along_path(const std::string&);
+
+      void load(const std::string&, const std::string& = {});
+      void save();
     
     private:
       Node root_;

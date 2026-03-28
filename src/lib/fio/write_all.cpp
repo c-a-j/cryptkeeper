@@ -3,7 +3,7 @@
 #include <cstring>
 #include "util/error.hpp"
 
-namespace ck::fs {
+namespace ck::fio {
   using enum ck::util::error::FsErrc;
   
   int write_all(int fd, const char* data, std::size_t len) {
