@@ -20,21 +20,44 @@ namespace ck::mount {
   void Mounts::chroot(const std::string& path) {
     std::vector<std::string> alias_parts = ck::path::parse_path(path);
     fs::path vault_path;
+
+    // if alias is single path element, it is assumed to refer to a vault in
+    // cfg.home
     if (alias_parts.size() == 1) {
       vault_path = fs::path(cfg.home()) / fs::path(path);
     } else {
       vault_path = fs::path(path);
     }
 
-    fs::path mnt_file = ck::path::mount_file();
-
+    // nothing to mount if the vault isn't initialized
     if (!initialized(vault_path)) { 
       throw Error<MountErrc>{VaultNotInitialized, path};
     }
 
+    fs::path mnt_file = ck::path::mount_file();
     if (ck::path::file_exists(mnt_file)) {
       this->load();
     }
+
+    // run mount() on a temporary Mounts object to ensure there are no
+    // path conflicts with the new root
+    State state;
+    state.root = {
+      .path = vault_path,
+      .hash = hash()
+    };
+
+    Mounts tmp(state);
+
+    for (const auto& [alias, mount] : this->state_.mounts) {
+      try {
+        tmp.mount(alias, mount.path);
+      } catch (const Error<MountErrc>& _) {
+        throw Error<MountErrc>{ChrootConflict, "try removing other mounts first"};
+      }
+    }
+
+    // set new root
     this->state_.root.path = vault_path;
     this->state_.root.hash = hash();
     this->save();

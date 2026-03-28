@@ -85,6 +85,7 @@ namespace ck::util::error {
     InvalidArguments,
     InvalidMountFile,
     SecretAlongAlias,
+    ChrootConflict,
   };
   template<>
   inline std::string_view Error<MountErrc>::label(MountErrc c) {
@@ -99,6 +100,7 @@ namespace ck::util::error {
       case MountErrc::InvalidArguments:       return "Invalid arguments";
       case MountErrc::InvalidMountFile:       return "Invalid mount file";
       case MountErrc::SecretAlongAlias:       return "There is a secret along this alias path";
+      case MountErrc::ChrootConflict:         return "Chroot path conflict";
       default:                                return "Unknown error";
     }
   }

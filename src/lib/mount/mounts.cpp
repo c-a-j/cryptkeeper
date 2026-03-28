@@ -7,6 +7,10 @@ namespace ck::mount {
     this->file_ = ck::path::mount_file();
   }
 
+  Mounts::Mounts(State& state) : state_(std::move(state))  {
+    this->file_ = ck::path::mount_file();
+  }
+
   Mount& Mounts::root() {
     return this->state_.root;
   }

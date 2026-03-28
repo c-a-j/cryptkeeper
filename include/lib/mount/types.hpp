@@ -46,6 +46,7 @@ namespace ck::mount {
   class Mounts {
     public:
       explicit Mounts();
+      explicit Mounts(State&);
 
       Mount& root();
       const Mount& root() const;
