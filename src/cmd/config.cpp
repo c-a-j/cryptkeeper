@@ -6,9 +6,9 @@
 
 
 namespace ck::cmd {
-  namespace foo = ck::config;
+  using ck::config::cfg;
+
   void config(const ck::cli::Context& _, const ck::cli::ConfigArgs& args) {
-    foo::Config cfg;
     std::vector<std::string> set_args = args.set_args;
     
     if (set_args.size() == 0) {

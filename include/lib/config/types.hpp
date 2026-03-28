@@ -74,6 +74,8 @@ namespace ck::config {
   class Config {
     public:
       explicit Config();
+
+      static Config empty();
       
       const Core& core() const;
       Core& core();
@@ -86,7 +88,19 @@ namespace ck::config {
       
       const std::string& home() const;
       std::string& home();
-      
+
+      // I definitely made a convienience for readability trade here. The
+      // following two templates reduce the need to add to parsing helpers
+      // when new parameters and sections are added to the configuration.
+      // If a new parameter is added, only this file will need changes.
+
+      // with_section() makes it convenient to execute a lambda function on a
+      // specific section (Core, Ui, etc).
+
+      // with_member() makes it convenient to execute a lambda function on a
+      // specific field (member) of a specific configuration section (Core, Ui,
+      // etc)
+
       template <typename Fn>
       bool with_section(std::string_view name, Fn&& fn) {
         for (const auto& section : sections()) {
@@ -100,7 +114,7 @@ namespace ck::config {
         }
         return false;
       }
-      
+
       template <typename Fn>
       bool with_member(std::string_view section_name, std::string_view member_name, Fn&& fn) {
         bool found = false;
@@ -121,6 +135,30 @@ namespace ck::config {
         
         with_section(section_name, outer_fn);
         return found;
+      }
+
+      template <typename Fn>
+      void with_sections(Fn&& fn) {
+        for (const auto& section : sections()) {
+          std::visit([&](auto member) {
+            std::forward<Fn>(fn)(this->*member);
+          }, section.member);
+        }
+      }
+
+      template <typename Fn>
+      void with_members(Fn&& fn) {
+        auto outer_fn = [&](auto& section){
+          using Owner = std::remove_cvref_t<decltype(section)>;
+          
+          for (const auto& field : Owner::fields())  {
+            std::visit([&](auto& member) {
+              (fn)(section.*member);
+            }, field.member);
+          }
+        };
+        
+        with_sections(outer_fn);
       }
       
       void print();

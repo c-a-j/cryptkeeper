@@ -8,7 +8,6 @@
 
 #include "../path/path.hpp"
 #include "../path/existence.hpp"
-#include "./_internal/types.hpp"
 
 namespace {
   using namespace ck::config;
@@ -16,20 +15,40 @@ namespace {
   using ck::util::error::ConfigErrc;
   using enum ck::util::error::ConfigErrc;
   using ck::util::logger::logger;
-  template <typename Owner>
 
-  void parse_fields(Owner& cfg, const toml::table& tbl) {
+  template <typename T>
+  struct member_value;
+
+  template <typename Owner, typename Value>
+  struct member_value<Value Owner::*> {
+    using type = Value;
+  };
+
+  template <typename T>
+  using member_value_t = typename member_value<T>::type;
+
+  // visit each field in a section
+  // this parsing function is tolerant of a malformed configuration file
+  // warning is displayed and default is applied if values are missing or malformed
+  // defaults are set in the struct definitions
+  template <typename Owner>
+  void parse_fields(Owner& cfg, const toml::table& tbl, const std::string_view section) {
     for (const auto& field : Owner::fields()) {
       std::visit([&](auto member){
         using member_ptr_t = decltype(member);
         using value_t = member_value_t<member_ptr_t>;
-
         if (auto value = tbl[field.key].template value<value_t>()) {
           cfg.*member = *value;
+        } else {
+          std::string msg1 = "Parameter [" + std::string(section) + "."
+            + std::string(field.key) + "] contains an invalid data type";
+          std::string msg2 = "default will be applied";
+          logger.warning(msg1, msg2);
         }
       }, field.member);
     }
   }
+
 }
 
 namespace ck::config {
@@ -52,10 +71,16 @@ namespace ck::config {
       throw Error<ConfigErrc>{InvalidConfigFile, std::string(e.description())};
     }
 
+    // visit each config file section and parse the values
+    // missing sections will display a warning and fall back to defaults
     for (auto& section : this->sections()) {
       std::visit([&](auto& member) {
         if (auto* tbl = cfg_toml[section.name].as_table()) {
-          parse_fields(this->*member, *tbl);
+          parse_fields(this->*member, *tbl, section.name);
+        } else {
+          std::string msg1 = "Section " + std::string(section.name) + " is missing from config file";
+          std::string msg2 = "defaults will be applied";
+          logger.warning(msg1, msg2);
         }
       }, section.member);
     }

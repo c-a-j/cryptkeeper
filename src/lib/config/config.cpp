@@ -1,26 +1,15 @@
-#include "toml++/toml.hpp"
-
-#include <filesystem>
-#include <sstream>
-#include <iostream>
-
 #include "util/error.hpp"
 #include "lib/config/types.hpp"
-#include "util/logger/logger.hpp"
 
-#include "../fs/atomic_write.hpp"
 #include "../path/path.hpp"
-#include "../path/existence.hpp"
-#include "./_internal/types.hpp"
 
 namespace ck::config {
   using ck::util::error::Error;
   using ck::util::error::ConfigErrc;
   using enum ck::util::error::ConfigErrc;
-  using ck::util::logger::logger;
   
   Config::Config() { deserialize(); }
-  
+
   const Core& Config::core() const { return core_; }
   Core& Config::core() { return core_; }
   
