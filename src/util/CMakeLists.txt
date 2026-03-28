@@ -1,4 +1,4 @@
-target_sources(ck PRIVATE 
+target_sources(ck_lib PRIVATE
   logger/logger.cpp
   logger/theme.cpp
 )

@@ -2,6 +2,8 @@
 #include <stdexcept>
 #include <gpgme.h>
 #include <gtest/gtest.h>
+#include <cstdlib>
+#include <sys/stat.h>
 
 #include "lib/crypto/crypto.hpp"
 #include "util/error.hpp"
