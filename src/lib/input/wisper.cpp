@@ -64,8 +64,8 @@ namespace ck::input {
     }
   }
 
-  ck::crypto::SecureBytes wisper() {
-    logger.info("Enter secret:");
+  ck::crypto::SecureBytes wisper(std::string_view prompt) {
+    logger.info(prompt);
     
     std::vector<char> value;
     bool interrupted = false;

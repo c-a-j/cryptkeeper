@@ -44,6 +44,7 @@ namespace {
 }
 
 namespace ck::index { 
+  using ck::config::cfg;
   using namespace ck::config;
   using namespace ck::crypto;
   using ck::util::error::Error;
@@ -58,9 +59,19 @@ namespace ck::index {
     entry.uuid = flat.uuid;
     Node* node = tree::break_trail(&this->root_, flat.path);
     
+    auto wisper = [](this auto&& self) -> const SecureBytes {
+      SecureBytes listen1 = ck::input::wisper("Enter secret:");   
+      SecureBytes listen2 = ck::input::wisper("Confirm secret:");   
+      if (listen1.data() != listen2.data()) {
+        logger.error("Inputs do not match", "try again");
+        self();
+      }
+      return listen1;   
+    };
+
     const SecureBytes secret = (pwgen) 
-        ? ck::crypto::pwgen() 
-        : ck::input::wisper();
+        ? ck::crypto::pwgen()
+        : wisper();
     
     fs::path secret_file = this->path_ / fs::path(flat.uuid);
 

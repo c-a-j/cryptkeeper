@@ -48,7 +48,7 @@ namespace ck::cmd {
 
     if (!args.path) {
       logger.debug("Printing the whole tree");
-      logger.debug("path = ", mnt.root().path);
+      logger.debug("path", mnt.root().path);
       
       ck::index::Index idx(mnt.root().path);
       for (auto [alias, mount] : mnt.mounts()) {
