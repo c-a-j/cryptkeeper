@@ -56,7 +56,7 @@ namespace ck::config {
     if (key_parts.size() != 2) {
       throw Error<ConfigErrc>{InvalidConfigKey, std::string(args[0])};
     }
-    with_member(key_parts[0], key_parts[1], [&](auto& member){
+    bool found = with_member(key_parts[0], key_parts[1], [&](auto& member){
       using T = std::remove_cvref_t<decltype(member)>;
       if constexpr (std::is_same_v<T, std::string>) {
         member = value;
@@ -66,5 +66,9 @@ namespace ck::config {
         member = parse_int(args[0], value);
       }
     });
+
+    if (!found) {
+      throw Error<ConfigErrc>{InvalidConfigKey, std::string(args[0])};
+    }
   }
 }
