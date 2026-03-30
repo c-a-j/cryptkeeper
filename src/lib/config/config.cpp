@@ -8,29 +8,29 @@ namespace ck::config {
   using ck::util::error::ConfigErrc;
   using enum ck::util::error::ConfigErrc;
   
-  Config::Config() { deserialize(); }
+  Config::Config() {}
 
-  const Core& Config::core() const { return core_; }
-  Core& Config::core() { return core_; }
+  const Core& Config::core() const { return state_.core; }
+  Core& Config::core() { return state_.core; }
   
-  const Ui& Config::ui() const { return ui_; }
-  Ui& Config::ui() { return ui_; }
+  const Ui& Config::ui() const { return state_.ui; }
+  Ui& Config::ui() { return state_.ui; }
   
-  const Pwgen& Config::pwgen() const { return pwgen_; }
-  Pwgen& Config::pwgen() { return pwgen_; }
+  const Pwgen& Config::pwgen() const { return state_.pwgen; }
+  Pwgen& Config::pwgen() { return state_.pwgen; }
   
   const std::string& Config::home() const { 
-    if (core_.home.empty()) { 
+    if (state_.core.home.empty()) { 
       throw Error<ConfigErrc>{InvalidConfigFile, "core.home must be defined without --path "};
     }
-    return core_.home;
+    return state_.core.home;
   }
   
   std::string& Config::home() { 
-    if (core_.home.empty()) { 
-      core_.home = ck::path::vault_root();
+    if (state_.core.home.empty()) { 
+      state_.core.home = ck::path::vault_root();
     }
-    return core_.home;
+    return state_.core.home;
   }
 
   Config cfg;

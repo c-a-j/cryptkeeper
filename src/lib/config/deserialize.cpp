@@ -49,34 +49,50 @@ namespace {
     }
   }
 
+  void valid_or_default(Core& _) {
+    return;
+  }
+
+  void valid_or_default(Ui& _) {
+    return;
+  }
+
+  void valid_or_default(Pwgen& pwgen) {
+    if (auto result = pwgen.valid(); !result) {
+      logger.error(result.error().msg1, result.error().msg2);
+      Pwgen def;
+      pwgen = def;
+    }
+    return;
+  }
+
 }
 
-namespace ck::config {
+namespace ck::config::codec {
   using ck::util::error::Error;
   using ck::util::error::ConfigErrc;
   using enum ck::util::error::ConfigErrc;
   using ck::util::logger::logger;
   
-  void Config::deserialize() {
+  State deserialize(std::string_view toml_text) {
     std::filesystem::path path = ck::path::config_file();
-    if (!ck::path::file_exists(path)) {
-      core_.home = ck::path::vault_root();
-      return;
-    }
     
     toml::table cfg_toml;
     try {
-      cfg_toml = toml::parse_file(path.string());
+      cfg_toml = toml::parse(toml_text);
     } catch (const toml::parse_error& e) {
       throw Error<ConfigErrc>{InvalidConfigFile, std::string(e.description())};
     }
 
+    State state;
+
     // visit each config file section and parse the values
     // missing sections will display a warning and fall back to defaults
-    for (auto& section : this->sections()) {
+    for (auto& section : state.sections()) {
       std::visit([&](auto& member) {
         if (auto* tbl = cfg_toml[section.name].as_table()) {
-          parse_fields(this->*member, *tbl, section.name);
+          parse_fields(state.*member, *tbl, section.name);
+          valid_or_default(state.*member);
         } else {
           std::string msg1 = "Section " + std::string(section.name) + " is missing from config file";
           std::string msg2 = "defaults will be applied";
@@ -84,5 +100,6 @@ namespace ck::config {
         }
       }, section.member);
     }
+   return state;
   }
 }

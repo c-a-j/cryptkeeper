@@ -5,9 +5,11 @@ target_sources(ck_lib PRIVATE
     
     config/config.cpp
     config/deserialize.cpp
+    config/fio.cpp
     config/print.cpp
+    config/serialize.cpp
     config/set.cpp
-    config/write.cpp
+    config/validate.cpp
     
     input/wisper.cpp
     

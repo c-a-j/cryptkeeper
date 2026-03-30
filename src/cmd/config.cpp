@@ -10,6 +10,7 @@ namespace ck::cmd {
 
   void config(const ck::cli::Context& _, const ck::cli::ConfigArgs& args) {
     std::vector<std::string> set_args = args.set_args;
+    cfg.load();
     
     if (set_args.size() == 0) {
       cfg.print();
@@ -19,7 +20,7 @@ namespace ck::cmd {
       return;
     } else if (set_args.size() == 2) {
       cfg.set(set_args);
-      cfg.write();
+      cfg.save();
       return;
     } else if (set_args.size() > 2) {
       throw CLI::ValidationError("config", "too many arguments");

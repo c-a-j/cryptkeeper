@@ -7,51 +7,39 @@
 #include "lib/config/types.hpp"
 #include "util/logger/logger.hpp"
 
+#include "./_internal/codec.hpp"
 #include "../fio/atomic_write.hpp"
 #include "../path/path.hpp"
-
-namespace {
-  using namespace ck::config;
-  using ck::util::error::Error;
-  using ck::util::error::ConfigErrc;
-  using enum ck::util::error::ConfigErrc;
-  using ck::util::logger::logger;
-
-  template <typename Owner>
-  void insert_fields(const Owner& cfg, toml::table& tbl) {
-    for (const auto& field : Owner::fields())  {
-      std::visit([&](auto member){
-        tbl.insert_or_assign(field.key, cfg.*member);
-      }, field.member);
-    }
-  }
-  
-  template <typename T>
-  void insert_table(const T& cfg, toml::table& tbl) {
-    tbl.insert(T::k_name, toml::table{});
-    toml::table* subtbl = tbl[T::k_name].as_table();
-    insert_fields(cfg, *subtbl);
-  }
-  
-  toml::table serialize(const ck::config::Config& cfg) {
-    toml::table tbl;
-    
-    insert_table(cfg.core(), tbl);
-    insert_table(cfg.ui(), tbl);
-    insert_table(cfg.pwgen(), tbl);
-    return tbl;
-  }
-}
+#include "../path/existence.hpp"
 
 namespace ck::config {
   using ck::util::error::Error;
   using ck::util::error::ConfigErrc;
   using enum ck::util::error::ConfigErrc;
   using ck::util::logger::logger;
-  
-  void Config::write() {
+
+  void Config::load() {
+    std::filesystem::path cfg_file = ck::path::config_file();
+    if (!ck::path::file_exists(cfg_file)) {
+      this->state_.core.home = ck::path::vault_root();
+      return;
+    }
+
+    std::ifstream in(cfg_file, std::ios::binary);
+    std::string text(
+      (std::istreambuf_iterator<char>(in)),
+      std::istreambuf_iterator<char>());
+
+    State state = codec::deserialize(text);
+    this->state_ = state;
+  }
+
+  void Config::save() {
     ck::path::create_config_dir();  
-    toml::table tbl = serialize(*this);
+
+    State state = this->state_;
+
+    toml::table tbl = codec::serialize(state);
     std::filesystem::path cfg_file = ck::path::config_file();
     
     std::error_code ec;
