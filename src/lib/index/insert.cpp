@@ -70,7 +70,7 @@ namespace ck::index {
     };
 
     const SecureBytes secret = (pwgen) 
-        ? ck::crypto::pwgen()
+        ? ck::crypto::pwgen(cfg.pwgen().spec())
         : wisper();
     
     fs::path secret_file = this->path_ / fs::path(flat.uuid);

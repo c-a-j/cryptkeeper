@@ -6,6 +6,7 @@
 #include <variant>
 #include <expected>
 
+#include "lib/crypto/types.hpp"
 #include "util/error.hpp"
 
 namespace ck::config {
@@ -62,6 +63,7 @@ namespace ck::config {
     int lowercase = 5;
 
     std::expected<void, Err> valid();
+    ck::crypto::PwSpec spec();
     
     using IntMember = MemberPtr<Pwgen, int>;
     using FieldVariant = Field<std::variant<IntMember>>; 

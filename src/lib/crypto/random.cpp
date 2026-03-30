@@ -142,21 +142,17 @@ namespace ck::crypto {
       "0123456789"
       "!@#$%^&*()-_=+[]{};:,.<>?";
     
-    if (!spec.length) { 
-      logger.warning("Password length not specified, defaulting to 20");
-      length = 20;
-      // throw Error<CryptoErrc>{InvalidPwSpec, "a length is required"}; 
-    } else {
-      length = *spec.length;
-    }
+    length = spec.length;
     if (length < 1) { throw Error<CryptoErrc>{InvalidPwSpec, "length must be greater than 0"}; }
-    nupp = spec.nupp ? *spec.nupp : 0;
-    nlow = spec.nlow ? *spec.nlow : 0;
-    nnum = spec.nnum ? *spec.nnum : 0;
-    nsym = spec.nsym ? *spec.nsym : 0;
+    nsym = spec.symbols;
+    nupp = spec.uppercase;
+    nlow = spec.lowercase;
+    nnum = spec.numbers;
+
     if (length < nupp + nlow + nnum + nsym) { 
       throw Error<CryptoErrc>{InvalidPwSpec, "length must be greater than sum of parts"}; 
     }
+
     nrest = length - (nupp + nlow + nnum + nsym);
     
     SecureBytes out(length);
