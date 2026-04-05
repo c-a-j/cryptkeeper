@@ -58,6 +58,7 @@ Agents should preserve this architectural direction in proposals and implementat
   - Keep logging and error handling consistent with existing command modules.
 - Preserve naming and file organization patterns (`src/cmd`, `include/cmd`, `utils`, etc.).
 - Avoid adding new frameworks, abstractions, or dependencies unless clearly justified and requested.
+- Refer to https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines for best practice guidance
 
 ## Guidance for Architectural Suggestions
 

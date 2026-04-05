@@ -41,11 +41,12 @@ This tool might be for you if:
 
 Store your secrets wherever works best for you — locally, a remote git
 repository, a USB drive, or cloud storage. No server to maintain, no backup
-strategy to design, no availability concerns. Just files under your control.
+strategy to design, no availability concerns. Just files that are completely
+under your control.
 
 ### Secure metadata
 
-Unlike `pass` and `gopass`, metadata (i.e. the directory/tree structure that
+Unlike `pass` and `gopass`, metadata (i.e. the directory or trie structure that
 points to secrets) is encrypted in an index file. For most users this won't
 matter much, but if your secret *names* reveal sensitive information, this is a
 meaningful distinction.
@@ -62,7 +63,7 @@ Crypt Keeper is not a drop in replacement for `pass` or `gopass`. The goal is to
 take the best features of both and build on them with a tighter UX. Reaching
 feature parity with `gopass` is a long-term aim.
 
-## Design
+## Core Design Features
 
 ### Mounts
 
@@ -74,19 +75,25 @@ specified alias.
 
 ### Index
 
-The encrypted index is a TOML file containing an array of secret entries.
+The encrypted index is a TOML file containing an array of secret entries. I
+originally selected JSON for this purpose, but switched to TOML to reduce
+dependencies and for tooling consitency with the configuration file. However,
+now that I'm considering a sync with BitWarden feature, I'll probably have to
+reintroduce a JSON parser eventually anyway.
 
+Each entry contains a string UUID and an array of path elements. The UUID is the
+filename of a secret in the vault and the path array is used to build a trie.
 
 ## Quick Start Guide
 
-### Initialize a new vault
+#### Initialize a new vault
 For now, you must provide the full gpg key fingerprint to initialize a vault.
 ```bash
 gpg --list-keys
 ck init -v myvault -k {full_gpg_key_fingerprint}
 ```
 
-### List current configuration
+#### List current configuration
 ```
 ck config
 ```
@@ -95,12 +102,12 @@ ck config
 Focus your attention mainly on `core.home`, this is where new vaults are added
 by default when an alternate path is not specified.
 
-### Insert a secret
+#### Insert a secret
 ```bash
 ck insert some/secret
 ```
 
-### Show secrets
+#### Show secrets
 Show secret tree
 ```bash
 ck show
@@ -117,7 +124,7 @@ Crypt Keeper ⟶  (/home/cjordan/.local/share/crypt-keeper/myvault)
     └── secret
 ```
 
-### Mount another vault
+#### Mount another vault
 
 ```bash
 ck init -v anothervault -k {full_gpg_key_fingerprint}
@@ -157,7 +164,7 @@ Crypt Keeper ⟶  (/home/user/.local/share/crypt-keeper/myvault)
 secret isn't located along the specified alias path. In other words, a terminal
 node can never have children.
 
-### Unmount a vault
+#### Unmount a vault
 
 ```bash
 ck umount some/other/location/in/mount/tree
@@ -168,23 +175,14 @@ ck  [.]  some/other/location/in/mount/tree has been unmounted
 Crypt Keeper ⟶  (/home/user/.local/share/crypt-keeper/myvault)
 ```
 
-### Change root vault
+#### Change root vault
 
 ```bash
 ck chroot anothervault
 ```
 
-### Desired Near-Term Features
-
-- Integrate git
-  - as of right now, initializing and managing a repo is manual
-- Add keys
-  - as of now, there is no mechanism in place to add gpg keys to a vault
-- Migrate `pass` and `gopass` stores to a crypt keeper vault
-- Migrate BitWarden items to a Crypt Keeper vault
-- Browser integration
-- Any of the other great `gopass` features that are missed
-
 ## Contributing
+
+I welcome any contributions. Please see CONTRIBUTING.md for more information.
 
 ## Credit and License

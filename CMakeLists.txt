@@ -5,11 +5,17 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 option(CK_WARNINGS_AS_ERRORS "Treat warnings as errors" ON)
 option(CK_ENABLE_SANITIZERS "Enable ASan/UBSan in Debug (GCC/Clang)" ON)
-option(CK_ENABLE_DEBUG_LOGS "Enable debug logging" ${CK_ENABLE_DEBUG_LOGS_DEFAULT})
 
-set (CK_ENABLE_DEGUB_LOGS_DEFAULT OFF)
+set(CK_ENABLE_DEBUG_LOGS_DEFAULT OFF)
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
   set(CK_ENABLE_DEBUG_LOGS_DEFAULT ON)
+endif()
+
+option(CK_ENABLE_DEBUG_LOGS "Enable debug logging" ${CK_ENABLE_DEBUG_LOGS_DEFAULT})
+
+option(CK_ENABLE_CLANG_TIDY "Enable clang-tidy" OFF)
+if(CK_ENABLE_CLANG_TIDY)
+  set(CMAKE_CXX_CLANG_TIDY clang-tidy)
 endif()
 
 find_package(PkgConfig REQUIRED)
