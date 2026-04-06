@@ -14,7 +14,7 @@ namespace ck::config {
     ck::crypto::PwSpec spec = {
       .length = static_cast<std::size_t>(this->length),
       .symbols = static_cast<std::size_t>(this->symbols),
-      .numbers = static_cast<std::size_t>(this->uppercase),
+      .numbers = static_cast<std::size_t>(this->numbers),
       .uppercase = static_cast<std::size_t>(this->uppercase),
       .lowercase = static_cast<std::size_t>(this->lowercase)
     };

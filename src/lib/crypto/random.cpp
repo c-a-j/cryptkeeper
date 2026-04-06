@@ -164,6 +164,8 @@ namespace ck::crypto {
     fill_random_chars(out, pos, symset, nsym);
     fill_random_chars(out, pos, charset, nrest);
     
+    shuffle_bytes(out);
+    
     return out;
   }
 }

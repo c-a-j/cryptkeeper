@@ -13,6 +13,7 @@
 #include "lib/crypto/crypto.hpp"
 #include "lib/crypto/random.hpp"
 #include "lib/crypto/secure_wipe.hpp"
+#include "lib/config/types.hpp"
 #include "util/error.hpp"
 
 #include "../util/gen_key.hpp"
@@ -343,20 +344,22 @@ TEST(CryptoUtilityTest, UuidV4ProducesCanonicalUniqueValues) {
 }
 
 TEST(CryptoUtilityTest, PwgenDefaultsToAllowedCharactersAndLength20) {
-  const SecureBytes password = ck::crypto::pwgen();
+  ck::crypto::PwSpec spec = ck::config::Pwgen{}.spec();
+  const SecureBytes password = ck::crypto::pwgen(spec);
 
   EXPECT_EQ(password.size(), 20U);
   EXPECT_TRUE(contains_only_charset(password, kPasswordChars));
 }
 
 TEST(CryptoUtilityTest, PwgenHonorsRequestedCharacterCounts) {
-  const SecureBytes password = ck::crypto::pwgen({
+  ck::config::Pwgen pwgen {
     .length = 14,
-    .nsym = 5,
-    .nnum = 4,
-    .nupp = 2,
-    .nlow = 3,
-  });
+    .symbols = 5,
+    .numbers = 4,
+    .uppercase = 2,
+    .lowercase = 3,
+  };
+  const SecureBytes password = ck::crypto::pwgen(pwgen.spec());
 
   EXPECT_EQ(password.size(), 14U);
   EXPECT_EQ(count_chars_in_charset(password, kUppercase), 2U);
@@ -366,15 +369,16 @@ TEST(CryptoUtilityTest, PwgenHonorsRequestedCharacterCounts) {
 }
 
 TEST(CryptoUtilityTest, PwgenRejectsZeroLength) {
+  ck::config::Pwgen pwgen {
+    .length = 0,
+    .symbols = 0,
+    .numbers = 0,
+    .uppercase = 0,
+    .lowercase = 0,
+  };
   expect_crypto_error(
     [&] {
-      const auto password = ck::crypto::pwgen({
-        .length = 0,
-        .nsym = 0,
-        .nnum = 0,
-        .nupp = 0,
-        .nlow = 0,
-      });
+      const auto password = ck::crypto::pwgen(pwgen.spec());
       (void)password;
     },
     InvalidPwSpec
@@ -382,15 +386,16 @@ TEST(CryptoUtilityTest, PwgenRejectsZeroLength) {
 }
 
 TEST(CryptoUtilityTest, PwgenRejectsCountsLargerThanLength) {
+  ck::config::Pwgen pwgen {
+    .length = 4,
+    .symbols = 2,
+    .numbers = 2,
+    .uppercase = 1,
+    .lowercase = 0,
+  };
   expect_crypto_error(
     [&] {
-      const auto password = ck::crypto::pwgen({
-        .length = 4,
-        .nsym = 2,
-        .nnum = 2,
-        .nupp = 1,
-        .nlow = 0,
-      });
+      const auto password = ck::crypto::pwgen(pwgen.spec());
       (void)password;
     },
     InvalidPwSpec

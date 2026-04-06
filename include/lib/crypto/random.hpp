@@ -6,5 +6,5 @@
 
 namespace ck::crypto {
   std::string uuid_v4();
-  SecureBytes pwgen(const PwSpec& = {});
+  SecureBytes pwgen(const PwSpec&);
 }
