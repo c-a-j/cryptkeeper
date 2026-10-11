@@ -52,7 +52,7 @@ namespace ck::cmd {
     msg1 += "Crypt " + args.crypt_name + " has been initialized";
     logger.info(msg1);
     
-    if (!ck::mount::mnt.file_exists()) {
+    if (!ck::mount::Mounts::file_exists()) {
       logger.info("Welcome to Crypt Keeper - the spooky password manager");
       ck::mount::mnt.chroot(crypt_path);
     }

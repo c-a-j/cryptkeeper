@@ -1,6 +1,5 @@
 #include "toml++/toml.hpp"
 #include <filesystem>
-#include <optional>
 #include <fstream>
 
 #include "util/error.hpp"
@@ -19,17 +18,19 @@ namespace ck::mount {
   using enum ck::util::error::MountErrc;
 
   void Mounts::load() {
-    if (!ck::path::file_exists(this->file_)) {
+    const fs::path mnt_file = ck::path::mount_file();
+
+    if (!ck::path::file_exists(mnt_file)) {
       logger.debug("ck::mount::load()");
       throw Error<MountErrc>{MountFileNotFound, "Initialize a crypt or mount an existing one"};
     }
     
-    std::ifstream in(this->file_, std::ios::binary);
+    std::ifstream in(mnt_file, std::ios::binary);
     std::string text(
       (std::istreambuf_iterator<char>(in)),
       std::istreambuf_iterator<char>());
     
-    State state = codec::deserialize(text, this->file_.string());
+    State state = codec::deserialize(text, mnt_file.string());
     this->state_ = state;
   }
 

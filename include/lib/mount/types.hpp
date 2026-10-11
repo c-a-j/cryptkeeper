@@ -43,7 +43,7 @@ namespace ck::mount {
 
   class Mounts {
     public:
-      explicit Mounts();
+      explicit Mounts() = default;
       explicit Mounts(State& s);
 
       Mount& root();
@@ -59,14 +59,13 @@ namespace ck::mount {
       ResolvedPath resolve(const std::string& path);
       void print();
       bool empty() const noexcept;
-      bool file_exists() const noexcept;
+      static bool file_exists();
 
       void load();
       void save();
 
     private:
       State state_;
-      fs::path file_;
   };
 
   extern Mounts mnt;
