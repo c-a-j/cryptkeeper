@@ -19,6 +19,9 @@ namespace ck::cli {
       MountArgs mount;
       UmountArgs umount;
       ChrootArgs chroot;
+      RemoveArgs remove;
+      ReplaceArgs replace;
+      EditArgs edit;
     };
     
     void configure_root(CLI::App& app, RootArgs& args) {
@@ -79,6 +82,24 @@ namespace ck::cli {
       chroot -> add_option("path", args.chroot.path, "Crypt path")->required();
       return chroot;
     }
+
+    CLI::App* add_remove(CLI::App& app, ParsedCmdArgs& args) {
+      auto* remove = app.add_subcommand("remove", "Remove a secret");
+      remove -> add_option("path", args.remove.path, "Secret path")->required();
+      return remove;
+    }
+
+    CLI::App* add_replace(CLI::App& app, ParsedCmdArgs& args) {
+      auto* replace = app.add_subcommand("replace", "Replace a secret");
+      replace -> add_option("path", args.replace.path, "Secret path")->required();
+      return replace;
+    }
+
+    CLI::App* add_edit(CLI::App& app, ParsedCmdArgs& args) {
+      auto* edit = app.add_subcommand("edit", "Edit a secret");
+      edit -> add_option("path", args.edit.path, "Secret path")->required();
+      return edit;
+    }
   }
   
   CliArgs parse_cli(CLI::App& app, int argc, char** argv) {
@@ -93,6 +114,9 @@ namespace ck::cli {
     auto* mount = add_mount(app, cargs);
     auto* umount = add_umount(app, cargs);
     auto* chroot = add_chroot(app, cargs);
+    auto* remove = add_remove(app, cargs);
+    auto* replace = add_replace(app, cargs);
+    auto* edit = add_edit(app, cargs);
     
     CliArgs args = CliArgs{
       .root = RootArgs{},
@@ -134,6 +158,18 @@ namespace ck::cli {
     }
     if (chroot->parsed()) { 
       args.cmd = cargs.chroot;
+      return args; 
+    }
+    if (remove->parsed()) { 
+      args.cmd = cargs.remove;
+      return args; 
+    }
+    if (replace->parsed()) { 
+      args.cmd = cargs.replace;
+      return args; 
+    }
+    if (edit->parsed()) { 
+      args.cmd = cargs.edit;
       return args; 
     }
     

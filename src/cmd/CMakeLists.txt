@@ -6,6 +6,9 @@ target_sources(ck PRIVATE
   mount.cpp
   umount.cpp
   chroot.cpp
+  remove.cpp
+  replace.cpp
+  edit.cpp
   
   run_command.cpp
 )

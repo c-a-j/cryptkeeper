@@ -1,0 +1,15 @@
+#include "cli/types.hpp"
+#include "ui/console/console.hpp"
+
+namespace ck::cmd {
+  using ui::console::console;
+
+  void remove(const ck::cli::Context& _, const ck::cli::RemoveArgs& args) {
+    std::string path;
+    if (args.path) {
+      path = *args.path;
+    }
+    console.debug("Removing secret '" + path + "'");
+  }
+}
+

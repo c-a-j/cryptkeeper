@@ -10,4 +10,7 @@ namespace ck::cmd {
   void mount(const ck::cli::Context& _, const ck::cli::MountArgs& args);
   void umount(const ck::cli::Context& _, const ck::cli::UmountArgs& args);
   void chroot(const ck::cli::Context& _, const ck::cli::ChrootArgs& args);
+  void remove(const ck::cli::Context& _, const ck::cli::RemoveArgs& args);
+  void replace(const ck::cli::Context& _, const ck::cli::ReplaceArgs& args);
+  void edit(const ck::cli::Context& _, const ck::cli::EditArgs& args);
 }

@@ -27,7 +27,14 @@ namespace ck::cmd {
         umount(ctx, args);
       } else if constexpr (std::is_same_v<T, ck::cli::ChrootArgs>) {
         chroot(ctx, args);
+      } else if constexpr (std::is_same_v<T, ck::cli::RemoveArgs>) {
+        remove(ctx, args);
+      } else if constexpr (std::is_same_v<T, ck::cli::ReplaceArgs>) {
+        replace(ctx, args);
+      } else if constexpr (std::is_same_v<T, ck::cli::EditArgs>) {
+        edit(ctx, args);
       }
+
       return 0;
     }, cargs);
   }

@@ -44,6 +44,18 @@ namespace ck::cli {
   struct ChrootArgs {
     std::optional<std::string> path;
   };
+
+  struct RemoveArgs {
+    std::optional<std::string> path;
+  };
+
+  struct ReplaceArgs {
+    std::optional<std::string> path;
+  };
+
+  struct EditArgs {
+    std::optional<std::string> path;
+  };
   
   using CmdArgs = std::variant<
     std::monostate,
@@ -53,7 +65,10 @@ namespace ck::cli {
     ShowArgs,
     MountArgs,
     UmountArgs,
-    ChrootArgs
+    ChrootArgs,
+    RemoveArgs,
+    ReplaceArgs,
+    EditArgs 
   >;
   
   struct CliArgs {
@@ -64,4 +79,5 @@ namespace ck::cli {
   struct Context {
     RootArgs root_args;
   };
+
 }
