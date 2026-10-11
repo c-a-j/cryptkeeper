@@ -2,17 +2,17 @@
 #include <filesystem>
 #include <cstdlib>
 
-#include "util/error.hpp"
-#include "util/logger/logger.hpp"
+#include "lib/path/error.hpp"
+#include "ui/console/console.hpp"
 #include "global.hpp"
 
 // path functions
 namespace ck::path {
   namespace fs = std::filesystem;
-  using ck::util::error::Error;
-  using ck::util::error::PathErrc;
-  using enum ck::util::error::PathErrc;
-  using ck::util::logger::logger;
+  using ck::error::Error;
+  using ck::error::PathErrc;
+  using enum ck::error::PathErrc;
+  using ck::ui::console::console;
 
   static std::string env_or_empty(const char* name) {
     if (const char* value = std::getenv(name)) { return value; }
@@ -83,7 +83,7 @@ namespace ck::path {
       throw Error<PathErrc>{CreateDirectoryFailed, dir.string() };
     }
     if (created) {
-      logger.info("Created new config directory", dir.string());
+      console.info("Created new config directory", dir.string());
     }
   }
 }

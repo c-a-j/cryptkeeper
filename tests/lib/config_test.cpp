@@ -186,7 +186,7 @@ home = "/tmp/test-crypt"
 )toml");
 
   Config cfg;
-  EXPECT_THROW(cfg.load(), ck::util::error::AppError);
+  EXPECT_THROW(cfg.load(), ck::error::AppError);
 }
 
 TEST_F(ConfigTest, MissingSectionUsesDefaults) {
@@ -325,7 +325,7 @@ lowercase = 10
   const Config& const_cfg = cfg;
 
   EXPECT_TRUE(cfg.core().home.empty());
-  EXPECT_THROW(const_cfg.home(), ck::util::error::AppError);
+  EXPECT_THROW(const_cfg.home(), ck::error::AppError);
 }
 
 TEST_F(ConfigTest, MutableHomeBackfillsCryptRootWhenMissing) {
@@ -386,14 +386,14 @@ TEST_F(ConfigTest, SetRejectsUnknownSection) {
   Config cfg;
   cfg.load();
 
-  EXPECT_THROW(cfg.set({"foobar.length", "48"}), ck::util::error::AppError);
+  EXPECT_THROW(cfg.set({"foobar.length", "48"}), ck::error::AppError);
 }
 
 TEST_F(ConfigTest, SetRejectsUnknownMember) {
   Config cfg;
   cfg.load();
 
-  EXPECT_THROW(cfg.set({"core.foobar", "true"}), ck::util::error::AppError);
+  EXPECT_THROW(cfg.set({"core.foobar", "true"}), ck::error::AppError);
 }
 
 TEST_F(ConfigTest, SetRejectsMalformedKeys) {
@@ -408,7 +408,7 @@ TEST_F(ConfigTest, SetRejectsMalformedKeys) {
 
   for (const auto& key : invalid_keys) {
     SCOPED_TRACE(key);
-    EXPECT_THROW(cfg.set({key, "true"}), ck::util::error::AppError);
+    EXPECT_THROW(cfg.set({key, "true"}), ck::error::AppError);
   }
 }
 
@@ -423,7 +423,7 @@ TEST_F(ConfigTest, SetRejectsInvalidInteger) {
 
   for (const auto& value : invalid_values) {
     SCOPED_TRACE(value);
-    EXPECT_THROW(cfg.set({"pwgen.length", value}), ck::util::error::AppError);
+    EXPECT_THROW(cfg.set({"pwgen.length", value}), ck::error::AppError);
   }
 }
 
@@ -568,6 +568,6 @@ TEST_F(ConfigTest, PrintRejectsUnknownKeys) {
 
   for (const auto& key : invalid_keys) {
     SCOPED_TRACE(key);
-    EXPECT_THROW(cfg.print(key), ck::util::error::AppError);
+    EXPECT_THROW(cfg.print(key), ck::error::AppError);
   }
 }

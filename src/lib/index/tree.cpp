@@ -2,8 +2,8 @@
 #include <vector>
 
 #include "lib/index/index.hpp"
-#include "util/error.hpp"
-#include "util/logger/logger.hpp"
+#include "lib/index/error.hpp"
+#include "ui/console/console.hpp"
 #include "lib/path/parse_path.hpp"
 
 #include "../path/internal/join.hpp"
@@ -20,10 +20,10 @@ namespace {
 }
 
 namespace ck::index::tree { 
-  using ck::util::logger::logger;
-  using ck::util::error::Error;
-  using ck::util::error::IndexErrc;
-  using enum ck::util::error::IndexErrc;
+  using ck::ui::console::console;
+  using ck::error::Error;
+  using ck::error::IndexErrc;
+  using enum ck::error::IndexErrc;
 
   // used for clearing a trail through the intex tree
   // does not allow secrets anywhere along the path (secrets are always terminal nodes)
@@ -32,7 +32,7 @@ namespace ck::index::tree {
     Node* node = root;
     for (std::size_t i = 0; i < path_parts.size(); ++i) {
       if (node->entry){
-        logger.debug("break_trail()");
+        console.debug("break_trail()");
         throw Error<IndexErrc>{PathConflict, along_path_msg(path_parts, i)};
       }
       
@@ -40,12 +40,12 @@ namespace ck::index::tree {
     }
     
     if (node->entry) {
-      logger.debug("Index::break_trail()");
+      console.debug("Index::break_trail()");
       throw Error<IndexErrc>{SecretExists, ck::path::join(path_parts)};
     }
     
     if (!node->children.empty()) {
-      logger.debug("Index::break_trail()");
+      console.debug("Index::break_trail()");
       throw Error<IndexErrc>{PathConflict, ck::path::join(path_parts) + " -> has children"};
     }
     return node;
@@ -62,7 +62,7 @@ namespace ck::index::tree {
     Node* node = root;
     for (std::size_t i = 0; i < path_parts.size(); ++i) {
       if (node->entry){
-        logger.debug("walk_path()");
+        console.debug("walk_path()");
         throw Error<IndexErrc>{PathConflict, along_path_msg(path_parts, i)};
       }
       node = &node->children[path_parts[i]];

@@ -1,11 +1,11 @@
-#include "util/term.hpp"
+#include "ui/term.hpp"
 
 #include "./internal/theme.hpp"
 
 namespace ck::mount {
-  using namespace ck::util::term;
-  using enum ck::util::term::Color;
-  using enum ck::util::term::Style;
+  using namespace ck::ui::term;
+  using enum ck::ui::term::Color;
+  using enum ck::ui::term::Style;
   using enum OutputComponent;
   
   TextStyle get_scheme_style(OutputComponent c) {

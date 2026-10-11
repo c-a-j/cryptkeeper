@@ -2,15 +2,15 @@
 #include <unistd.h>
 #include <fcntl.h>
 
-#include "util/error.hpp"
+#include "lib/fio/error.hpp"
 #include "./internal/msg.hpp"
 
 
 namespace ck::fio {
   namespace fs = std::filesystem;
-  using ck::util::error::Error;
-  using ck::util::error::FsErrc;
-  using enum ck::util::error::FsErrc;
+  using ck::error::Error;
+  using ck::error::FsErrc;
+  using enum ck::error::FsErrc;
 
   void sync_dir(const fs::path& path)  {
     #ifndef WIN32_

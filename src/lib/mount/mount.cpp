@@ -3,8 +3,8 @@
 #include "lib/mount/mount.hpp"
 #include "lib/index/index.hpp"
 #include "lib/config/config.hpp"
-#include "util/error.hpp"
-#include "util/logger/logger.hpp"
+#include "lib/mount/error.hpp"
+#include "ui/console/console.hpp"
 #include "lib/path/parse_path.hpp"
 
 #include "./internal/hash.hpp"
@@ -14,10 +14,10 @@
 
 namespace ck::mount {
   using ck::config::cfg;
-  using ck::util::logger::logger;
-  using ck::util::error::Error;
-  using ck::util::error::MountErrc;
-  using enum ck::util::error::MountErrc;
+  using ck::ui::console::console;
+  using ck::error::Error;
+  using ck::error::MountErrc;
+  using enum ck::error::MountErrc;
 
   void Mounts::mount(const std::string& path, const std::string& alias) {
     fs::path mnt_file = ck::path::mount_file();
@@ -70,7 +70,7 @@ namespace ck::mount {
   // 'ck mount foo' will attempt to mount a crypt on disk at cfg.core_.home/foo
   // supplying an alias comprised of more than one component, ex foo/bar is not supported
     std::vector<std::string> alias_parts = ck::path::parse_path(alias);
-    logger.debug("Mounts::mount() - adding a mount with a single argument");
+    console.debug("Mounts::mount() - adding a mount with a single argument");
     if (alias_parts.size() > 1) {
       throw Error<MountErrc>{InvalidArguments, "a path must be specified for this alias"};
     }

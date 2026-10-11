@@ -2,10 +2,10 @@
 #include <cerrno>
 #include <cstring>
 
-#include "util/error.hpp"
+#include "lib/fio/error.hpp"
 
 namespace ck::fio {
-  using enum ck::util::error::FsErrc;
+  using enum ck::error::FsErrc;
   
   int write_all(int fd, const char* data, std::size_t len) {
     std::size_t written = 0;

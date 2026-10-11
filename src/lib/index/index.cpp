@@ -1,4 +1,4 @@
-#include "util/error.hpp"
+#include "lib/index/error.hpp"
 #include "lib/index/index.hpp"
 #include "lib/crypto/crypto.hpp"
 #include "global.hpp"
@@ -11,7 +11,7 @@ namespace {
 
 namespace ck::index { 
   using namespace ck::crypto;
-  using enum ck::util::error::IndexErrc;
+  using enum ck::error::IndexErrc;
 
   Index::Index(const std::string& crypt_path) { 
     this->path_ = fs::path(crypt_path);

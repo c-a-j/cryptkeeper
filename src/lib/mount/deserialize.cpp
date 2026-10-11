@@ -1,15 +1,15 @@
 #include "toml++/toml.hpp"
 #include <optional>
 
-#include "util/error.hpp"
-#include "util/logger/logger.hpp"
+#include "lib/mount/error.hpp"
+#include "ui/console/console.hpp"
 #include "lib/mount/mount.hpp"
 
 namespace {
   using namespace ck::mount;
-  using ck::util::error::Error;
-  using ck::util::error::MountErrc;
-  using enum ck::util::error::MountErrc;
+  using ck::error::Error;
+  using ck::error::MountErrc;
+  using enum ck::error::MountErrc;
 
   Mount parse_root(const toml::table& tbl, const std::string& file_path) {
     Mount m{};
@@ -77,10 +77,10 @@ namespace {
 
 namespace ck::mount::codec {
   namespace fs = std::filesystem;
-  using ck::util::logger::logger;
-  using ck::util::error::Error;
-  using ck::util::error::MountErrc;
-  using enum ck::util::error::MountErrc;
+  using ck::ui::console::console;
+  using ck::error::Error;
+  using ck::error::MountErrc;
+  using enum ck::error::MountErrc;
 
   State deserialize(std::string_view toml_text, const std::string& file_path) {
     toml::table mount_toml;

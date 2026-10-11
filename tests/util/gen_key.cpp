@@ -12,9 +12,9 @@
 using namespace ck::crypto;
 
 namespace fs = std::filesystem;
-using ck::util::error::Error;
-using ck::util::error::CryptoErrc;
-using enum ck::util::error::CryptoErrc;
+using ck::error::Error;
+using ck::error::CryptoErrc;
+using enum ck::error::CryptoErrc;
 
 namespace ck::tests::util {
   ScopedGnupgHome::ScopedGnupgHome() {

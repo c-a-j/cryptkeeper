@@ -3,16 +3,16 @@
 #include <sstream>
 #include <iostream>
 
-#include "util/error.hpp"
+#include "error.hpp"
 #include "lib/config/config.hpp"
-#include "util/logger/logger.hpp"
+#include "ui/console/console.hpp"
 
 namespace {
   using namespace ck::config;
-  using ck::util::error::Error;
-  using ck::util::error::ConfigErrc;
-  using enum ck::util::error::ConfigErrc;
-  using ck::util::logger::logger;
+  using ck::error::Error;
+  using ck::error::ConfigErrc;
+  using enum ck::error::ConfigErrc;
+  using ck::ui::console::console;
 
   template <typename T>
   void print_ln(
@@ -52,10 +52,10 @@ namespace {
 
 
 namespace ck::config {
-  using ck::util::error::Error;
-  using ck::util::error::ConfigErrc;
-  using enum ck::util::error::ConfigErrc;
-  using ck::util::logger::logger;
+  using ck::error::Error;
+  using ck::error::ConfigErrc;
+  using enum ck::error::ConfigErrc;
+  using ck::ui::console::console;
   
   void Config::print() {
     State state = this->state_;

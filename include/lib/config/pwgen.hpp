@@ -6,10 +6,10 @@
 #include <variant>
 #include <expected>
 
-#include "util/error.hpp"
+#include "lib/config/error.hpp"
 
 namespace ck::config {
-  using Err = ck::util::error::Error<ck::util::error::ConfigErrc>;
+  using Err = ck::error::Error<ck::error::ConfigErrc>;
 
   template<typename Owner, typename Member>
   using MemberPtr = Member Owner::*;

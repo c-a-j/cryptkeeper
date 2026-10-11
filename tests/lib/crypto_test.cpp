@@ -24,9 +24,9 @@ namespace {
   using ck::crypto::SecureBytes;
   using ck::tests::util::ScopedGnupgHome;
   using ck::tests::util::generate_tmp_key;
-  using ck::util::error::CryptoErrc;
-  using ck::util::error::Error;
-  using enum ck::util::error::CryptoErrc;
+  using ck::error::CryptoErrc;
+  using ck::error::Error;
+  using enum ck::error::CryptoErrc;
 
   constexpr std::string_view kUppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   constexpr std::string_view kLowercase = "abcdefghijklmnopqrstuvwxyz";

@@ -1,19 +1,18 @@
 #pragma once
 #include <string_view>
-#include <utility>
 #include <optional>
 
-#include "util/logger/theme.hpp"
+#include "ui/console/theme.hpp"
 
-namespace  ck::util::logger {
-  struct LoggerConfig {
+namespace  ck::ui::console {
+  struct ConsoleConfig {
     bool no_color = false;
     bool debug = true;
   };
   
-  class Logger {
+  class Console {
     public:
-      Logger() noexcept = default;
+      Console() noexcept = default;
       void initialize(Theme theme);
       void initialize();
 
@@ -35,7 +34,7 @@ namespace  ck::util::logger {
       void debug(std::string_view msg, Overrides o = {});
       void debug(std::string_view msg1, std::string_view msg2);
       
-      void configure(const LoggerConfig& cfg);
+      void configure(const ConsoleConfig& cfg);
       
       void set_no_color();
       
@@ -43,8 +42,8 @@ namespace  ck::util::logger {
       
     private:
       std::optional<Theme> theme_;
-      LoggerConfig cfg_;
+      ConsoleConfig cfg_;
   };
 
-  extern Logger logger;
+  extern Console console;
 }

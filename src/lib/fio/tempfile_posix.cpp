@@ -5,7 +5,7 @@
 #include <vector>
 #include <unistd.h>
 #include <cerrno>
-#include "util/error.hpp"
+#include "lib/fio/error.hpp"
 
 #include "./internal/tempfile.hpp"
 #include "./internal/write_all.hpp"
@@ -13,9 +13,9 @@
 
 namespace ck::fio {
   namespace fs = std::filesystem;
-  using ck::util::error::Error;
-  using ck::util::error::FsErrc;
-  using enum ck::util::error::FsErrc;
+  using ck::error::Error;
+  using ck::error::FsErrc;
+  using enum ck::error::FsErrc;
     
   TempFile::TempFile(fs::path target_) : target(std::move(target_)) {
     std::string tmpl = target.string() + ".tmp.XXXXXX";

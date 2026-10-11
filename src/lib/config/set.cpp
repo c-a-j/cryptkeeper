@@ -2,18 +2,18 @@
 
 #include <sstream>
 
-#include "util/error.hpp"
+#include "error.hpp"
 #include "lib/config/config.hpp"
-#include "util/logger/logger.hpp"
+#include "ui/console/console.hpp"
 
 using ck::config::cfg;
 
 namespace {
   using namespace ck::config;
-  using ck::util::error::Error;
-  using ck::util::error::ConfigErrc;
-  using enum ck::util::error::ConfigErrc;
-  using ck::util::logger::logger;
+  using ck::error::Error;
+  using ck::error::ConfigErrc;
+  using enum ck::error::ConfigErrc;
+  using ck::ui::console::console;
 
   std::vector<std::string> parse_key(std::string_view key) {
     std::string part;
@@ -52,10 +52,10 @@ namespace {
 
 
 namespace ck::config {
-  using ck::util::error::Error;
-  using ck::util::error::ConfigErrc;
-  using enum ck::util::error::ConfigErrc;
-  using ck::util::logger::logger;
+  using ck::error::Error;
+  using ck::error::ConfigErrc;
+  using enum ck::error::ConfigErrc;
+  using ck::ui::console::console;
   
   
   void Config::set(std::vector<std::string> args) {

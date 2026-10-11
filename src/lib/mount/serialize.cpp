@@ -1,8 +1,8 @@
 #include "toml++/toml.hpp"
 #include <optional>
 
-#include "util/error.hpp"
-#include "util/logger/logger.hpp"
+#include "lib/mount/error.hpp"
+#include "ui/console/console.hpp"
 #include "lib/mount/mount.hpp"
 
 namespace {
@@ -16,8 +16,8 @@ namespace {
 }
 
 namespace ck::mount::codec {
-  using ck::util::logger::logger;
-  using enum ck::util::error::MountErrc;
+  using ck::ui::console::console;
+  using enum ck::error::MountErrc;
 
   toml::table serialize(const ck::mount::State& state) {
     toml::table tbl; 

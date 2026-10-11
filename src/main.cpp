@@ -4,10 +4,10 @@
 #include "cmd/run_command.hpp"
 #include "cli/cli.hpp"
 #include "cli/types.hpp"
-#include "util/logger/logger.hpp"
-#include "util/error.hpp"
+#include "ui/console/console.hpp"
+#include "error.hpp"
 
-using ck::util::logger::logger;
+using ck::ui::console::console;
 
 #ifdef __has_feature
 #ifdef address_sanitizer
@@ -26,16 +26,16 @@ int run_cli(int argc, char** argv) {
   CLI::App app{"crypt-keeper"};
   
   #if CK_ENABLE_DEBUG_LOGS
-    ck::util::logger::logger.set_debug(true);
+    ck::ui::console::console.set_debug(true);
   #else
-    ck::util::logger::logger.set_debug(false);
+    ck::ui::console::console.set_debug(false);
   #endif
   
   try {
     ck::cli::CliArgs args = ck::cli::parse_cli(app, argc, argv);
     
     if (args.root.no_color) {
-      logger.set_no_color();
+      console.set_no_color();
     }
     
     ck::cmd::run_command(args);
@@ -43,13 +43,13 @@ int run_cli(int argc, char** argv) {
   } catch (const CLI::Success& e) {
     return app.exit(e);
   } catch (const CLI::ParseError& e) {
-    logger.error(e.what());
+    console.error(e.what());
     return 1;
-  } catch (const ck::util::error::AppError& e) {
-    logger.error(e.msg1(), e.msg2());
+  } catch (const ck::error::AppError& e) {
+    console.error(e.msg1(), e.msg2());
     return 1;
   } catch (const std::exception& e) {
-    logger.error(e.what());
+    console.error(e.what());
     return 1;
   }
   return 0;
@@ -58,7 +58,7 @@ int run_cli(int argc, char** argv) {
 
 int main(int argc, char** argv) {
   try {
-    logger.initialize();
+    console.initialize();
     return run_cli(argc, argv);
   } catch (...) {
     std::fputs("ck: unexpected failure\n", stderr);

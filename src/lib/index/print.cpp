@@ -2,9 +2,9 @@
 #include <iostream>
 
 #include "global.hpp" 
-#include "util/term.hpp" 
-#include "util/error.hpp" 
-#include "util/logger/logger.hpp" 
+#include "ui/term.hpp" 
+#include "lib/index/error.hpp"
+#include "ui/console/console.hpp" 
 #include "lib/index/index.hpp"
 #include "lib/crypto/crypto.hpp"
 #include "lib/path/parse_path.hpp"
@@ -13,11 +13,11 @@
 #include "./internal/theme.hpp" 
  
 namespace {
-  using ck::util::logger::logger;
-  using ck::util::error::Error;
-  using ck::util::error::IndexErrc;
-  using enum ck::util::error::IndexErrc;
-  using ck::util::term::reset;
+  using ck::ui::console::console;
+  using ck::error::Error;
+  using ck::error::IndexErrc;
+  using enum ck::error::IndexErrc;
+  using ck::ui::term::reset;
   using ck::index::OutputComponent;
   using enum OutputComponent;
 
@@ -67,7 +67,7 @@ namespace {
     }
 
     if (node->children.empty() && !node->entry) {
-      logger.debug("Index::print() -> find_node()");
+      console.debug("Index::print() -> find_node()");
       throw Error<IndexErrc>{SecretNotFound, ck::path::join(path_parts)};
     }
 

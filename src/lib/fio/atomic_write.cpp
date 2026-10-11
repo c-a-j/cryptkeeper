@@ -1,7 +1,7 @@
 #include <string>
 #include <filesystem>
 
-#include "util/error.hpp"
+#include "lib/fio/error.hpp"
 
 #include "./internal/msg.hpp"
 #include "./internal/tempfile.hpp"
@@ -9,9 +9,9 @@
 
 namespace ck::fio {
   namespace fs = std::filesystem;
-  using ck::util::error::Error;
-  using ck::util::error::FsErrc;
-  using enum ck::util::error::FsErrc;
+  using ck::error::Error;
+  using ck::error::FsErrc;
+  using enum ck::error::FsErrc;
 
   void atomic_write(const fs::path& target, std::span<const std::byte> bytes) {
     std::error_code ec;

@@ -1,13 +1,13 @@
 #include <filesystem>
 
 #include "global.hpp"
-#include "util/error.hpp"
+#include "lib/path/error.hpp"
 
 namespace ck::path {
   namespace fs = std::filesystem;
-  using ck::util::error::Error;
-  using ck::util::error::PathErrc;
-  using enum ck::util::error::PathErrc;
+  using ck::error::Error;
+  using ck::error::PathErrc;
+  using enum ck::error::PathErrc;
 
   fs::path get_gpg_id_file(const std::string& crypt_path) {
     if (crypt_path.empty()) {

@@ -1,17 +1,17 @@
 #include <filesystem>
 
-#include "util/error.hpp"
-#include "util/logger/logger.hpp"
+#include "lib/mount/error.hpp"
+#include "ui/console/console.hpp"
 #include "lib/mount/mount.hpp"
 #include "lib/path/existence.hpp"
 
 #include "../path/internal/path.hpp"
 
 namespace ck::mount {
-  using ck::util::logger::logger;
-  using ck::util::error::Error;
-  using ck::util::error::MountErrc;
-  using enum ck::util::error::MountErrc;
+  using ck::ui::console::console;
+  using ck::error::Error;
+  using ck::error::MountErrc;
+  using enum ck::error::MountErrc;
 
   void Mounts::umount(const std::string& alias) {
     fs::path mnt_file = ck::path::mount_file();
@@ -26,7 +26,7 @@ namespace ck::mount {
       throw Error<MountErrc>{AliasDoesNotExist, alias};
     }
     this->save();
-    logger.info(alias + std::string(" has been unmounted"));
+    console.info(alias + std::string(" has been unmounted"));
     this->print();
   }
 }

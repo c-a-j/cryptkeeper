@@ -3,8 +3,8 @@
 #include <fstream>
 
 #include "lib/mount/mount.hpp"
-#include "util/error.hpp"
-#include "util/logger/logger.hpp"
+#include "lib/mount/error.hpp"
+#include "ui/console/console.hpp"
 #include "lib/path/existence.hpp"
 #include "lib/fio/atomic_write.hpp"
 
@@ -13,16 +13,16 @@
 
 namespace ck::mount {
   namespace fs = std::filesystem;
-  using ck::util::logger::logger;
-  using ck::util::error::Error;
-  using ck::util::error::MountErrc;
-  using enum ck::util::error::MountErrc;
+  using ck::ui::console::console;
+  using ck::error::Error;
+  using ck::error::MountErrc;
+  using enum ck::error::MountErrc;
 
   void Mounts::load() {
     const fs::path mnt_file = ck::path::mount_file();
 
     if (!ck::path::file_exists(mnt_file)) {
-      logger.debug("ck::mount::load()");
+      console.debug("ck::mount::load()");
       throw Error<MountErrc>{MountFileNotFound, "Initialize a crypt or mount an existing one"};
     }
     
@@ -47,7 +47,7 @@ namespace ck::mount {
     ck::fio::atomic_write(mnt_file, contents.str());
     
     if (!existed) {
-      logger.info("Created new mount file", mnt_file.string());
+      console.info("Created new mount file", mnt_file.string());
     }
   }
 }

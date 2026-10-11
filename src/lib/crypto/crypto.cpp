@@ -4,18 +4,19 @@
 #include <filesystem>
 #include <fstream>
 
-#include "util/error.hpp"
-#include "util/logger/logger.hpp"
+#include "ui/console/console.hpp"
 #include "lib/fio/atomic_write.hpp"
+#include "error.hpp"
+#include "lib/crypto/error.hpp"
 
 #include "./lib/crypto/secure_wipe.hpp"
 #include "./lib/crypto/secure_bytes.hpp"
 
 namespace {
-  using ck::util::logger::logger;
-  using ck::util::error::Error;
-  using ck::util::error::CryptoErrc;
-  using enum ck::util::error::CryptoErrc;
+  using ck::ui::console::console;
+  using ck::error::Error;
+  using ck::error::CryptoErrc;
+  using enum ck::error::CryptoErrc;
 
   gpgme_ctx_t make_openpgp_ctx() {
     ck::crypto::init_gpgme();
@@ -114,7 +115,7 @@ namespace ck::crypto {
   SecureBytes read_file(const std::filesystem::path& path) {
     std::ifstream file(path);
     if (!file) {
-      logger.debug("ck::crypto::read_file()");
+      console.debug("ck::crypto::read_file()");
       throw Error<CryptoErrc>{FailedToOpenFile, path.string()};
     }
     file.seekg(0, std::ios::end);

@@ -1,12 +1,12 @@
-#include "util/error.hpp"
+#include "error.hpp"
 #include "lib/config/config.hpp"
 
 #include "../path/internal/path.hpp"
 
 namespace ck::config {
-  using ck::util::error::Error;
-  using ck::util::error::ConfigErrc;
-  using enum ck::util::error::ConfigErrc;
+  using ck::error::Error;
+  using ck::error::ConfigErrc;
+  using enum ck::error::ConfigErrc;
   
   const Core& Config::core() const { return state_.core; }
   Core& Config::core() { return state_.core; }

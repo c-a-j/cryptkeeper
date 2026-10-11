@@ -3,7 +3,7 @@
 #include <vector>
 
 #include "lib/crypto/secure_bytes.hpp"
-#include "util/logger/logger.hpp"
+#include "ui/console/console.hpp"
 
 #ifdef _WIN32
 #include <conio.h>
@@ -13,7 +13,7 @@
 #endif
 
 namespace ck::input {
-  using ck::util::logger::logger;
+  using ck::ui::console::console;
 
 #ifndef _WIN32
   struct TerminalInputGuard {
@@ -65,7 +65,7 @@ namespace ck::input {
   }
 
   ck::crypto::SecureBytes wisper(std::string_view prompt) {
-    logger.info(prompt);
+    console.info(prompt);
     
     std::vector<char> value;
     bool interrupted = false;

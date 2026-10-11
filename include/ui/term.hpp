@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 
-namespace ck::util::term {
+namespace ck::ui::term {
   enum class Color {
     Default,
     Gray,

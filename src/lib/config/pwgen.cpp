@@ -1,12 +1,12 @@
-#include "util/error.hpp"
+#include "error.hpp"
 #include "lib/config/config.hpp"
-#include "util/logger/logger.hpp"
+#include "ui/console/console.hpp"
 
 namespace ck::config {
-  using ck::util::error::Error;
-  using ck::util::error::ConfigErrc;
-  using enum ck::util::error::ConfigErrc;
-  using ck::util::logger::logger;
+  using ck::error::Error;
+  using ck::error::ConfigErrc;
+  using enum ck::error::ConfigErrc;
+  using ck::ui::console::console;
   
   ck::crypto::PwSpec Pwgen::spec() const {
     ck::crypto::PwSpec spec = {

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include "util/term.hpp"
+#include "ui/term.hpp"
 
 namespace ck::mount {
   enum class OutputComponent {
@@ -14,6 +14,6 @@ namespace ck::mount {
     MountArrow,
     Line
   };
-  ck::util::term::TextStyle get_scheme_style(OutputComponent c);
+  ck::ui::term::TextStyle get_scheme_style(OutputComponent c);
   std::string get_scheme_ansi(OutputComponent c);
 }

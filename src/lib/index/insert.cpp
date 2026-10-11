@@ -1,8 +1,8 @@
 #include <string>
 #include <filesystem>
 
-#include "util/error.hpp"
-#include "util/logger/logger.hpp"
+#include "lib/index/error.hpp"
+#include "ui/console/console.hpp"
 #include "lib/config/config.hpp"
 #include "lib/crypto/crypto.hpp"
 #include "lib/crypto/random.hpp"
@@ -15,10 +15,10 @@
 
   
 namespace {
-  using ck::util::logger::logger;
-  using ck::util::error::Error;
-  using ck::util::error::IndexErrc;
-  using enum ck::util::error::IndexErrc;
+  using ck::ui::console::console;
+  using ck::error::Error;
+  using ck::error::IndexErrc;
+  using enum ck::error::IndexErrc;
 
   struct FlatEntry {
     std::vector<std::string> path;
@@ -44,9 +44,9 @@ namespace ck::index {
   using ck::config::cfg;
   using namespace ck::config;
   using namespace ck::crypto;
-  using ck::util::error::Error;
-  using ck::util::error::IndexErrc;
-  using enum ck::util::error::IndexErrc;
+  using ck::error::Error;
+  using ck::error::IndexErrc;
+  using enum ck::error::IndexErrc;
   void Index::insert(const std::string& path, const bool pwgen) {
     FlatEntry flat = create_entry(path);
 
@@ -60,7 +60,7 @@ namespace ck::index {
       SecureBytes listen1 = ck::input::wisper("Enter secret:");   
       SecureBytes listen2 = ck::input::wisper("Confirm secret:");   
       if (listen1 != listen2) {
-        logger.error("Inputs do not match", "try again");
+        console.error("Inputs do not match", "try again");
         self();
       }
       return listen1;   

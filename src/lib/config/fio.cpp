@@ -3,9 +3,9 @@
 #include <filesystem>
 #include <sstream>
 
-#include "util/error.hpp"
+#include "error.hpp"
 #include "lib/config/config.hpp"
-#include "util/logger/logger.hpp"
+#include "ui/console/console.hpp"
 #include "lib/fio/atomic_write.hpp"
 #include "lib/path/existence.hpp"
 
@@ -13,10 +13,10 @@
 #include "../path/internal/path.hpp"
 
 namespace ck::config {
-  using ck::util::error::Error;
-  using ck::util::error::ConfigErrc;
-  using enum ck::util::error::ConfigErrc;
-  using ck::util::logger::logger;
+  using ck::error::Error;
+  using ck::error::ConfigErrc;
+  using enum ck::error::ConfigErrc;
+  using ck::ui::console::console;
 
   void Config::load() {
     std::filesystem::path cfg_file = ck::path::config_file();
@@ -49,13 +49,13 @@ namespace ck::config {
     std::ostringstream contents;
     contents << tbl << "\n";
     
-    logger.debug("Writing config file");
+    console.debug("Writing config file");
     ck::fio::atomic_write(cfg_file, contents.str());
     
     if (!existed) {
-      logger.info("Created new config file", cfg_file.string());
+      console.info("Created new config file", cfg_file.string());
     } else {
-      logger.info("Updated config file", cfg_file.string());
+      console.info("Updated config file", cfg_file.string());
     }
     this->print();
   }

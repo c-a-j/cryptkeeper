@@ -12,7 +12,7 @@
 namespace fs = std::filesystem;
 
 namespace {
-  using ck::util::term::reset;
+  using ck::ui::term::reset;
   using enum ck::mount::OutputComponent;
 
   inline const std::string_view ARROW = " \u27F6  ";

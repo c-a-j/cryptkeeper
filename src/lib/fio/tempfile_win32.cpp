@@ -7,15 +7,15 @@
 #include <vector>
 #include <windows.h>
 
-#include "util/error.hpp"
+#include "lib/fio/error.hpp"
 #include "./internal/msg.hpp"
 #include "./internal/tempfile.hpp"
 
 namespace ck::fio {
   namespace fs = std::filesystem;
-  using ck::util::error::Error;
-  using ck::util::error::FsErrc;
-  using enum ck::util::error::FsErrc;
+  using ck::error::Error;
+  using ck::error::FsErrc;
+  using enum ck::error::FsErrc;
   
   int last_error() noexcept {
     return static_cast<int>(::GetLastError());

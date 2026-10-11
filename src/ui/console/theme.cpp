@@ -1,8 +1,8 @@
-#include "util/logger/theme.hpp"
-#include "util/term.hpp"
+#include "ui/console/theme.hpp"
+#include "ui/term.hpp"
 
-namespace ck::util::logger {
-  using namespace ck::util::term;
+namespace ck::ui::console {
+  using namespace ck::ui::term;
   using enum Level;
   using enum Color;
   using enum Style;

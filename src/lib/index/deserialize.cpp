@@ -2,8 +2,8 @@
 #include <filesystem>
 
 #include "lib/index/index.hpp"
-#include "util/error.hpp"
-#include "util/logger/logger.hpp"
+#include "lib/index/error.hpp"
+#include "ui/console/console.hpp"
 
 #include "./internal/tree.hpp"
 #include "./internal/types.hpp"
@@ -12,10 +12,10 @@
 
 namespace { 
   using namespace ck::index;
-  using ck::util::logger::logger;
-  using ck::util::error::Error;
-  using ck::util::error::IndexErrc;
-  using enum ck::util::error::IndexErrc;
+  using ck::ui::console::console;
+  using ck::error::Error;
+  using ck::error::IndexErrc;
+  using enum ck::error::IndexErrc;
   
   bool is_valid_uuid(std::string_view uuid) {
     if (uuid.size() != 36) {
@@ -130,16 +130,16 @@ namespace {
 }
 
 namespace ck::index::codec { 
-  using ck::util::logger::logger;
-  using ck::util::error::Error;
-  using ck::util::error::IndexErrc;
-  using enum ck::util::error::IndexErrc;
+  using ck::ui::console::console;
+  using ck::error::Error;
+  using ck::error::IndexErrc;
+  using enum ck::error::IndexErrc;
   namespace fs = std::filesystem;
 
   Node deserialize(std::string_view toml_text, const fs::path& file_path) {
     toml::table tbl = toml::parse(toml_text);
 
-    logger.debug("deserialize() - parsing index file");
+    console.debug("deserialize() - parsing index file");
     Node root;
     if (toml::array* entries = tbl[IDX_ARR_NAME].as_array()) {
       for (toml::node& n : *entries) {

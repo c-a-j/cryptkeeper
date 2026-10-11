@@ -3,23 +3,24 @@
 #include <fstream>
 
 #include "global.hpp"
-#include "util/error.hpp"
-#include "util/logger/logger.hpp"
+#include "error.hpp"
+#include "cli/error.hpp"
 #include "lib/crypto/crypto.hpp"
 #include "lib/config/config.hpp"
 #include "lib/mount/mount.hpp"
 #include "lib/index/index.hpp"
 #include "lib/fio/atomic_write.hpp"
 #include "lib/path/existence.hpp"
+#include "ui/console/console.hpp"
 
 #include "./internal/handlers.hpp"
 
 namespace ck::cmd {
   namespace fs = std::filesystem;
-  using ck::util::logger::logger;
-  using ck::util::error::Error;
-  using ck::util::error::InitErrc;
-  using enum ck::util::error::InitErrc;
+  using ck::ui::console::console;
+  using ck::error::Error;
+  using ck::error::InitErrc;
+  using enum ck::error::InitErrc;
   using namespace ck::config;
   using ck::mount::mnt;
     
@@ -51,10 +52,10 @@ namespace ck::cmd {
 
     std::string msg1;
     msg1 += "Crypt " + args.crypt_name + " has been initialized";
-    logger.info(msg1);
+    console.info(msg1);
     
     if (!ck::mount::Mounts::file_exists()) {
-      logger.info("Welcome to Crypt Keeper - the spooky password manager");
+      console.info("Welcome to Crypt Keeper - the spooky password manager");
       ck::mount::mnt.chroot(crypt_path);
     }
   }

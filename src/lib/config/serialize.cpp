@@ -1,15 +1,15 @@
 #include "toml++/toml.hpp"
 
-#include "util/error.hpp"
+#include "error.hpp"
 #include "lib/config/config.hpp"
-#include "util/logger/logger.hpp"
+#include "ui/console/console.hpp"
 
 namespace {
   using namespace ck::config;
-  using ck::util::error::Error;
-  using ck::util::error::ConfigErrc;
-  using enum ck::util::error::ConfigErrc;
-  using ck::util::logger::logger;
+  using ck::error::Error;
+  using ck::error::ConfigErrc;
+  using enum ck::error::ConfigErrc;
+  using ck::ui::console::console;
 
   template <typename Owner>
   void insert_fields(const Owner& cfg, toml::table& tbl) {
@@ -30,10 +30,10 @@ namespace {
 
 namespace ck::config::codec {
   using namespace ck::config;
-  using ck::util::error::Error;
-  using ck::util::error::ConfigErrc;
-  using enum ck::util::error::ConfigErrc;
-  using ck::util::logger::logger;
+  using ck::error::Error;
+  using ck::error::ConfigErrc;
+  using enum ck::error::ConfigErrc;
+  using ck::ui::console::console;
   
   toml::table serialize(const State& state) {
     toml::table tbl;

@@ -1,9 +1,9 @@
 #pragma once
 #include <optional>
 
-#include "util/term.hpp"
+#include "ui/term.hpp"
 
-namespace ck::util::logger {
+namespace ck::ui::console {
   enum class Stream { Out, Err, Default };
   
   enum class Level {
@@ -15,21 +15,21 @@ namespace ck::util::logger {
   };
   
   struct Overrides {
-    std::optional<ck::util::term::TextStyle> style;
+    std::optional<ck::ui::term::TextStyle> style;
     std::optional<Stream> stream;
     bool prefix = true;
     bool newline = true;
     
-    Overrides& set_color(const ck::util::term::TextStyle& v) { style = v; return *this; }
+    Overrides& set_color(const ck::ui::term::TextStyle& v) { style = v; return *this; }
     Overrides& set_stream(Stream v) { stream = v; return *this; }
     Overrides& set_prefix(bool v) { prefix = v; return *this; }
     Overrides& set_newline(bool v) { newline = v; return *this; }
   };
   
   struct ColorScheme {
-    ck::util::term::TextStyle primary;
-    ck::util::term::TextStyle secondary;
-    ck::util::term::TextStyle prefix;
+    ck::ui::term::TextStyle primary;
+    ck::ui::term::TextStyle secondary;
+    ck::ui::term::TextStyle prefix;
   };
   
   struct LevelStyle {

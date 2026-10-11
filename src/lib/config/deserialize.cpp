@@ -1,15 +1,15 @@
 #include "toml++/toml.hpp"
 
-#include "util/error.hpp"
+#include "error.hpp"
 #include "lib/config/config.hpp"
-#include "util/logger/logger.hpp"
+#include "ui/console/console.hpp"
 
 namespace {
   using namespace ck::config;
-  using ck::util::error::Error;
-  using ck::util::error::ConfigErrc;
-  using enum ck::util::error::ConfigErrc;
-  using ck::util::logger::logger;
+  using ck::error::Error;
+  using ck::error::ConfigErrc;
+  using enum ck::error::ConfigErrc;
+  using ck::ui::console::console;
 
   template <typename T>
   struct member_value;
@@ -38,7 +38,7 @@ namespace {
           std::string msg1 = "Parameter [" + std::string(section) + "."
             + std::string(field.key) + "] contains an invalid data type";
           std::string msg2 = "default will be applied";
-          logger.warning(msg1, msg2);
+          console.warning(msg1, msg2);
         }
       }, field.member);
     }
@@ -50,7 +50,7 @@ namespace {
 
   void valid_or_default(Pwgen& pwgen) {
     if (auto result = pwgen.valid(); !result) {
-      logger.error(result.error().msg1(), result.error().msg2());
+      console.error(result.error().msg1(), result.error().msg2());
       Pwgen def;
       pwgen = def;
     }
@@ -58,10 +58,10 @@ namespace {
 }
 
 namespace ck::config::codec {
-  using ck::util::error::Error;
-  using ck::util::error::ConfigErrc;
-  using enum ck::util::error::ConfigErrc;
-  using ck::util::logger::logger;
+  using ck::error::Error;
+  using ck::error::ConfigErrc;
+  using enum ck::error::ConfigErrc;
+  using ck::ui::console::console;
   
   State deserialize(std::string_view toml_text) {
     toml::table cfg_toml;
@@ -83,7 +83,7 @@ namespace ck::config::codec {
         } else {
           std::string msg1 = "Section " + std::string(section.name) + " is missing from config file";
           std::string msg2 = "defaults will be applied";
-          logger.warning(msg1, msg2);
+          console.warning(msg1, msg2);
         }
       }, section.member);
     }

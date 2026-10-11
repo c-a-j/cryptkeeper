@@ -1,6 +1,6 @@
 #include <deque>
 
-#include "util/logger/logger.hpp"
+#include "ui/console/console.hpp"
 #include "cli/types.hpp"
 #include "lib/mount/mount.hpp"
 #include "lib/index/index.hpp"
@@ -33,7 +33,7 @@ namespace {
 }
 
 namespace ck::cmd {
-  using ck::util::logger::logger;
+  using ck::ui::console::console;
   using ck::mount::mnt;
   
   void show(const ck::cli::Context& _, const ck::cli::ShowArgs& args){
@@ -47,8 +47,8 @@ namespace ck::cmd {
     
 
     if (!args.path) {
-      logger.debug("Printing the whole tree");
-      logger.debug("path", mnt.root().path);
+      console.debug("Printing the whole tree");
+      console.debug("path", mnt.root().path);
       
       ck::index::Index idx(mnt.root().path);
       for (const auto& [alias, mount] : mnt.mounts()) {
@@ -57,7 +57,7 @@ namespace ck::cmd {
       }
       idx.print();
     } else {
-      logger.debug("Printing the subtree tree or secret");
+      console.debug("Printing the subtree tree or secret");
       
       ck::mount::ResolvedPath rp = mnt.resolve(*args.path);
       ck::index::Index idx(rp.crypt_path, rp.alias);

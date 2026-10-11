@@ -3,10 +3,11 @@
 #include <filesystem>
 
 #include "global.hpp"
-#include "util/error.hpp"
-#include "util/logger/logger.hpp"
+#include "lib/index/error.hpp"
+#include "ui/console/console.hpp"
 #include "lib/index/index.hpp"
 #include "lib/crypto/crypto.hpp"
+#include "lib/crypto/error.hpp"
 #include "lib/fio/atomic_write.hpp"
 
 #include "./internal/codec.hpp"
@@ -16,10 +17,10 @@
 
 namespace ck::index { 
   using namespace ck;
-  using ck::util::logger::logger;
-  using ck::util::error::Error;
-  using ck::util::error::IndexErrc;
-  using enum ck::util::error::IndexErrc;
+  using ck::ui::console::console;
+  using ck::error::Error;
+  using ck::error::IndexErrc;
+  using enum ck::error::IndexErrc;
 
   void Index::load(const std::string& crypt_path, const std::string& alias) {
     fs::path path = fs::path(crypt_path);

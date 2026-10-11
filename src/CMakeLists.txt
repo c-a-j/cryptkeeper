@@ -4,7 +4,7 @@ add_executable(ck main.cpp)
 add_subdirectory(lib)
 add_subdirectory(cli)
 add_subdirectory(cmd)
-add_subdirectory(util)
+add_subdirectory(ui)
 
 target_compile_features(ck PRIVATE cxx_std_26)
 target_compile_features(ck_lib PUBLIC cxx_std_26)

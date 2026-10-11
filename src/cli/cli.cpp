@@ -3,12 +3,12 @@
 #include <string>
 
 #include "cli/types.hpp"
-#include "util/logger/logger.hpp"
+#include "ui/console/console.hpp"
 
 #include "global.hpp"
 
 namespace ck::cli {
-  using ck::util::logger::logger;
+  using ck::ui::console::console;
   
   namespace {
     struct ParsedCmdArgs {

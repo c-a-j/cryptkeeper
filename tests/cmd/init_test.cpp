@@ -41,9 +41,9 @@ TEST_F(InitTest, InitExistingStoreThrows) {
   args_.crypt_name = "test-crypt";
   args_.key_fpr = generate_tmp_key();
   ck::cmd::init(ctx_, args_);
-  EXPECT_THROW(ck::cmd::init(ctx_, args_), ck::util::error::AppError);
+  EXPECT_THROW(ck::cmd::init(ctx_, args_), ck::error::AppError);
 }
 
 TEST_F(InitTest, InitStoreEmptyArgsThrows) {
-  EXPECT_THROW(ck::cmd::init(ctx_, args_), ck::util::error::AppError);
+  EXPECT_THROW(ck::cmd::init(ctx_, args_), ck::error::AppError);
 }

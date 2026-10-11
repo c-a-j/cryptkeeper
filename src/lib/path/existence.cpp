@@ -1,7 +1,7 @@
 #include <string>
 #include <filesystem>
 
-#include "util/error.hpp"
+#include "lib/path/error.hpp"
 
 namespace {
   bool missing_path(const std::error_code& ec) {
@@ -12,9 +12,9 @@ namespace {
 
 namespace ck::path {
   namespace fs = std::filesystem;
-  using ck::util::error::Error;
-  using ck::util::error::PathErrc;
-  using enum ck::util::error::PathErrc;
+  using ck::error::Error;
+  using ck::error::PathErrc;
+  using enum ck::error::PathErrc;
   
   bool exists(const fs::path& path) {
     std::error_code ec;

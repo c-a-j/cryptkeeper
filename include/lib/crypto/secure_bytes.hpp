@@ -4,13 +4,13 @@
 #include <cstddef>
 #include <span>
 
-#include "util/error.hpp"
+#include "lib/crypto/error.hpp"
 #include "./secure_wipe.hpp"
 
 namespace ck::crypto {
-  using ck::util::error::Error;
-  using ck::util::error::CryptoErrc;
-  using enum ck::util::error::CryptoErrc;
+  using ck::error::Error;
+  using ck::error::CryptoErrc;
+  using enum ck::error::CryptoErrc;
   
   class SecureBytes {
     public:

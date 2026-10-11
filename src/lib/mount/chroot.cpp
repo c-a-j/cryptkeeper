@@ -2,8 +2,8 @@
 
 #include "lib/mount/mount.hpp"
 #include "lib/config/config.hpp"
-#include "util/error.hpp"
-#include "util/logger/logger.hpp"
+#include "lib/mount/error.hpp"
+#include "ui/console/console.hpp"
 #include "lib/path/parse_path.hpp"
 #include "lib/path/existence.hpp"
 
@@ -13,10 +13,10 @@
 
 namespace ck::mount {
   using ck::config::cfg;
-  using ck::util::logger::logger;
-  using ck::util::error::Error;
-  using ck::util::error::MountErrc;
-  using enum ck::util::error::MountErrc;
+  using ck::ui::console::console;
+  using ck::error::Error;
+  using ck::error::MountErrc;
+  using enum ck::error::MountErrc;
 
   void Mounts::chroot(const std::string& path) {
     std::vector<std::string> alias_parts = ck::path::parse_path(path);
@@ -62,7 +62,7 @@ namespace ck::mount {
     this->state_.root.path = crypt_path;
     this->state_.root.hash = hash();
     this->save();
-    logger.info("Root crypt has been set to " + crypt_path.string());
+    console.info("Root crypt has been set to " + crypt_path.string());
     this->print();
   }
 }

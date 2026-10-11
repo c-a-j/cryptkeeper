@@ -7,8 +7,9 @@
 #include <ranges>
 
 
-#include "util/logger/logger.hpp"
-#include "util/error.hpp"
+#include "ui/console/console.hpp"
+#include "error.hpp"
+#include "lib/crypto/error.hpp"
 #include "lib/crypto/types.hpp"
 #include "lib/crypto/secure_bytes.hpp"
 
@@ -21,10 +22,10 @@
 #endif
 
 namespace {
-using ck::util::logger::logger;
-using ck::util::error::Error;
-using ck::util::error::CryptoErrc;
-using enum ck::util::error::CryptoErrc;
+using ck::ui::console::console;
+using ck::error::Error;
+using ck::error::CryptoErrc;
+using enum ck::error::CryptoErrc;
   void fill_random_bytes(std::uint8_t* out, std::size_t len) {
   #ifdef __linux__
     std::size_t filled = 0;
@@ -65,9 +66,9 @@ using enum ck::util::error::CryptoErrc;
 }
 
 namespace ck::crypto {
-  using ck::util::error::Error;
-  using ck::util::error::CryptoErrc;
-  using enum ck::util::error::CryptoErrc;
+  using ck::error::Error;
+  using ck::error::CryptoErrc;
+  using enum ck::error::CryptoErrc;
   std::string uuid_v4() {
     std::string uuid;
     uuid.reserve(36);

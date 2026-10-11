@@ -1,6 +1,6 @@
 #include "toml++/toml.hpp"
 
-#include "util/error.hpp"
+#include "lib/index/error.hpp"
 #include "lib/index/index.hpp"
 
 #include "./internal/vars.hpp"
@@ -8,9 +8,9 @@
 #include "../path/internal/get_idx_file.hpp"
 
 namespace { 
-  using ck::util::error::Error;
-  using ck::util::error::IndexErrc;
-  using enum ck::util::error::IndexErrc;
+  using ck::error::Error;
+  using ck::error::IndexErrc;
+  using enum ck::error::IndexErrc;
 
   toml::table serialize_entry(const ck::index::IndexObj& obj) {
     toml::table tbl; 
@@ -40,9 +40,9 @@ namespace {
 }
 
 namespace ck::index::codec { 
-  using ck::util::error::Error;
-  using ck::util::error::IndexErrc;
-  using enum ck::util::error::IndexErrc;
+  using ck::error::Error;
+  using ck::error::IndexErrc;
+  using enum ck::error::IndexErrc;
   toml::table serialize(const Node* root) {
     toml::table tbl;
     toml::array entries;

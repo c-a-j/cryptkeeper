@@ -1,13 +1,13 @@
 #include <iostream>
 
-#include "util/logger/logger.hpp"
-#include "util/logger/theme.hpp"
-#include "util/term.hpp"
+#include "ui/console/console.hpp"
+#include "ui/console/theme.hpp"
+#include "ui/term.hpp"
 #include "global.hpp"
 
-namespace ck::util::logger {
-using namespace ck::util::term;
-  void Logger::emit(Level level, std::string_view msg, Overrides o) {
+namespace ck::ui::console{
+using namespace ck::ui::term;
+  void Console::emit(Level level, std::string_view msg, Overrides o) {
     if (!theme_) {
       const Stream stream = o.stream.value_or(get_level_stream(level));
       std::ostream& out = (stream == Stream::Out)
@@ -52,9 +52,9 @@ using namespace ck::util::term;
     if (o.newline) {out << "\n";}
   }
  
-  // This logger function is for printing messages with two colors so only the
+  // This console.function is for printing messages with two colors so only the
   // most important part (the first part) is colorful.
-  void Logger::emit(Level level, std::string_view msg1, std::string_view msg2) {
+  void Console::emit(Level level, std::string_view msg1, std::string_view msg2) {
     Overrides secondary;
     secondary.prefix = false;
 
@@ -66,62 +66,62 @@ using namespace ck::util::term;
     emit(level, msg2, std::move(secondary));
   }
   
-  void Logger::info(std::string_view msg, Overrides o) {
+  void Console::info(std::string_view msg, Overrides o) {
     emit(Level::Info, msg, std::move(o));
   }
-  void Logger::info(std::string_view msg1, std::string_view msg2) {
+  void Console::info(std::string_view msg1, std::string_view msg2) {
     emit(Level::Info, msg1, msg2);
   }
   
-  void Logger::success(std::string_view msg, Overrides o) {
+  void Console::success(std::string_view msg, Overrides o) {
     emit(Level::Success, msg, std::move(o));
   }
-  void Logger::success(std::string_view msg1, std::string_view msg2) {
+  void Console::success(std::string_view msg1, std::string_view msg2) {
     emit(Level::Success, msg1, msg2);
   }
   
-  void Logger::warning(std::string_view msg, Overrides o) {
+  void Console::warning(std::string_view msg, Overrides o) {
     emit(Level::Warning, msg, std::move(o));
   }
-  void Logger::warning(std::string_view msg1, std::string_view msg2) {
+  void Console::warning(std::string_view msg1, std::string_view msg2) {
     emit(Level::Warning, msg1, msg2);
   }
   
-  void Logger::error(std::string_view msg, Overrides o) {
+  void Console::error(std::string_view msg, Overrides o) {
     emit(Level::Error, msg, std::move(o));
   }
-  void Logger::error(std::string_view msg1, std::string_view msg2) {
+  void Console::error(std::string_view msg1, std::string_view msg2) {
     emit(Level::Error, msg1, msg2);
   }
   
-  void Logger::debug(std::string_view msg, Overrides o) {
+  void Console::debug(std::string_view msg, Overrides o) {
     if (!cfg_.debug) { return; }
     emit(Level::Debug, msg, std::move(o));
   }
-  void Logger::debug(std::string_view msg1, std::string_view msg2) {
+  void Console::debug(std::string_view msg1, std::string_view msg2) {
     if (!cfg_.debug) { return; }
     emit(Level::Debug, msg1, msg2);
   }
   
-  void Logger::configure(const LoggerConfig& cfg) {
+  void Console::configure(const ConsoleConfig& cfg) {
     cfg_ = cfg;
   }
   
-  void Logger::set_no_color() {
+  void Console::set_no_color() {
     cfg_.no_color = true;
   }
   
-  void Logger::set_debug(const bool debug) {
+  void Console::set_debug(const bool debug) {
     cfg_.debug = debug;
   }
 
-  void Logger::initialize(Theme theme) {
+  void Console::initialize(Theme theme) {
     theme_.emplace(std::move(theme));
   }
 
-  void Logger::initialize() {
+  void Console::initialize() {
     theme_.emplace(default_theme());
   }
   
-  constinit Logger logger;
+  constinit Console console;
 }
