@@ -24,21 +24,21 @@ namespace ck::index {
   
   class Index {
     public:
-      explicit Index(const std::string&);
-      explicit Index(const std::string&, const std::string&);
+      explicit Index(const std::string& crypt_path);
+      explicit Index(const std::string& crypt_path, const std::string& alias);
       explicit Index() = default;
 
       const Node& root() const;
       Node& root();
       
-      static Index empty(const std::string&);
-      void insert(const std::string&, const bool);
+      static Index empty(const std::string& crypt_path);
+      void insert(const std::string& path, bool pwgen);
       void show(const std::optional<std::string>&);
-      void insert_node(const Node&, const std::string&);
-      void print(const bool = true);
-      void print(const std::string&);
+      void insert_node(const Node& n, const std::string& path);
+      void print(bool is_root = true);
+      void print(const std::string& path);
 
-      void load(const std::string&, const std::string& = {});
+      void load(const std::string& crypt_path, const std::string& alias = {});
       void save();
     
     private:

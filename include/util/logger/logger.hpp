@@ -1,5 +1,7 @@
 #pragma once
 #include <string_view>
+#include <utility>
+#include <optional>
 
 #include "util/logger/theme.hpp"
 
@@ -11,33 +13,36 @@ namespace  ck::util::logger {
   
   class Logger {
     public:
-      explicit Logger(Theme theme) : theme_(theme) {}
-      void emit(Level, std::string_view, Overrides = {});
-      void emit(Level, std::string_view, std::string_view);
+      Logger() noexcept = default;
+      void initialize(Theme theme);
+      void initialize();
 
-      void info(std::string_view, Overrides = {});
-      void info(std::string_view, std::string_view);
+      void emit(Level lvl, std::string_view msg, Overrides o = {});
+      void emit(Level lvl, std::string_view msg1, std::string_view msg2);
 
-      void success(std::string_view, Overrides = {});
-      void success(std::string_view, std::string_view);
+      void info(std::string_view msg, Overrides o = {});
+      void info(std::string_view msg1, std::string_view msg2);
 
-      void warning(std::string_view, Overrides = {});
-      void warning(std::string_view, std::string_view);
+      void success(std::string_view msg, Overrides o = {});
+      void success(std::string_view msg1, std::string_view msg2);
 
-      void error(std::string_view, Overrides = {});
-      void error(std::string_view, std::string_view);
+      void warning(std::string_view msg, Overrides o = {});
+      void warning(std::string_view msg1, std::string_view msg2);
 
-      void debug(std::string_view, Overrides = {});
-      void debug(std::string_view, std::string_view);
+      void error(std::string_view msg, Overrides o = {});
+      void error(std::string_view msg1, std::string_view msg2);
+
+      void debug(std::string_view msg, Overrides o = {});
+      void debug(std::string_view msg1, std::string_view msg2);
       
       void configure(const LoggerConfig& cfg);
       
       void set_no_color();
       
-      void set_debug(const bool);
+      void set_debug(bool debug);
       
     private:
-      Theme theme_;
+      std::optional<Theme> theme_;
       LoggerConfig cfg_;
   };
 

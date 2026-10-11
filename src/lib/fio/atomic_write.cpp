@@ -24,22 +24,22 @@ namespace ck::fio {
 
     TempFile tmp(target);
     int err = tmp.write(bytes);
-    if (err) {
+    if (err != 0) {
       throw Error<FsErrc>{WriteFailed, msg(tmp.path, err)};
     }
 
     err = tmp.sync();
-    if (err) {
+    if (err != 0) {
       throw Error<FsErrc>{FsyncFailed, msg(tmp.path, err)};
     }
 
     err = tmp.close();
-    if (err) {
+    if (err != 0) {
       throw Error<FsErrc>{CloseFailed, msg(tmp.path, err)};
     }
 
     err = tmp.commit();
-    if (err) {
+    if (err != 0) {
       throw Error<FsErrc>{RenameFailed, msg(tmp.path, err) + " -> " + target.string()};
     }
     

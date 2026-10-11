@@ -12,11 +12,11 @@
 #include "lib/crypto/types.hpp"
 #include "lib/crypto/secure_bytes.hpp"
 
-#if defined(__linux__)
+#ifdef __linux__
   #include <sys/random.h>
-#elif defined(__APPLE__)
+#elifdef __APPLE__
   #include <Security/Security.h>
-#elif defined(_WIN32)
+#elifdef _WIN32
   #include <bcrypt.h>
 #endif
 
@@ -26,12 +26,12 @@ using ck::util::error::Error;
 using ck::util::error::CryptoErrc;
 using enum ck::util::error::CryptoErrc;
   void fill_random_bytes(std::uint8_t* out, std::size_t len) {
-  #if defined(__linux__) 
+  #ifdef __linux__
     std::size_t filled = 0;
     
     while (filled < len) {
       ssize_t nread = getrandom(out + filled, len - filled, 0);
-      if (nread > 0) { filled += std::size_t(nread); continue; }
+      if (nread > 0) { filled += static_cast<std::size_t>(nread); continue; }
       
       if (nread == -1) { 
         if (errno == EINTR) { continue; }
@@ -39,11 +39,11 @@ using enum ck::util::error::CryptoErrc;
       } 
       throw Error<CryptoErrc>{FillRandomBytesFailed, "getrandom returned 0" };
     }
-  #elif defined(__APPLE__)
+  #elifdef __APPLE__
     if (SecRandomCopyBytes(kSecRandomDefault, len, out) != errSecSuccess) {
       throw Error<CryptoErrc>{FillRandomBytesFailed, "SecRandomCopyBytes failed" };
     }
-  #elif defined(_WIN32)
+  #elifdef _WIN32
     NTSTATUS status = BCryptGenRandom(
       nullptr,
       reinterpret_cast<PUCHAR>(out),
@@ -83,7 +83,7 @@ namespace ck::crypto {
   }
   
   std::string get_random_chars(const std::string_view charset, const size_t length) {
-    if (length == 0) return {};
+    if (length == 0) { return {}; }
     std::string s;
     constexpr std::size_t max_byte = 256;
     const std::size_t limit = max_byte - (max_byte % charset.size());
@@ -131,7 +131,6 @@ namespace ck::crypto {
   
   SecureBytes pwgen(const PwSpec& spec) {
     std::size_t length, nlow, nupp, nnum, nsym, nrest;
-    std::string pass;
     static constexpr std::string_view uppset = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     static constexpr std::string_view lowset = "abcdefghijklmnopqrstuvwxyz";
     static constexpr std::string_view numset = "0123456789";

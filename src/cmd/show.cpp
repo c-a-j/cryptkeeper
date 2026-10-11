@@ -8,9 +8,9 @@
 
 namespace {
   bool mount_is_child(
-      const std::string alias, 
-      const std::string resolved_alias, 
-      const std::string relative_path
+      const std::string& alias, 
+      const std::string& resolved_alias, 
+      const std::string& relative_path
   ) {
     std::string resolved = relative_path + "/" + resolved_alias;
     std::vector<std::string> resolved_parts = ck::path::parse_path(resolved);
@@ -51,7 +51,7 @@ namespace ck::cmd {
       logger.debug("path", mnt.root().path);
       
       ck::index::Index idx(mnt.root().path);
-      for (auto [alias, mount] : mnt.mounts()) {
+      for (const auto& [alias, mount] : mnt.mounts()) {
         ck::index::Index i(mount.path);
         idx.insert_node(i.root(), alias);
       }
@@ -67,7 +67,7 @@ namespace ck::cmd {
         return;
       }
 
-      for (auto [alias, mount] : mnt.mounts()) {
+      for (const auto& [alias, mount] : mnt.mounts()) {
         if (mount_is_child(alias, rp.alias, rp.relative_path)) {
           ck::index::Index i(mount.path);
           idx.insert_node(i.root(), alias);

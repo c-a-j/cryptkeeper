@@ -14,6 +14,6 @@ namespace ck::mount {
     MountArrow,
     Line
   };
-  ck::util::term::TextStyle get_scheme_style(OutputComponent);
-  std::string get_scheme_ansi(OutputComponent);
+  ck::util::term::TextStyle get_scheme_style(OutputComponent c);
+  std::string get_scheme_ansi(OutputComponent c);
 }

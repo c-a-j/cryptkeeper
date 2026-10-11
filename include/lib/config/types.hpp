@@ -30,10 +30,10 @@ namespace ck::config {
     using BoolMember = MemberPtr<Core, bool>;
     using FieldVariant = Field<std::variant<StrMember, BoolMember>>; 
     
-    inline static constexpr std::array<FieldVariant, 3> k_fields {{
-        {"home", &Core::home},
-        {"autopush", &Core::autopush},
-        {"autosync", &Core::autosync}
+    static constexpr std::array<FieldVariant, 3> k_fields {{
+        {.key = "home", .member = &Core::home},
+        {.key = "autopush", .member = &Core::autopush},
+        {.key = "autosync", .member = &Core::autosync}
       }};
     
     static constexpr const std::array<FieldVariant, 3>& fields() { return k_fields; }
@@ -47,8 +47,8 @@ namespace ck::config {
     using BoolMember = MemberPtr<Ui, bool>;
     using FieldVariant = Field<std::variant<StrMember, BoolMember>>; 
     
-    inline static constexpr std::array<FieldVariant, 1> k_fields {{
-        {"insert_with_editor", &Ui::insert_with_editor},
+    static constexpr std::array<FieldVariant, 1> k_fields {{
+        {.key = "insert_with_editor", .member = &Ui::insert_with_editor},
       }};
     
     static constexpr const std::array<FieldVariant, 1>& fields() { return k_fields; }
@@ -63,17 +63,17 @@ namespace ck::config {
     int lowercase = 5;
 
     std::expected<void, Err> valid();
-    ck::crypto::PwSpec spec();
+    ck::crypto::PwSpec spec() const;
     
     using IntMember = MemberPtr<Pwgen, int>;
     using FieldVariant = Field<std::variant<IntMember>>; 
     
-    inline static constexpr std::array<FieldVariant, 5> k_fields {{
-        {"length", &Pwgen::length},
-        {"symbols", &Pwgen::symbols},
-        {"numbers", &Pwgen::numbers},
-        {"uppercase", &Pwgen::uppercase},
-        {"lowercase", &Pwgen::lowercase},
+    static constexpr std::array<FieldVariant, 5> k_fields {{
+        {.key = "length", .member = &Pwgen::length},
+        {.key = "symbols", .member = &Pwgen::symbols},
+        {.key = "numbers", .member = &Pwgen::numbers},
+        {.key = "uppercase", .member = &Pwgen::uppercase},
+        {.key = "lowercase", .member = &Pwgen::lowercase},
       }};
     
     static constexpr const std::array<FieldVariant, 5>& fields() { return k_fields; }
@@ -98,13 +98,13 @@ namespace ck::config {
       SectionMember member;
     };
     
-    inline static constexpr std::array<Section, 3> k_sections {{
-      {Core::k_name, &State::core},
-      {Ui::k_name, &State::ui},
-      {Pwgen::k_name, &State::pwgen},
+    static constexpr std::array<Section, 3> k_sections {{
+      {.name = Core::k_name, .member = &State::core},
+      {.name = Ui::k_name, .member = &State::ui},
+      {.name = Pwgen::k_name, .member = &State::pwgen},
     }};
     
-    inline static constexpr const std::array<Section, 3>& sections() { return k_sections; }
+    static constexpr const std::array<Section, 3>& sections() { return k_sections; }
 
     // I definitely made a convienience for readability trade here. The
     // following two templates reduce the need to add to parsing helpers
@@ -143,7 +143,7 @@ namespace ck::config {
           if (field.key != member_name) { continue; }
           
           std::visit([&](auto& member) {
-            (fn)(section.*member);
+            fn(section.*member);
           }, field.member);
           found = true;
           return;
@@ -170,7 +170,7 @@ namespace ck::config {
         
         for (const auto& field : Owner::fields())  {
           std::visit([&](auto& member) {
-            (fn)(section.*member);
+            fn(section.*member);
           }, field.member);
         }
       };
@@ -181,7 +181,7 @@ namespace ck::config {
 
   class Config {
     public:
-      explicit Config();
+      explicit Config() = default;
 
       static Config empty();
       
@@ -198,8 +198,8 @@ namespace ck::config {
       std::string& home();
       
       void print();
-      void print(std::string_view);
-      void set(std::vector<std::string>);
+      void print(std::string_view key);
+      void set(std::vector<std::string> args);
 
       void load();
       void save();

@@ -12,11 +12,11 @@ namespace ck::path {
     std::stringstream ss(*path);
   
     while (std::getline(ss, part, '/')) {
-      if (part == "" || part.empty()) { continue; }
+      if (part.empty()) { continue; }
       path_parts.push_back(part);
     }
     
-    return(path_parts);
+    return path_parts;
   };
 
   std::vector<std::string> parse_path(const std::string& path) {
@@ -25,10 +25,10 @@ namespace ck::path {
     std::stringstream ss(path);
   
     while (std::getline(ss, part, '/')) {
-      if (part == "" || part.empty()) { continue; }
+      if (part.empty()) { continue; }
       path_parts.push_back(part);
     }
     
-    return(path_parts);
+    return path_parts;
   };
 }

@@ -1,3 +1,4 @@
+#include <CLI/CLI.hpp>
 #include "cli/types.hpp"
 #include "lib/mount/types.hpp"
 
@@ -20,7 +21,7 @@ namespace ck::cmd {
       // ck mount foo
       // this will attemt to mount the actual directory core.home/foo with 
       // with the alias foo
-      mnt.mount(*args.path);
+      if (args.path) { mnt.mount(*args.path); }
       return;
     } 
     // if path is a single component, it should be interpreted as pointing to 
@@ -34,6 +35,6 @@ namespace ck::cmd {
     // this should attemt to mount the actual directory /any/directory with 
     // with the alias foo/bar
 
-    mnt.mount(*args.path, *args.alias);
+    if (args.path && args.alias) { mnt.mount(*args.path, *args.alias); }
   };
 }

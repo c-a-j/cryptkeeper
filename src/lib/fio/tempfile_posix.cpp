@@ -17,7 +17,7 @@ namespace ck::fio {
   using ck::util::error::FsErrc;
   using enum ck::util::error::FsErrc;
     
-  TempFile::TempFile(const fs::path& target_) : target(target_) {
+  TempFile::TempFile(fs::path target_) : target(std::move(target_)) {
     std::string tmpl = target.string() + ".tmp.XXXXXX";
     std::vector<char> buf(tmpl.begin(), tmpl.end());
     buf.push_back('\0');
@@ -36,7 +36,7 @@ namespace ck::fio {
     }
   };
     
-  int TempFile::write(std::span<const std::byte> bytes) noexcept {
+  int TempFile::write(std::span<const std::byte> bytes) const noexcept {
     return write_all(
       fd, 
       reinterpret_cast<const char*>(bytes.data()),
@@ -44,7 +44,7 @@ namespace ck::fio {
     );
   };
 
-  int TempFile::sync() noexcept {
+  int TempFile::sync() const noexcept {
     if (::fsync(fd) == -1) {
       return errno;
     }

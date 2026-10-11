@@ -3,6 +3,7 @@
 #include <string>
 #include <filesystem>
 #include <limits>
+#include <utility>
 #include <vector>
 #include <windows.h>
 
@@ -20,7 +21,7 @@ namespace ck::fio {
     return static_cast<int>(::GetLastError());
   }
   
-  TempFile::TempFile(const fs::path& target_) : target(target_) {
+  TempFile::TempFile(fs::path target_) : target(std::move(target_)) {
     fs::path parent = target.parent_path();
     fs::path dir = parent.empty() ? fs::path(".") : parent;
 
@@ -53,7 +54,7 @@ namespace ck::fio {
     }
   }
 
-  int TempFile::write(std::span<const std::byte> bytes) noexcept {
+  int TempFile::write(std::span<const std::byte> bytes) const noexcept {
     const std::byte* data = bytes.data();
     std::size_t remaining = bytes.size();
 
@@ -76,12 +77,12 @@ namespace ck::fio {
     return 0;
   }
 
-  int TempFile::write(const std::string& contents) noexcept {
+  int TempFile::write(const std::string& contents) const noexcept {
     std::span<const char> chars(contents.data(), contents.size());
     return write(std::as_bytes(chars));
   }
 
-  int TempFile::sync() noexcept {
+  int TempFile::sync() const noexcept {
     if (!::FlushFileBuffers(handle)) {
       return last_error();
     }

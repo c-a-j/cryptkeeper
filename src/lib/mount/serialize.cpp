@@ -1,18 +1,12 @@
 #include "toml++/toml.hpp"
-#include <filesystem>
-#include <sstream>
 #include <optional>
 
 #include "util/error.hpp"
 #include "util/logger/logger.hpp"
 #include "lib/mount/types.hpp"
-#include "../fio/atomic_write.hpp"
-#include "../path/path.hpp"
-#include "../path/existence.hpp"
-
 
 namespace {
-  toml::table create_table(const ck::mount::Mount& m, const std::optional<std::string> alias = std::nullopt) {
+  toml::table create_table(const ck::mount::Mount& m, const std::optional<std::string>& alias = std::nullopt) {
     toml::table tbl; 
     tbl.insert_or_assign("path", m.path);
     if (alias) { tbl.insert_or_assign("alias", *alias); }
@@ -30,7 +24,7 @@ namespace ck::mount::codec {
     tbl.insert("root", create_table(state.root));
 
     toml::array mnts;
-    for (auto [k, mnt] : state.mounts) {
+    for (const auto& [k, mnt] : state.mounts) {
       mnts.push_back(create_table(mnt, k));
     }
     tbl.insert("mount", mnts);

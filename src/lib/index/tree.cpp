@@ -94,19 +94,13 @@ namespace ck::index::tree {
 
   bool secret_along_path(Node* root, const std::vector<std::string>& path_parts) {
     Node* node = root;
-    for (std::size_t i = 0; i < path_parts.size(); ++i) {
-      if (node->entry){
-        return true;
-      }
+    for (const auto& part : path_parts) {
+      if (node->entry) { return true; }
       
-      node = &node->children[path_parts[i]];
+      node = &node->children[part];
     }
     
-    if (node->entry) {
-      return true;
-    }
-    
-    return false;
+    return static_cast<bool>(node->entry);
   }
 
   bool secret_along_path(Node* root, const std::string& path) {

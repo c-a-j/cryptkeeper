@@ -61,8 +61,8 @@ namespace {
   ck::index::Node find_node(ck::index::Node* root, const std::vector<std::string>& path_parts) {
     ck::index::Node* node = root;
 
-    for (std::size_t i = 0; i < path_parts.size(); ++i) {
-      node = &node->children[(path_parts[i])];
+    for (const auto& part : path_parts) {
+      node = &node->children[part];
     }
 
     if (node->children.empty() && !node->entry) {
@@ -81,7 +81,7 @@ namespace {
       names.push_back(name);
     }
     
-    std::sort(names.begin(), names.end());
+    std::ranges::sort(names);
     
     for (std::size_t i = 0; i < names.size(); ++i) {
       const bool is_last = (i + 1 == names.size());
@@ -136,9 +136,9 @@ namespace ck::index {
       std::cout.write(plain.char_data(), static_cast<std::streamsize>(plain.size()));
       std::cout << "\n";
       return;
-    } else {
-      print_top_node(path_parts[path_parts.size() - 1]);
     }
+
+    print_top_node(path_parts[path_parts.size() - 1]);
     print_tree(node);
   }
 }

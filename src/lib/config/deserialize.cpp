@@ -6,9 +6,6 @@
 #include "lib/config/types.hpp"
 #include "util/logger/logger.hpp"
 
-#include "../path/path.hpp"
-#include "../path/existence.hpp"
-
 namespace {
   using namespace ck::config;
   using ck::util::error::Error;
@@ -25,7 +22,7 @@ namespace {
   };
 
   template <typename T>
-  using member_value_t = typename member_value<T>::type;
+  using member_value_t = member_value<T>::type;
 
   // visit each field in a section
   // this parsing function is tolerant of a malformed configuration file
@@ -49,13 +46,9 @@ namespace {
     }
   }
 
-  void valid_or_default(Core& _) {
-    return;
-  }
+  void valid_or_default(Core& _) {}
 
-  void valid_or_default(Ui& _) {
-    return;
-  }
+  void valid_or_default(Ui& _) {}
 
   void valid_or_default(Pwgen& pwgen) {
     if (auto result = pwgen.valid(); !result) {
@@ -63,9 +56,7 @@ namespace {
       Pwgen def;
       pwgen = def;
     }
-    return;
   }
-
 }
 
 namespace ck::config::codec {
@@ -75,8 +66,6 @@ namespace ck::config::codec {
   using ck::util::logger::logger;
   
   State deserialize(std::string_view toml_text) {
-    std::filesystem::path path = ck::path::config_file();
-    
     toml::table cfg_toml;
     try {
       cfg_toml = toml::parse(toml_text);
@@ -88,7 +77,7 @@ namespace ck::config::codec {
 
     // visit each config file section and parse the values
     // missing sections will display a warning and fall back to defaults
-    for (auto& section : state.sections()) {
+    for (const auto& section : State::sections()) {
       std::visit([&](auto& member) {
         if (auto* tbl = cfg_toml[section.name].as_table()) {
           parse_fields(state.*member, *tbl, section.name);

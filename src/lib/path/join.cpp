@@ -5,7 +5,7 @@ namespace ck::path {
   std::string join(const std::vector<std::string>& parts) {
     std::string out;
     bool first = true;
-    for (auto part : parts) { 
+    for (const auto& part : parts) { 
       if (first) {
         out += part;
         first = false;

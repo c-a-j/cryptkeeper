@@ -67,39 +67,44 @@ namespace {
     
     return *uuid;
   }
+
   
   std::vector<std::string> parse_path(
     const toml::table& tbl, 
     const std::string& file_path,
     const std::string& uuid
   ) {
+    auto msg = [&file_path, &uuid](const std::string& info) {
+      std::string msg = file_path;
+      msg += " -> [";
+      msg += uuid;
+      msg += "] ";
+      msg += info;
+      return msg;
+    };
+
     std::vector<std::string> path;
-    if (auto* arr = tbl["path"].as_array()) {
+    if (const auto *arr = tbl["path"].as_array()) {
       path.reserve(arr->size());
       for (const toml::node& n : *arr) {
         std::optional<std::string> part = n.value<std::string>();
         if (!part) {
-          std::string msg = file_path + " -> [" + uuid + "] " + "contains non string path element";
-          throw Error<IndexErrc>{CorruptedIndex, msg};
+          throw Error<IndexErrc>{CorruptedIndex, msg("contains non string path element")};
         }
         if (part->empty()) {
-          std::string msg = file_path + " -> [" + uuid + "] " + "contains empty path element";
-          throw Error<IndexErrc>{CorruptedIndex, msg};
+          throw Error<IndexErrc>{CorruptedIndex, msg("contains empty path element")};
         }
-        if (part->find('/') != std::string::npos) {
-          std::string msg = file_path + " -> [" + uuid + "] " + "contains path element including '/'";
-          throw Error<IndexErrc>{CorruptedIndex, msg};
+        if (part->contains('/')) {
+          throw Error<IndexErrc>{CorruptedIndex, msg("contains path element including '/'")};
         }
         path.push_back(*part);
       }
     } else {
-      std::string msg = file_path + " -> [" + uuid + "] " + "is missing a path";
-      throw Error<IndexErrc>{CorruptedIndex, msg};
+      throw Error<IndexErrc>{CorruptedIndex, msg("is missing a path")};
     }
     
     if (path.empty()) {
-      std::string msg = file_path + " -> [" + uuid + "] " + "has empty path";
-      throw Error<IndexErrc>{CorruptedIndex, msg};
+      throw Error<IndexErrc>{CorruptedIndex, msg("has empty path")};
     }
     
     return path;
@@ -109,7 +114,7 @@ namespace {
     IndexObj obj;
 
     const toml::table* tbl = node.as_table();
-    if (!tbl) { 
+    if (tbl == nullptr) { 
       std::string msg = std::string(file_path) 
         + std::string(" -> all entries must be a valid toml table");
       throw Error<IndexErrc>{CorruptedIndex, msg}; 

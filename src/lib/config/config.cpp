@@ -8,8 +8,6 @@ namespace ck::config {
   using ck::util::error::ConfigErrc;
   using enum ck::util::error::ConfigErrc;
   
-  Config::Config() {}
-
   const Core& Config::core() const { return state_.core; }
   Core& Config::core() { return state_.core; }
   

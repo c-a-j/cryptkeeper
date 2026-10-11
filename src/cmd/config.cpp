@@ -12,19 +12,24 @@ namespace ck::cmd {
     std::vector<std::string> set_args = args.set_args;
     cfg.load();
     
-    if (set_args.size() == 0) {
+    if (set_args.empty()) {
       cfg.print();
       return;
-    } else if (set_args.size() == 1) {
+    } 
+
+    if (set_args.size() == 1) {
       cfg.print(set_args[0]);
       return;
-    } else if (set_args.size() == 2) {
+    }
+
+    if (set_args.size() == 2) {
       cfg.set(set_args);
       cfg.save();
       return;
-    } else if (set_args.size() > 2) {
+    }
+
+    if (set_args.size() > 2) {
       throw CLI::ValidationError("config", "too many arguments");
     } 
-    return;
   }
 }

@@ -60,7 +60,7 @@ namespace ck::config {
   void Config::print() {
     State state = this->state_;
 
-    for (const auto& section : state.sections()) {
+    for (const auto& section : State::sections()) {
       std::visit([&](auto m){
         print_section(state.*m);
       }, section.member);

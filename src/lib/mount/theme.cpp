@@ -10,14 +10,20 @@ namespace ck::mount {
   
   TextStyle get_scheme_style(OutputComponent c) {
     switch (c) {
-      case RootMountPath:   return { Green, { Bold } };
-      case RootMountAlias:  return { Green, { Bold } };
-      case RootMountArrow:  return { Orange, { Bold } };
-      case MountPath:       return { Aqua, { Bold } };
-      case MountAlias:      return { Aqua, { Bold } };
-      case MountArrow:      return { Orange, { Bold } };
-      case MountSubDir:     return { Blue, { Bold } };
-      case Line:            return { Gray, { Faint } };
+      case RootMountPath:
+      case RootMountAlias:  
+        return { Green, { Bold } };
+      case RootMountArrow:  
+        return { Orange, { Bold } };
+      case MountPath:
+      case MountAlias:      
+        return { Aqua, { Bold } };
+      case MountArrow:      
+        return { Orange, { Bold } };
+      case MountSubDir:     
+        return { Blue, { Bold } };
+      case Line:            
+        return { Gray, { Faint } };
     }
     return { Gray };
   }

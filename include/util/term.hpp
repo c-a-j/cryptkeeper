@@ -57,7 +57,7 @@ namespace ck::util::term {
     return "";
   }
 
-  inline std::string ansi(TextStyle s = {}) {
+  inline std::string ansi(const TextStyle& s = {}) {
     if (s.color == Color::Default) { return ""; }
     std::string out = "\033[";
     
@@ -71,6 +71,6 @@ namespace ck::util::term {
   }
   
   inline std::string reset() {
-    return ansi({Color::Reset});
+    return ansi({.color = Color::Reset});
   }
 }

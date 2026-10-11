@@ -1,11 +1,8 @@
 #include "toml++/toml.hpp"
-#include <filesystem>
 #include <optional>
 
 #include "util/error.hpp"
 #include "util/logger/logger.hpp"
-#include "../path/path.hpp"
-#include "../path/existence.hpp"
 #include "lib/mount/types.hpp"
 
 namespace {
@@ -38,9 +35,9 @@ namespace {
   std::unordered_map<std::string, Mount> parse_mounts(const toml::array& arr, const std::string& file_path) {
     std::unordered_map<std::string, Mount> mounts;
     for (const toml::node& node : arr) {
-      auto* tbl = node.as_table();
+      const auto *tbl = node.as_table();
   
-      if (!tbl) { 
+      if (tbl == nullptr) { 
         std::string msg = std::string(file_path) 
           + std::string(" -> every mount must be a valid toml table");
         throw Error<MountErrc>{InvalidMountFile, msg}; 

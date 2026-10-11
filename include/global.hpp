@@ -5,8 +5,8 @@ inline constexpr std::string_view APP_NAME = "Crypt Keeper";
 inline constexpr std::string_view APP_DIR = "crypt-keeper";
 inline constexpr std::string_view CLI_ABBR = "ck";
 
-inline constexpr std::string_view CONFIG_DIR_ENV_VAR = "CRYPTKEEPER_CONFIG_DIR";
-inline constexpr std::string_view CRYPT_DIR_ENV_VAR = "CRYPTKEEPER_CRYPT_DIR";
+inline constexpr const char* CONFIG_DIR_ENV_VAR = "CRYPTKEEPER_CONFIG_DIR";
+inline constexpr const char* CRYPT_DIR_ENV_VAR = "CRYPTKEEPER_CRYPT_DIR";
 
 // for windows
 // config dir = LOCALAPPDATA/APP_DIR/config

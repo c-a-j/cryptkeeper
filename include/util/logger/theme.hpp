@@ -20,7 +20,7 @@ namespace ck::util::logger {
     bool prefix = true;
     bool newline = true;
     
-    Overrides& set_color(ck::util::term::TextStyle v) { style = v; return *this; }
+    Overrides& set_color(const ck::util::term::TextStyle& v) { style = v; return *this; }
     Overrides& set_stream(Stream v) { stream = v; return *this; }
     Overrides& set_prefix(bool v) { prefix = v; return *this; }
     Overrides& set_newline(bool v) { newline = v; return *this; }
@@ -43,5 +43,8 @@ namespace ck::util::logger {
   };
   
   const Theme& default_theme();
-  const LevelStyle& style_for(const Theme&, Level);
+  const LevelStyle& style_for(const Theme& t, Level l);
+
+  const char* get_level_tag(Level l);
+  Stream get_level_stream(Level l);
 }

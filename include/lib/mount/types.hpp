@@ -2,9 +2,7 @@
 
 #include <string>
 #include <array>
-#include <vector>
 #include <unordered_map>
-#include <optional>
 #include <filesystem>
 
 namespace ck::mount {
@@ -23,9 +21,9 @@ namespace ck::mount {
     std::string hash;
 
     using StrMember = MemberPtr<Mount, std::string>;
-    inline static constexpr std::array<Field<StrMember>, 2> k_fields {{
-      {"path", &Mount::path},
-      {"hash", &Mount::hash},
+    static constexpr std::array<Field<StrMember>, 2> k_fields {{
+      {.key = "path", .member = &Mount::path},
+      {.key = "hash", .member = &Mount::hash},
     }};
 
     static constexpr const std::array<Field<StrMember>, 2>& fields() { return k_fields; }
@@ -46,7 +44,7 @@ namespace ck::mount {
   class Mounts {
     public:
       explicit Mounts();
-      explicit Mounts(State&);
+      explicit Mounts(State& s);
 
       Mount& root();
       const Mount& root() const;
@@ -54,11 +52,11 @@ namespace ck::mount {
       std::unordered_map<std::string, Mount>& mounts();
       const std::unordered_map<std::string, Mount>& mounts() const;
 
-      void mount(const std::string&, const std::string&);
-      void mount(const std::string&);
-      void umount(const std::string&);
-      void chroot(const std::string&);
-      ResolvedPath resolve(const std::string&);
+      void mount(const std::string& path, const std::string& alias);
+      void mount(const std::string& alias);
+      void umount(const std::string& alias);
+      void chroot(const std::string& path);
+      ResolvedPath resolve(const std::string& path);
       void print();
       bool empty() const noexcept;
       bool file_exists() const noexcept;

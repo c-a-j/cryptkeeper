@@ -1,12 +1,11 @@
 #include <iostream>
-#include <filesystem>
 #include <unordered_map>
 #include <optional>
+#include <algorithm>
 
 #include "global.hpp"
 #include "lib/mount/types.hpp"
 
-#include "../path/path.hpp"
 #include "../path/parse_path.hpp"
 #include "./_internal/theme.hpp"
 
@@ -27,8 +26,8 @@ namespace {
   Node* walk_path(Node* node, const std::string& alias) {
     std::vector<std::string> path = ck::path::parse_path(alias);
 
-    for (std::size_t i = 0; i < path.size(); ++i) {
-      node = &node->children[path[i]];
+    for (const auto& part : path) {
+      node = &node->children[part];
     }
     return node;
   }
@@ -112,7 +111,7 @@ namespace {
       aliases.push_back(alias);
     }
 
-    std::sort(aliases.begin(), aliases.end());
+    std::ranges::sort(aliases);
 
     for (std::size_t i = 0; i < aliases.size(); ++i) {
       const bool is_last = (i + 1 == aliases.size());
@@ -130,8 +129,10 @@ namespace {
   }
 
   void print_tree(const Node& node) {
-    print_root(node.mount->path);
-    print_tree(node, "");
+    if (node.mount) {
+      print_root(node.mount->path);
+      print_tree(node, "");
+    }
   }
 }
 

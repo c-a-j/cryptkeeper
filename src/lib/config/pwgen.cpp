@@ -1,5 +1,3 @@
-#include <expected>
-
 #include "util/error.hpp"
 #include "lib/config/types.hpp"
 #include "util/logger/logger.hpp"
@@ -10,7 +8,7 @@ namespace ck::config {
   using enum ck::util::error::ConfigErrc;
   using ck::util::logger::logger;
   
-  ck::crypto::PwSpec Pwgen::spec() {
+  ck::crypto::PwSpec Pwgen::spec() const {
     ck::crypto::PwSpec spec = {
       .length = static_cast<std::size_t>(this->length),
       .symbols = static_cast<std::size_t>(this->symbols),

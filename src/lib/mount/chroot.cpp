@@ -63,6 +63,5 @@ namespace ck::mount {
     this->save();
     logger.info("Root crypt has been set to " + crypt_path.string());
     this->print();
-    return;
   }
 }

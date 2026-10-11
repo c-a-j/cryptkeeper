@@ -24,7 +24,7 @@ namespace ck::config {
       return fail("maximum pwgen password length is 100");
     }
     
-    for (auto& [key, member] : fields()) {
+    for (const auto& [key, member] : fields()) {
       auto result = std::visit([&](auto m) -> std::expected<void, Error<ConfigErrc>> {
         if (this->*m < 0) {
           return fail("values must be >= 0");

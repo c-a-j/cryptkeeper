@@ -10,17 +10,25 @@ namespace ck::index {
   
   TextStyle get_scheme_style(OutputComponent c) {
     switch (c) {
-      case CryptName: return { Blue, { Bold } };
-      case NodeName:  return { Blue, { Bold } };
-      case EntryName: return { Yellow, { Faint } };
-      case RootMountPath:   return { Green, { Bold } };
-      case RootMountAlias:  return { Green, { Bold } };
-      case RootMountArrow:  return { Orange, { Bold } };
-      case MountPath:       return { Aqua, { Bold } };
-      case MountAlias:      return { Aqua, { Bold } };
-      case MountArrow:      return { Orange, { Bold } };
-      case MountSubDir:     return { Blue, { Bold } };
-      case Line:            return { Gray, { Faint } };
+      case CryptName:
+      case NodeName:  
+        return { Blue, { Bold } };
+      case EntryName: 
+        return { Yellow, { Faint } };
+      case RootMountPath:
+      case RootMountAlias:  
+        return { Green, { Bold } };
+      case RootMountArrow:  
+        return { Orange, { Bold } };
+      case MountPath:
+      case MountAlias:      
+        return { Aqua, { Bold } };
+      case MountArrow:      
+        return { Orange, { Bold } };
+      case MountSubDir:     
+        return { Blue, { Bold } };
+      case Line:            
+        return { Gray, { Faint } };
     }
     return { Gray };
   }

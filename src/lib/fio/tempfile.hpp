@@ -22,15 +22,15 @@ namespace ck::fio {
     int fd = -1;
 #endif
     
-    explicit TempFile(const fs::path&);
+    explicit TempFile(fs::path target);
 
     TempFile(const TempFile&) = delete;
     TempFile& operator=(const TempFile&) = delete;
     
-    int write(std::span<const std::byte> bytes) noexcept;
-    int write(const std::string& contents) noexcept;
+    int write(std::span<const std::byte> bytes) const noexcept;
+    int write(const std::string& contents) const noexcept;
 
-    int sync() noexcept;
+    int sync() const noexcept;
 
     int close() noexcept;
     

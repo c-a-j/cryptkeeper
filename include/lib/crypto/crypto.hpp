@@ -7,14 +7,18 @@
 
 namespace ck::crypto {
   // std::string get_fingerprint();
-  bool public_key_exists(const std::string&);
-  bool private_key_exists(const std::string&);
+  bool public_key_exists(const std::string& key_fpr);
+  bool private_key_exists(const std::string& key_fpr);
   void init_gpgme();
-  SecureBytes read_file(const std::filesystem::path&);
-  SecureBytes decrypt_bytes(const SecureBytes&);
-  SecureBytes encrypt_bytes(const SecureBytes&, const std::vector<std::string>&);
-  SecureBytes encrypt_bytes(const SecureBytes&, const std::string&);
-  void write(const SecureBytes&, const std::vector<std::string>&, const std::filesystem::path&);
+  SecureBytes read_file(const std::filesystem::path& path);
+  SecureBytes decrypt_bytes(const SecureBytes& bytes);
+  SecureBytes encrypt_bytes(const SecureBytes& bytes, const std::vector<std::string>& key_fprs);
+  SecureBytes encrypt_bytes(const SecureBytes& bytes, const std::string& key_fpr);
+  void write(
+    const SecureBytes& bytes, 
+    const std::vector<std::string>& key_fprs,
+    const std::filesystem::path& path
+  );
   
   template<typename F>
   auto with_decrypted_bytes(const std::filesystem::path& path, F&& fn)

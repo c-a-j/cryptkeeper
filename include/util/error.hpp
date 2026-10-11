@@ -4,7 +4,7 @@
 namespace ck::util::error {
   struct AppError : std::runtime_error {
     std::string msg1;
-    std::string msg2 = {};
+    std::string msg2;
     AppError(std::string m1, std::string m2 = {})
       : std::runtime_error(m1 + m2), msg1(std::move(m1)), msg2(std::move(m2))  {}
   };
@@ -177,7 +177,7 @@ namespace ck::util::error {
       case IndexErrc::IndexFileNotFound:          return "Index file not found";
       case IndexErrc::NoPathToIndex:              return "No path to index file";
       case IndexErrc::CorruptedIndex:             return "Corrupted index";
-      case IndexErrc::InvalidIndexFile:           return "Corrupted index";
+      case IndexErrc::InvalidIndexFile:           return "Invalid index file";
       case IndexErrc::InvalidOrEmptyIndexFile:    return "Invalid or empty index file";
       default:                                    return "Unknown error";
     }

@@ -1,8 +1,6 @@
 #include <string>
 #include <filesystem>
 
-#include "cli/types.hpp"
-
 #include "util/error.hpp"
 #include "util/logger/logger.hpp"
 
@@ -59,7 +57,7 @@ namespace ck::index {
     entry.uuid = flat.uuid;
     Node* node = tree::break_trail(&this->root_, flat.path);
     
-    auto wisper = [](this auto&& self) -> const SecureBytes {
+    auto wisper = [](this auto&& self) -> SecureBytes {
       SecureBytes listen1 = ck::input::wisper("Enter secret:");   
       SecureBytes listen2 = ck::input::wisper("Confirm secret:");   
       if (listen1 != listen2) {
@@ -69,7 +67,7 @@ namespace ck::index {
       return listen1;   
     };
 
-    const SecureBytes secret = (pwgen) 
+    const SecureBytes secret = pwgen
         ? ck::crypto::pwgen(cfg.pwgen().spec())
         : wisper();
     

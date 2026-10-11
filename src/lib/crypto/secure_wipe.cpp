@@ -6,7 +6,7 @@ namespace ck::crypto {
       return;
     }
 
-    volatile unsigned char* p = static_cast<volatile unsigned char*>(ptr);
+    auto *p = static_cast<volatile unsigned char*>(ptr);
     while (len-- > 0) {
       *p++ = 0;
     }

@@ -8,7 +8,24 @@
 namespace ck::util::logger {
 using namespace ck::util::term;
   void Logger::emit(Level level, std::string_view msg, Overrides o) {
-    const LevelStyle& s = style_for(theme_, level);
+    if (!theme_) {
+      const Stream stream = o.stream.value_or(get_level_stream(level));
+      std::ostream& out = (stream == Stream::Out)
+        ? std::cout
+        : std::cerr;
+
+      if (o.prefix) {
+        out << CLI_ABBR << "  " << get_level_tag(level) << "  ";
+      }
+
+      out << msg;
+      if (o.newline) {
+        out << "\n";
+      }
+      return;
+    }
+
+    const LevelStyle& s = style_for(*theme_, level);
     std::string color_code = (!o.style) 
       ? ansi(s.colors.primary)
       : ansi(*o.style);
@@ -32,42 +49,46 @@ using namespace ck::util::term;
     }
     
     out << color_code << msg << reset();
-    if (o.newline) out << "\n";
+    if (o.newline) {out << "\n";}
   }
  
   // This logger function is for printing messages with two colors so only the
   // most important part (the first part) is colorful.
   void Logger::emit(Level level, std::string_view msg1, std::string_view msg2) {
-    const LevelStyle& s = style_for(theme_, level);
+    Overrides secondary;
+    secondary.prefix = false;
+
+    if (theme_) {
+      secondary.style = style_for(*theme_, level).colors.secondary;
+    }
+
     emit(level, std::string(msg1) + ": ", Overrides {}.set_newline(false));
-    emit(level, msg2, Overrides {}
-      .set_color(s.colors.secondary)
-      .set_prefix(false));
+    emit(level, msg2, std::move(secondary));
   }
   
   void Logger::info(std::string_view msg, Overrides o) {
-    emit(Level::Info, msg, o);
+    emit(Level::Info, msg, std::move(o));
   }
   void Logger::info(std::string_view msg1, std::string_view msg2) {
     emit(Level::Info, msg1, msg2);
   }
   
   void Logger::success(std::string_view msg, Overrides o) {
-    emit(Level::Success, msg, o);
+    emit(Level::Success, msg, std::move(o));
   }
   void Logger::success(std::string_view msg1, std::string_view msg2) {
     emit(Level::Success, msg1, msg2);
   }
   
   void Logger::warning(std::string_view msg, Overrides o) {
-    emit(Level::Warning, msg, o);
+    emit(Level::Warning, msg, std::move(o));
   }
   void Logger::warning(std::string_view msg1, std::string_view msg2) {
     emit(Level::Warning, msg1, msg2);
   }
   
   void Logger::error(std::string_view msg, Overrides o) {
-    emit(Level::Error, msg, o);
+    emit(Level::Error, msg, std::move(o));
   }
   void Logger::error(std::string_view msg1, std::string_view msg2) {
     emit(Level::Error, msg1, msg2);
@@ -75,7 +96,7 @@ using namespace ck::util::term;
   
   void Logger::debug(std::string_view msg, Overrides o) {
     if (!cfg_.debug) { return; }
-    emit(Level::Debug, msg, o);
+    emit(Level::Debug, msg, std::move(o));
   }
   void Logger::debug(std::string_view msg1, std::string_view msg2) {
     if (!cfg_.debug) { return; }
@@ -93,6 +114,14 @@ using namespace ck::util::term;
   void Logger::set_debug(const bool debug) {
     cfg_.debug = debug;
   }
+
+  void Logger::initialize(Theme theme) {
+    theme_.emplace(std::move(theme));
+  }
+
+  void Logger::initialize() {
+    theme_.emplace(default_theme());
+  }
   
-  Logger logger(default_theme());
+  constinit Logger logger;
 }

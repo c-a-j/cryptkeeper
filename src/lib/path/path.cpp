@@ -15,13 +15,13 @@ namespace ck::path {
   using ck::util::logger::logger;
 
   static std::string env_or_empty(const char* name) {
-    if (const char* value = std::getenv(name)) return value;
+    if (const char* value = std::getenv(name)) { return value; }
     return {};
   }
 
   fs::path crypt_root() {
-    std::string crypt_dir = env_or_empty(CRYPT_DIR_ENV_VAR.data());
-    if (!crypt_dir.empty()) return fs::path(crypt_dir);
+    std::string crypt_dir = env_or_empty(CRYPT_DIR_ENV_VAR);
+    if (!crypt_dir.empty()) { return {crypt_dir}; }
     
     #ifdef _WIN32
       std::string appdata = env_or_empty("LOCALAPPDATA");
@@ -31,7 +31,7 @@ namespace ck::path {
       return fs::path(appdata) / APP_DIR / COLLECTION_HOME_DIR;
     #else
       auto xdg_data = env_or_empty("XDG_DATA_HOME");
-      if (!xdg_data.empty()) return fs::path(xdg_data);
+      if (!xdg_data.empty()) { return {xdg_data}; }
       
       auto home = env_or_empty("HOME");
       if (home.empty()) { 
@@ -42,8 +42,8 @@ namespace ck::path {
   }
 
   fs::path config_dir() {
-    std::string cfg_dir = env_or_empty(CONFIG_DIR_ENV_VAR.data());
-    if (!cfg_dir.empty()) return fs::path(cfg_dir);
+    std::string cfg_dir = env_or_empty(CONFIG_DIR_ENV_VAR);
+    if (!cfg_dir.empty()) { return {cfg_dir}; }
     
     #ifdef _WIN32
       std::string appdata = env_or_empty("LOCALAPPDATA");
@@ -53,7 +53,7 @@ namespace ck::path {
       return fs::path(appdata) / APP_DIR / fs::path("config");
     #else
       std::string xdg = env_or_empty("XDG_CONFIG_HOME");
-      if (!xdg.empty()) return fs::path(xdg) / APP_DIR;
+      if (!xdg.empty()) { return fs::path(xdg) / APP_DIR; }
       
       auto home = env_or_empty("HOME");
       if (home.empty()) { 

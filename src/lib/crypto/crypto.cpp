@@ -21,12 +21,12 @@ namespace {
 
     gpgme_ctx_t ctx = nullptr;
     gpgme_error_t err = gpgme_new(&ctx);
-    if (err) {
+    if (err != 0) {
       throw Error<CryptoErrc>{GpgmeNewFailed, gpgme_strerror(err)};
     }
 
     err = gpgme_set_protocol(ctx, GPGME_PROTOCOL_OpenPGP);
-    if (err) {
+    if (err != 0) {
       gpgme_release(ctx);
       throw Error<CryptoErrc>{GpgmeSetProtocolFailed, gpgme_strerror(err)};
     }
@@ -40,7 +40,7 @@ namespace {
     gpgme_key_t key = nullptr;
     
     gpgme_error_t err = gpgme_get_key(ctx, key_id.c_str(), &key, secret ? 1 : 0);
-    if (key) {
+    if (key != nullptr) {
       gpgme_key_unref(key);
     }
     gpgme_release(ctx);
@@ -51,7 +51,7 @@ namespace {
     }
 
     // any other error should surface
-    if (err) {
+    if (err != 0) {
       throw Error<CryptoErrc>{GpgmeGetKeyFailed, gpgme_strerror(err)};
     }
 
@@ -75,13 +75,13 @@ namespace ck::crypto {
     gpgme_data_t plain = nullptr;
     
     gpgme_error_t err = gpgme_data_new_from_mem(&cipher, bytes.char_data(), bytes.size(), 0);
-    if (err) {
+    if (err != 0) {
       gpgme_release(ctx);
       throw Error<CryptoErrc>{GpgmeNewFromMemFailed, gpgme_strerror(err)};
     }
     
     err = gpgme_data_new(&plain);
-    if (err) {
+    if (err != 0) {
       gpgme_release(ctx);
       gpgme_data_release(cipher);
       throw Error<CryptoErrc>{GpgmeDataNewFailed, gpgme_strerror(err)};
@@ -89,7 +89,7 @@ namespace ck::crypto {
     
     err = gpgme_op_decrypt(ctx, cipher, plain);
     gpgme_data_release(cipher);
-    if (err) {
+    if (err != 0) {
       gpgme_release(ctx);
       gpgme_data_release(plain);
       throw Error<CryptoErrc>{GpgmeDataReleaseFailed, gpgme_strerror(err)};
@@ -97,7 +97,7 @@ namespace ck::crypto {
     
     size_t plain_len = 0;
     char* plain_buf = gpgme_data_release_and_get_mem(plain, &plain_len);
-    if (!plain_buf) {
+    if (plain_buf == nullptr) {
       gpgme_release(ctx);
       throw Error<CryptoErrc>{GpgmeDataReleaseAndGetMemFailed, gpgme_strerror(err)};
     }
@@ -154,12 +154,12 @@ namespace ck::crypto {
     for (const auto& fpr : key_fprs) {
       gpgme_key_t key = nullptr;
       gpgme_error_t err = gpgme_get_key(ctx, fpr.c_str(), &key, 0);
-      if (err) {
+      if (err != 0) {
         gpgme_release(ctx);
         release_keys(recipients);
         throw Error<CryptoErrc>{GpgmeGetKeyFailed, gpgme_strerror(err)};
       }
-      if (!key) {
+      if (key == nullptr) {
         gpgme_release(ctx);
         release_keys(recipients);
         throw Error<CryptoErrc>{GpgKeyNotFound, fpr};
@@ -168,21 +168,21 @@ namespace ck::crypto {
     }
     
     gpgme_error_t err = gpgme_data_new_from_mem(&plain, bytes.char_data(), bytes.size(), 0);
-    if (err) {
+    if (err != 0) {
       gpgme_release(ctx);
       release_keys(recipients);
       throw Error<CryptoErrc>{GpgmeDataNewFromMemFailed, gpgme_strerror(err)};
     }
     
     err = gpgme_data_new(&cipher);
-    if (err) {
+    if (err != 0) {
       gpgme_release(ctx);
       gpgme_data_release(plain);
       release_keys(recipients);
       throw Error<CryptoErrc>{GpgmeDataNewFailed, gpgme_strerror(err)};
     }
     
-    gpgme_encrypt_flags_t flags{};
+    const auto flags = static_cast<gpgme_encrypt_flags_t>(0);
     err = gpgme_op_encrypt(
       ctx, 
       add_sentinel(recipients).data(), 
@@ -192,7 +192,7 @@ namespace ck::crypto {
     );
     gpgme_data_release(plain);
     release_keys(recipients);
-    if (err) {
+    if (err != 0) {
       gpgme_release(ctx);
       gpgme_data_release(cipher);
       throw Error<CryptoErrc>{GpgmeDataReleaseFailed, gpgme_strerror(err)};
@@ -200,7 +200,7 @@ namespace ck::crypto {
     
     size_t cipher_len = 0;
     char* cipher_buf = gpgme_data_release_and_get_mem(cipher, &cipher_len);
-    if (!cipher_buf) {
+    if (cipher_buf == nullptr) {
       gpgme_release(ctx);
       throw Error<CryptoErrc>{GpgmeDataReleaseAndGetMemFailed, gpgme_strerror(err)};
     }

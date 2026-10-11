@@ -10,7 +10,7 @@ asan_env := "ASAN_SYMBOLIZER_PATH=" + `which llvm-symbolizer` + " ASAN_OPTIONS=s
 bindir := "~/.local/bin"
 
 configure build_type="Debug" sanitizers="OFF" tests="OFF" debug_logs="OFF" clang_tidy="OFF":
-  cmake -S . -B {{ build_dir }} \
+  cmake -S . -B {{ build_dir }} -G Ninja \
     -DCMAKE_CXX_COMPILER=clang++ \
     -DCK_ENABLE_SANITIZERS={{ sanitizers }} \
     -DCMAKE_BUILD_TYPE={{ build_type }} \
