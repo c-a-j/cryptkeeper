@@ -1,12 +1,34 @@
 #pragma once
 #include <stdexcept>
+#include <memory>
+#include <string>
+#include <utility>
+#include <string_view>
 
 namespace ck::util::error {
-  struct AppError : std::runtime_error {
-    std::string msg1;
-    std::string msg2;
-    AppError(std::string m1, std::string m2 = {})
-      : std::runtime_error(m1 + m2), msg1(std::move(m1)), msg2(std::move(m2))  {}
+  class AppError : public std::runtime_error {
+    private:
+      struct Messages {
+        std::string first;
+        std::string second;
+      };
+
+      std::shared_ptr<const Messages> messages_;
+
+    public:
+      AppError(std::string m1, std::string m2 = {}) 
+        : std::runtime_error(m1 + m2), 
+          messages_(std::make_shared<const Messages>(
+            Messages{std::move(m1), std::move(m2)}
+          )) {}
+
+      const std::string& msg1() const noexcept {
+        return messages_->first;
+      }
+
+      const std::string& msg2() const noexcept {
+        return messages_->second;
+      }
   };
   
   template<typename T>

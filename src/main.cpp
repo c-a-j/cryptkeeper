@@ -46,7 +46,7 @@ int run_cli(int argc, char** argv) {
     logger.error(e.what());
     return 1;
   } catch (const ck::util::error::AppError& e) {
-    logger.error(e.msg1, e.msg2);
+    logger.error(e.msg1(), e.msg2());
     return 1;
   } catch (const std::exception& e) {
     logger.error(e.what());

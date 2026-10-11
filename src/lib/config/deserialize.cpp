@@ -52,7 +52,7 @@ namespace {
 
   void valid_or_default(Pwgen& pwgen) {
     if (auto result = pwgen.valid(); !result) {
-      logger.error(result.error().msg1, result.error().msg2);
+      logger.error(result.error().msg1(), result.error().msg2());
       Pwgen def;
       pwgen = def;
     }
