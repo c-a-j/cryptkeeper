@@ -1,14 +1,15 @@
 #include <filesystem>
 
+#include "lib/mount/mount.hpp"
+#include "lib/config/config.hpp"
 #include "util/error.hpp"
 #include "util/logger/logger.hpp"
-#include "../path/path.hpp"
-#include "../path/parse_path.hpp"
-#include "../path/existence.hpp"
-#include "lib/mount/types.hpp"
-#include "lib/config/types.hpp"
-#include "./_internal/initialized.hpp"
-#include "./_internal/hash.hpp"
+#include "lib/path/parse_path.hpp"
+#include "lib/path/existence.hpp"
+
+#include "../path/internal/path.hpp"
+#include "./internal/initialized.hpp"
+#include "./internal/hash.hpp"
 
 namespace ck::mount {
   using ck::config::cfg;

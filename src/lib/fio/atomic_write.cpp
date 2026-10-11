@@ -2,9 +2,10 @@
 #include <filesystem>
 
 #include "util/error.hpp"
-#include "./msg.hpp"
-#include "./tempfile.hpp"
-#include "./sync_dir.hpp"
+
+#include "./internal/msg.hpp"
+#include "./internal/tempfile.hpp"
+#include "./internal/sync_dir.hpp"
 
 namespace ck::fio {
   namespace fs = std::filesystem;

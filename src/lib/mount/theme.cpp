@@ -1,6 +1,6 @@
 #include "util/term.hpp"
 
-#include "./_internal/theme.hpp"
+#include "./internal/theme.hpp"
 
 namespace ck::mount {
   using namespace ck::util::term;

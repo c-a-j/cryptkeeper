@@ -1,12 +1,13 @@
 #include <toml++/toml.hpp>
 #include <filesystem>
 
-#include "lib/index/types.hpp"
-#include "./util/error.hpp"
-#include "./util/logger/logger.hpp"
-#include "./_internal/tree.hpp"
-#include "./_internal/types.hpp"
-#include "./_internal/vars.hpp"
+#include "lib/index/index.hpp"
+#include "util/error.hpp"
+#include "util/logger/logger.hpp"
+
+#include "./internal/tree.hpp"
+#include "./internal/types.hpp"
+#include "./internal/vars.hpp"
 
 
 namespace { 

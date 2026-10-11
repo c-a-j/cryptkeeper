@@ -3,7 +3,7 @@
 
 #include <filesystem>
 
-#include "lib/mount/types.hpp"
+#include "lib/mount/mount.hpp"
 
 namespace ck::mount::codec {
   namespace fs = std::filesystem;

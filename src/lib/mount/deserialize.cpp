@@ -3,7 +3,7 @@
 
 #include "util/error.hpp"
 #include "util/logger/logger.hpp"
-#include "lib/mount/types.hpp"
+#include "lib/mount/mount.hpp"
 
 namespace {
   using namespace ck::mount;

@@ -1,9 +1,7 @@
 #include "toml++/toml.hpp"
 
-#include <filesystem>
-
 #include "util/error.hpp"
-#include "lib/config/types.hpp"
+#include "lib/config/config.hpp"
 #include "util/logger/logger.hpp"
 
 namespace {

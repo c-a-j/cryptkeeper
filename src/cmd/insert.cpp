@@ -1,9 +1,8 @@
 #include "util/logger/logger.hpp"
 #include "cli/types.hpp"
-#include "lib/config/types.hpp"
-#include "lib/index/types.hpp"
-#include "lib/mount/types.hpp"
-#include "./_internal.hpp"
+#include "lib/index/index.hpp"
+#include "lib/mount/mount.hpp"
+#include "./internal/handlers.hpp"
 
 namespace ck::cmd {
   using ck::util::logger::logger;

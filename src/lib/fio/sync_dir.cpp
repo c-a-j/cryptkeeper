@@ -3,7 +3,7 @@
 #include <fcntl.h>
 
 #include "util/error.hpp"
-#include "./msg.hpp"
+#include "./internal/msg.hpp"
 
 
 namespace ck::fio {

@@ -2,9 +2,9 @@
 
 #include "util/logger/logger.hpp"
 #include "cli/types.hpp"
-#include "../lib/path/parse_path.hpp"
-#include "lib/mount/types.hpp"
-#include "lib/index/types.hpp"
+#include "lib/mount/mount.hpp"
+#include "lib/index/index.hpp"
+#include "lib/path/parse_path.hpp"
 
 namespace {
   bool mount_is_child(

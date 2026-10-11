@@ -2,9 +2,10 @@
 
 #include "util/error.hpp"
 #include "util/logger/logger.hpp"
-#include "../path/path.hpp"
-#include "../path/existence.hpp"
-#include "lib/mount/types.hpp"
+#include "lib/mount/mount.hpp"
+#include "lib/path/existence.hpp"
+
+#include "../path/internal/path.hpp"
 
 namespace ck::mount {
   using ck::util::logger::logger;

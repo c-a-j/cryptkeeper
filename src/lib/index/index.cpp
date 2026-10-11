@@ -1,9 +1,10 @@
 #include "util/error.hpp"
-#include "lib/index/types.hpp"
+#include "lib/index/index.hpp"
 #include "lib/crypto/crypto.hpp"
 #include "global.hpp"
-#include "../path/get_idx_file.hpp"
-#include "./_internal/codec.hpp"
+
+#include "../path/internal/get_idx_file.hpp"
+#include "./internal/codec.hpp"
 
 namespace {
 }

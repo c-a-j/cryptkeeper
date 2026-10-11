@@ -5,14 +5,14 @@
 #include "global.hpp"
 #include "util/error.hpp"
 #include "util/logger/logger.hpp"
-#include "lib/index/types.hpp"
+#include "lib/index/index.hpp"
 #include "lib/crypto/crypto.hpp"
-#include "./_internal/vars.hpp"
-#include "./_internal/codec.hpp"
-#include "./_internal/types.hpp"
-#include "../fio/atomic_write.hpp"
-#include "../path/get_idx_file.hpp"
-#include "./_internal/fingerprints.hpp"
+#include "lib/fio/atomic_write.hpp"
+
+#include "./internal/codec.hpp"
+#include "./internal/types.hpp"
+#include "../path/internal/get_idx_file.hpp"
+#include "./internal/fingerprints.hpp"
 
 namespace ck::index { 
   using namespace ck;

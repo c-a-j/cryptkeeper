@@ -3,7 +3,7 @@
 #include <sstream>
 
 #include "util/error.hpp"
-#include "lib/config/types.hpp"
+#include "lib/config/config.hpp"
 #include "util/logger/logger.hpp"
 
 using ck::config::cfg;

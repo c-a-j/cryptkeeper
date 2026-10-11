@@ -1,11 +1,12 @@
 #include <string>
 #include <vector>
 
+#include "lib/index/index.hpp"
 #include "util/error.hpp"
 #include "util/logger/logger.hpp"
-#include "../path/join.hpp"
-#include "../path/parse_path.hpp"
-#include "lib/index/types.hpp"
+#include "lib/path/parse_path.hpp"
+
+#include "../path/internal/join.hpp"
 
 namespace {
   std::string along_path_msg(const std::vector<std::string>& path, std::size_t i) {

@@ -1,5 +1,5 @@
 #include "cli/types.hpp"
-#include "lib/mount/types.hpp"
+#include "lib/mount/mount.hpp"
 
 namespace ck::cmd {
   using ck::mount::mnt;

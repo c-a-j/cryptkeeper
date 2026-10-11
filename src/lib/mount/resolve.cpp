@@ -1,11 +1,11 @@
 #include <filesystem>
 #include <unordered_map>
 
-#include "lib/mount/types.hpp"
+#include "lib/mount/mount.hpp"
 #include "util/error.hpp"
+#include "lib/path/parse_path.hpp"
 
-#include "../path/parse_path.hpp"
-#include "../path/join.hpp"
+#include "../path/internal/join.hpp"
 
 namespace {
 }

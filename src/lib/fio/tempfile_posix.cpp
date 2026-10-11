@@ -7,9 +7,9 @@
 #include <cerrno>
 #include "util/error.hpp"
 
-#include "./tempfile.hpp"
-#include "./write_all.hpp"
-#include "./msg.hpp"
+#include "./internal/tempfile.hpp"
+#include "./internal/write_all.hpp"
+#include "./internal/msg.hpp"
 
 namespace ck::fio {
   namespace fs = std::filesystem;

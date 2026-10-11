@@ -6,9 +6,10 @@
 
 #include "util/error.hpp"
 #include "util/logger/logger.hpp"
+#include "lib/fio/atomic_write.hpp"
+
 #include "./lib/crypto/secure_wipe.hpp"
 #include "./lib/crypto/secure_bytes.hpp"
-#include "../fio/atomic_write.hpp"
 
 namespace {
   using ck::util::logger::logger;

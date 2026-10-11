@@ -3,16 +3,15 @@
 
 #include "util/error.hpp"
 #include "util/logger/logger.hpp"
-
-#include "lib/config/types.hpp"
-#include "../path/parse_path.hpp"
+#include "lib/config/config.hpp"
 #include "lib/crypto/crypto.hpp"
 #include "lib/crypto/random.hpp"
 #include "lib/input/wisper.hpp"
+#include "lib/index/index.hpp"
+#include "lib/path/parse_path.hpp"
 
-#include "lib/index/types.hpp"
-#include "./_internal/tree.hpp"
-#include "./_internal/fingerprints.hpp"
+#include "./internal/tree.hpp"
+#include "./internal/fingerprints.hpp"
 
   
 namespace {

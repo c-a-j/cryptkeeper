@@ -6,12 +6,13 @@
 #include "util/error.hpp"
 #include "util/logger/logger.hpp"
 #include "lib/crypto/crypto.hpp"
-#include "lib/config/types.hpp"
-#include "lib/mount/types.hpp"
-#include "lib/index/types.hpp"
-#include "./_internal.hpp"
-#include "../lib/path/existence.hpp"
-#include "../lib/fio/atomic_write.hpp"
+#include "lib/config/config.hpp"
+#include "lib/mount/mount.hpp"
+#include "lib/index/index.hpp"
+#include "lib/fio/atomic_write.hpp"
+#include "lib/path/existence.hpp"
+
+#include "./internal/handlers.hpp"
 
 namespace ck::cmd {
   namespace fs = std::filesystem;

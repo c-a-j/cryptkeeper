@@ -1,8 +1,9 @@
 #include <utility>
 
-#include "lib/mount/types.hpp"
-#include "../path/existence.hpp"
-#include "../path/path.hpp"
+#include "lib/mount/mount.hpp"
+#include "lib/path/existence.hpp"
+
+#include "../path/internal/path.hpp"
 
 namespace ck::mount {
   Mounts::Mounts(State& state) : state_(std::move(state))  {}

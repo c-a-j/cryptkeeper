@@ -4,10 +4,10 @@
 #include <algorithm>
 
 #include "global.hpp"
-#include "lib/mount/types.hpp"
+#include "lib/mount/mount.hpp"
+#include "lib/path/parse_path.hpp"
 
-#include "../path/parse_path.hpp"
-#include "./_internal/theme.hpp"
+#include "./internal/theme.hpp"
 
 namespace fs = std::filesystem;
 

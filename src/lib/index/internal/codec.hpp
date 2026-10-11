@@ -1,9 +1,7 @@
 #include "toml++/toml.hpp"
+#include <string_view>
 
-#include <string>
-#include <vector>
-
-#include "lib/index/types.hpp"
+#include "lib/index/index.hpp"
 
 namespace ck::index::codec { 
   namespace fs = std::filesystem;

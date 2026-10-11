@@ -2,13 +2,14 @@
 #include <filesystem>
 #include <fstream>
 
+#include "lib/mount/mount.hpp"
 #include "util/error.hpp"
 #include "util/logger/logger.hpp"
-#include "../path/path.hpp"
-#include "../path/existence.hpp"
-#include "./_internal/codec.hpp"
-#include "../fio/atomic_write.hpp"
-#include "lib/mount/types.hpp"
+#include "lib/path/existence.hpp"
+#include "lib/fio/atomic_write.hpp"
+
+#include "./internal/codec.hpp"
+#include "../path/internal/path.hpp"
 
 namespace ck::mount {
   namespace fs = std::filesystem;

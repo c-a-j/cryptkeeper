@@ -4,13 +4,13 @@
 #include <sstream>
 
 #include "util/error.hpp"
-#include "lib/config/types.hpp"
+#include "lib/config/config.hpp"
 #include "util/logger/logger.hpp"
+#include "lib/fio/atomic_write.hpp"
+#include "lib/path/existence.hpp"
 
-#include "./_internal/codec.hpp"
-#include "../fio/atomic_write.hpp"
-#include "../path/path.hpp"
-#include "../path/existence.hpp"
+#include "./internal/codec.hpp"
+#include "../path/internal/path.hpp"
 
 namespace ck::config {
   using ck::util::error::Error;

@@ -2,8 +2,9 @@
 #include <filesystem>
 #include <vector>
 
-#include "../path/get_gpg_id_file.hpp"
 #include "util/error.hpp"
+
+#include "../path/internal/get_gpg_id_file.hpp"
 
 namespace ck::index {
   using ck::util::error::Error;

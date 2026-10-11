@@ -1,7 +1,7 @@
 #include <string>
 #include <vector>
 
-#include "lib/index/types.hpp"
+#include "lib/index/index.hpp"
 
 namespace ck::index::tree { 
   Node* break_trail(Node*, const std::vector<std::string>&);

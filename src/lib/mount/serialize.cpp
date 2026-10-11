@@ -3,7 +3,7 @@
 
 #include "util/error.hpp"
 #include "util/logger/logger.hpp"
-#include "lib/mount/types.hpp"
+#include "lib/mount/mount.hpp"
 
 namespace {
   toml::table create_table(const ck::mount::Mount& m, const std::optional<std::string>& alias = std::nullopt) {

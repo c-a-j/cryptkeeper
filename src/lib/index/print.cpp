@@ -5,11 +5,12 @@
 #include "util/term.hpp" 
 #include "util/error.hpp" 
 #include "util/logger/logger.hpp" 
-#include "lib/index/types.hpp"
+#include "lib/index/index.hpp"
 #include "lib/crypto/crypto.hpp"
-#include "./_internal/theme.hpp" 
-#include "../path/parse_path.hpp"
-#include "../path/join.hpp"
+#include "lib/path/parse_path.hpp"
+
+#include "../path/internal/join.hpp"
+#include "./internal/theme.hpp" 
  
 namespace {
   using ck::util::logger::logger;

@@ -1,8 +1,9 @@
 #pragma once
 
 #include "toml++/toml.hpp"
-#include <string>
-#include "lib/config/types.hpp"
+#include <string_view>
+
+#include "lib/config/config.hpp"
 
 
 namespace ck::config::codec {
