@@ -6,8 +6,8 @@ add_subdirectory(cli)
 add_subdirectory(cmd)
 add_subdirectory(util)
 
-target_compile_features(ck PRIVATE cxx_std_23)
-target_compile_features(ck_lib PUBLIC cxx_std_23)
+target_compile_features(ck PRIVATE cxx_std_26)
+target_compile_features(ck_lib PUBLIC cxx_std_26)
 
 target_include_directories(ck PRIVATE ${PROJECT_SRC_DIR}/include)
 target_include_directories(ck_lib PUBLIC
