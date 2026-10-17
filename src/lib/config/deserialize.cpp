@@ -11,42 +11,87 @@ namespace {
   using enum ck::error::ConfigErrc;
   using ck::ui::console::console;
 
-  template <typename T>
-  struct member_value;
+  void parse_default_warning(std::string_view section, std::string_view field) {
+    std::string msg1 = "Parameter [" + std::string(section) + "."
+      + std::string(field) + "] contains an invalid data type";
+    std::string msg2 = "default will be applied";
+    console.warning(msg1, msg2);
+  }
 
-  template <typename Owner, typename Value>
-  struct member_value<Value Owner::*> {
-    using type = Value;
-  };
+  void missing_section_warning(std::string_view section) {
+    std::string msg1 = "Section " + std::string(section) + " is missing from config file";
+    std::string msg2 = "defaults will be applied";
+    console.warning(msg1, msg2);
+  }
 
-  template <typename T>
-  using member_value_t = member_value<T>::type;
-
-  // visit each field in a section
-  // this parsing function is tolerant of a malformed configuration file
-  // warning is displayed and default is applied if values are missing or malformed
-  // defaults are set in the struct definitions
-  template <typename Owner>
-  void parse_fields(Owner& cfg, const toml::table& tbl, const std::string_view section) {
-    for (const auto& field : Owner::fields()) {
-      std::visit([&](auto member){
-        using member_ptr_t = decltype(member);
-        using value_t = member_value_t<member_ptr_t>;
-        if (auto value = tbl[field.key].template value<value_t>()) {
-          cfg.*member = *value;
-        } else {
-          std::string msg1 = "Parameter [" + std::string(section) + "."
-            + std::string(field.key) + "] contains an invalid data type";
-          std::string msg2 = "default will be applied";
-          console.warning(msg1, msg2);
-        }
-      }, field.member);
+  void parse_fields(Ui& cfg, const toml::table& tbl, std::string_view section) {
+    std::string field = "insert_with_editor";
+    if (auto val = tbl[field].value<bool>()) {
+      cfg.insert_with_editor = *val;
+    } else {
+      parse_default_warning(section, field);
     }
   }
 
-  void valid_or_default(Core& _) {}
+  void parse_fields(Pwgen& cfg, const toml::table& tbl, std::string_view section) {
+    std::string field = "length";
+    if (auto val = tbl[field].value<int>()) {
+      cfg.length = *val;
+    } else {
+      parse_default_warning(section, field);
+    }
 
-  void valid_or_default(Ui& _) {}
+    field = "symbols";
+    if (auto val = tbl[field].value<int>()) {
+      cfg.symbols = *val;
+    } else {
+      parse_default_warning(section, field);
+    }
+
+    field = "numbers";
+    if (auto val = tbl[field].value<int>()) {
+      cfg.numbers = *val;
+    } else {
+      parse_default_warning(section, field);
+    }
+
+    field = "uppercase";
+    if (auto val = tbl[field].value<int>()) {
+      cfg.uppercase = *val;
+    } else {
+      parse_default_warning(section, field);
+    }
+
+    field = "lowercase";
+    if (auto val = tbl[field].value<int>()) {
+      cfg.lowercase = *val;
+    } else {
+      parse_default_warning(section, field);
+    }
+  }
+
+  void parse_fields(Core& cfg, const toml::table& tbl, std::string_view section) {
+    std::string field = "home";
+    if (auto val = tbl[field].value<std::string>()) {
+      cfg.home = *val;
+    } else {
+      parse_default_warning(section, field);
+    }
+
+    field = "autopush";
+    if (auto val = tbl[field].value<bool>()) {
+      cfg.autopush = *val;
+    } else {
+      parse_default_warning(section, field);
+    }
+
+    field = "autosync";
+    if (auto val = tbl[field].value<bool>()) {
+      cfg.autosync = *val;
+    } else {
+      parse_default_warning(section, field);
+    }
+  }
 
   void valid_or_default(Pwgen& pwgen) {
     if (auto result = pwgen.valid(); !result) {
@@ -73,20 +118,28 @@ namespace ck::config::codec {
 
     State state;
 
-    // visit each config file section and parse the values
-    // missing sections will display a warning and fall back to defaults
-    for (const auto& section : State::sections()) {
-      std::visit([&](auto& member) {
-        if (auto* tbl = cfg_toml[section.name].as_table()) {
-          parse_fields(state.*member, *tbl, section.name);
-          valid_or_default(state.*member);
-        } else {
-          std::string msg1 = "Section " + std::string(section.name) + " is missing from config file";
-          std::string msg2 = "defaults will be applied";
-          console.warning(msg1, msg2);
-        }
-      }, section.member);
+    std::string section = "core";
+    if (auto* tbl = cfg_toml[section].as_table()) {
+      parse_fields(state.core, *tbl, section);
+    } else {
+      missing_section_warning(section);
     }
-   return state;
+
+    section = "ui";
+    if (auto* tbl = cfg_toml[section].as_table()) {
+      parse_fields(state.ui, *tbl, section);
+    } else {
+      missing_section_warning(section);
+    }
+
+    section = "pwgen";
+    if (auto* tbl = cfg_toml[section].as_table()) {
+      parse_fields(state.pwgen, *tbl, section);
+    } else {
+      missing_section_warning(section);
+    }
+    valid_or_default(state.pwgen);
+
+    return state;
   }
 }
