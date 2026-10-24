@@ -198,7 +198,7 @@ namespace ck::config {
       std::string& home();
       
       void print() const;
-      void print(std::string_view key);
+      void print(std::string_view key) const;
       void set(std::vector<std::string> args);
 
       void load();
