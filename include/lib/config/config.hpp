@@ -1,212 +1,73 @@
-# pragma once
+#pragma once
 
-#include <string>
-#include <array>
-#include <vector>
-#include <variant>
 #include <expected>
+#include <string>
+#include <string_view>
+#include <vector>
 
-#include "lib/crypto/types.hpp"
 #include "lib/config/error.hpp"
+#include "lib/crypto/types.hpp"
 
 namespace ck::config {
-  using Err = ck::error::Error<ck::error::ConfigErrc>;
+using Err = ck::error::Error<ck::error::ConfigErrc>;
 
-  template<typename Owner, typename Member>
-  using MemberPtr = Member Owner::*;
-
-  template<typename T>
-  struct Field {
-    std::string_view key;
-    T member;
-  };
-
-  struct Core {
+struct Core {
     std::string home;
     bool autopush = true;
     bool autosync = true;
+};
 
-    using StrMember = MemberPtr<Core, std::string>;
-    using BoolMember = MemberPtr<Core, bool>;
-    using FieldVariant = Field<std::variant<StrMember, BoolMember>>; 
-    
-    static constexpr std::array<FieldVariant, 3> k_fields {{
-        {.key = "home", .member = &Core::home},
-        {.key = "autopush", .member = &Core::autopush},
-        {.key = "autosync", .member = &Core::autosync}
-      }};
-    
-    static constexpr const std::array<FieldVariant, 3>& fields() { return k_fields; }
-    static constexpr const std::string_view k_name = "core";
-  };
-
-  struct Ui {
+struct Ui {
     bool insert_with_editor = false;
-    
-    using StrMember = MemberPtr<Ui, std::string>;
-    using BoolMember = MemberPtr<Ui, bool>;
-    using FieldVariant = Field<std::variant<StrMember, BoolMember>>; 
-    
-    static constexpr std::array<FieldVariant, 1> k_fields {{
-        {.key = "insert_with_editor", .member = &Ui::insert_with_editor},
-      }};
-    
-    static constexpr const std::array<FieldVariant, 1>& fields() { return k_fields; }
-    static constexpr const std::string_view k_name = "ui";
-  };
+};
 
-  struct Pwgen {
+struct Pwgen {
     int length = 20;
     int symbols = 5;
     int numbers = 5;
     int uppercase = 5;
     int lowercase = 5;
 
-    std::expected<void, Err> valid();
+    std::expected<void, Err> valid() const;
     ck::crypto::PwSpec spec() const;
-    
-    using IntMember = MemberPtr<Pwgen, int>;
-    using FieldVariant = Field<std::variant<IntMember>>; 
-    
-    static constexpr std::array<FieldVariant, 5> k_fields {{
-        {.key = "length", .member = &Pwgen::length},
-        {.key = "symbols", .member = &Pwgen::symbols},
-        {.key = "numbers", .member = &Pwgen::numbers},
-        {.key = "uppercase", .member = &Pwgen::uppercase},
-        {.key = "lowercase", .member = &Pwgen::lowercase},
-      }};
-    
-    static constexpr const std::array<FieldVariant, 5>& fields() { return k_fields; }
-    static constexpr const std::string_view k_name = "pwgen";
-  };
+};
 
-  struct State {
+struct State {
     Core core;
     Ui ui;
     Pwgen pwgen;
 
-    std::expected<void, Err> valid_pwgen();
+    std::expected<void, Err> valid_pwgen() const;
+};
 
-    using SectionMember = std::variant<
-      Core State::*,
-      Ui State::*,
-      Pwgen State::*
-    >;
-    
-    struct Section {
-      std::string_view name;
-      SectionMember member;
-    };
-    
-    static constexpr std::array<Section, 3> k_sections {{
-      {.name = Core::k_name, .member = &State::core},
-      {.name = Ui::k_name, .member = &State::ui},
-      {.name = Pwgen::k_name, .member = &State::pwgen},
-    }};
-    
-    static constexpr const std::array<Section, 3>& sections() { return k_sections; }
+class Config {
+  public:
+    explicit Config() = default;
 
-    // I definitely made a convienience for readability trade here. The
-    // following two templates reduce the need to add to parsing helpers
-    // when new parameters and sections are added to the configuration.
-    // If a new parameter is added, only this file will need changes.
+    static Config empty();
 
-    // with_section() makes it convenient to execute a lambda function on a
-    // specific section (Core, Ui, etc).
+    const Core &core() const;
+    Core &core();
 
-    // with_member() makes it convenient to execute a lambda function on a
-    // specific field (member) of a specific configuration section (Core, Ui,
-    // etc)
+    const Ui &ui() const;
+    Ui &ui();
 
-    template <typename Fn>
-    bool with_section(std::string_view name, Fn&& fn) {
-      for (const auto& section : sections()) {
-        if (section.name != name) {
-          continue;
-        }
-        std::visit([&](auto member) {
-          std::forward<Fn>(fn)(this->*member);
-        }, section.member);
-        return true;
-      }
-      return false;
-    }
+    const Pwgen &pwgen() const;
+    Pwgen &pwgen();
 
-    template <typename Fn>
-    bool with_member(std::string_view section_name, std::string_view member_name, Fn&& fn) {
-      bool found = false;
-      
-      auto outer_fn = [&](auto& section){
-        using Owner = std::remove_cvref_t<decltype(section)>;
-        
-        for (const auto& field : Owner::fields())  {
-          if (field.key != member_name) { continue; }
-          
-          std::visit([&](auto& member) {
-            fn(section.*member);
-          }, field.member);
-          found = true;
-          return;
-        }
-      };
-      
-      with_section(section_name, outer_fn);
-      return found;
-    }
+    const std::string &home() const;
+    std::string &home();
 
-    template <typename Fn>
-    void with_sections(Fn&& fn) {
-      for (const auto& section : sections()) {
-        std::visit([&](auto member) {
-          std::forward<Fn>(fn)(this->*member);
-        }, section.member);
-      }
-    }
+    void print() const;
+    void print(std::string_view key) const;
+    void set(std::vector<std::string> args);
 
-    template <typename Fn>
-    void with_members(Fn&& fn) {
-      auto outer_fn = [&](auto& section){
-        using Owner = std::remove_cvref_t<decltype(section)>;
-        
-        for (const auto& field : Owner::fields())  {
-          std::visit([&](auto& member) {
-            fn(section.*member);
-          }, field.member);
-        }
-      };
-      
-      with_sections(outer_fn);
-    }
-  };
+    void load();
+    void save();
 
-  class Config {
-    public:
-      explicit Config() = default;
+  private:
+    State state_;
+};
 
-      static Config empty();
-      
-      const Core& core() const;
-      Core& core();
-      
-      const Ui& ui() const;
-      Ui& ui();
-      
-      const Pwgen& pwgen() const;
-      Pwgen& pwgen();
-      
-      const std::string& home() const;
-      std::string& home();
-      
-      void print() const;
-      void print(std::string_view key) const;
-      void set(std::vector<std::string> args);
-
-      void load();
-      void save();
-
-    private:
-      State state_;
-  };
-
-  extern Config cfg;
-}
+extern Config cfg;
+} // namespace ck::config

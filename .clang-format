@@ -1,9 +1,16 @@
+AlignAfterOpenBracket: false
+AllowAllParametersOfDeclarationOnNextLine: false
 AllowShortFunctionsOnASingleLine: None
 BasedOnStyle: LLVM
+BinPackParameters: OnePerLine
+BreakAfterOpenBracketFunction: true
 BreakBeforeBraces: Attach
+BreakBeforeCloseBracketFunction: true
+BreakFunctionDefinitionParameters: false
+ColumnLimit: 80
 ConstructorInitializerIndentWidth: 4
 ContinuationIndentWidth: 4
-FixNamespaceComments: false
+FixNamespaceComments: true
 IndentWidth: 4
 NamespaceIndentation: None
 TabWidth: 4

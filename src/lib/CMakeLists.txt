@@ -7,6 +7,7 @@ target_sources(ck_lib PRIVATE
     config/deserialize.cpp
     config/fio.cpp
     config/print.cpp
+    config/parse_key.cpp
     config/pwgen.cpp
     config/serialize.cpp
     config/set.cpp
