@@ -2,5 +2,5 @@
 #include <string>
 
 namespace ck::mount {
-  std::string hash();
+std::string hash();
 }

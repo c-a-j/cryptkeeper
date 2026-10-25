@@ -3,6 +3,6 @@
 #include <filesystem>
 
 namespace ck::fio {
-  namespace fs = std::filesystem;
-  void sync_dir(const fs::path&);
-}
+namespace fs = std::filesystem;
+void sync_dir(const fs::path &);
+} // namespace ck::fio

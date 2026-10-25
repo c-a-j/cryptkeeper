@@ -1,63 +1,63 @@
 #pragma once
 
-#include <string>
 #include <optional>
-#include <vector>
+#include <string>
 #include <variant>
+#include <vector>
 
 namespace ck::cli {
-  struct RootArgs {
+struct RootArgs {
     bool no_color = false;
     bool version = false;
-  };
-  
-  struct InitArgs {
+};
+
+struct InitArgs {
     std::string crypt_name;
     std::string key_fpr;
     std::optional<std::string> path;
-  };
+};
 
-  struct ConfigArgs {
+struct ConfigArgs {
     std::optional<std::string> crypt_name;
     std::vector<std::string> set_args;
-  };
+};
 
-  struct InsertArgs {
+struct InsertArgs {
     std::string path;
     bool pwgen = false;
-  };
+};
 
-  struct ShowArgs {
+struct ShowArgs {
     std::optional<std::string> path;
-  };
-  
-  struct MountArgs {
+};
+
+struct MountArgs {
     std::optional<std::string> alias;
     std::optional<std::string> path;
     bool list;
-  };
-  
-  struct UmountArgs {
+};
+
+struct UmountArgs {
     std::optional<std::string> alias;
-  };
+};
 
-  struct ChrootArgs {
+struct ChrootArgs {
     std::optional<std::string> path;
-  };
+};
 
-  struct RemoveArgs {
+struct RemoveArgs {
     std::optional<std::string> path;
-  };
+};
 
-  struct ReplaceArgs {
+struct ReplaceArgs {
     std::optional<std::string> path;
-  };
+};
 
-  struct EditArgs {
+struct EditArgs {
     std::optional<std::string> path;
-  };
-  
-  using CmdArgs = std::variant<
+};
+
+using CmdArgs = std::variant<
     std::monostate,
     InitArgs,
     ConfigArgs,
@@ -68,16 +68,15 @@ namespace ck::cli {
     ChrootArgs,
     RemoveArgs,
     ReplaceArgs,
-    EditArgs 
-  >;
-  
-  struct CliArgs {
+    EditArgs>;
+
+struct CliArgs {
     RootArgs root;
     CmdArgs cmd;
-  };
-  
-  struct Context {
-    RootArgs root_args;
-  };
+};
 
-}
+struct Context {
+    RootArgs root_args;
+};
+
+} // namespace ck::cli

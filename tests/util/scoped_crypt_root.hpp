@@ -1,15 +1,15 @@
 #pragma once
-#include <string>
 #include <optional>
+#include <string>
 
 namespace ck::tests::util {
-  class ScopedCryptRoot {
-    public:
-      ScopedCryptRoot(); 
-      ~ScopedCryptRoot();
-      
-    private:
-      std::string tmp_root_;
-      std::optional<std::string> root_;
-  };
-}
+class ScopedCryptRoot {
+  public:
+    ScopedCryptRoot();
+    ~ScopedCryptRoot();
+
+  private:
+    std::string tmp_root_;
+    std::optional<std::string> root_;
+};
+} // namespace ck::tests::util

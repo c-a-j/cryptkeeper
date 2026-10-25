@@ -1,10 +1,10 @@
 #pragma once
 
-#include <string>
 #include "ui/term.hpp"
+#include <string>
 
 namespace ck::mount {
-  enum class OutputComponent {
+enum class OutputComponent {
     RootMountPath,
     RootMountAlias,
     RootMountArrow,
@@ -13,7 +13,7 @@ namespace ck::mount {
     MountAlias,
     MountArrow,
     Line
-  };
-  ck::ui::term::TextStyle get_scheme_style(OutputComponent c);
-  std::string get_scheme_ansi(OutputComponent c);
-}
+};
+ck::ui::term::TextStyle get_scheme_style(OutputComponent c);
+std::string get_scheme_ansi(OutputComponent c);
+} // namespace ck::mount

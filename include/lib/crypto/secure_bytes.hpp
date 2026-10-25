@@ -1,61 +1,72 @@
 #pragma once
-#include <string>
-#include <vector>
 #include <cstddef>
 #include <span>
+#include <string>
+#include <vector>
 
-#include "lib/crypto/error.hpp"
 #include "./secure_wipe.hpp"
+#include "lib/crypto/error.hpp"
 
 namespace ck::crypto {
-  using ck::error::Error;
-  using ck::error::CryptoErrc;
-  using enum ck::error::CryptoErrc;
-  
-  class SecureBytes {
-    public:
-      SecureBytes() = default;
-      explicit SecureBytes(std::size_t size) : data_(size) {}
-      
-      SecureBytes(const SecureBytes&) = delete;
-      SecureBytes& operator=(const SecureBytes&) = delete;
-      
-      SecureBytes(SecureBytes&& other) noexcept = default;
-      SecureBytes& operator=(SecureBytes&& other) noexcept = default;
-      
-      ~SecureBytes() {
-        secure_wipe(data_.data(), data_.size());
-      }
-      
-      bool operator==(const SecureBytes& other) const {
-        return std::ranges::equal(this->data_, other.data_);
-      }
-      
-      std::byte* data() { return data_.data(); }
-      const std::byte* data() const { return data_.data(); }
-      std::size_t size() const { return data_.size(); }
-      
-      char* char_data() { return reinterpret_cast<char*>(data_.data()); }
-      const char* char_data() const { return reinterpret_cast<const char*>(data_.data()); }
+using ck::error::CryptoErrc;
+using ck::error::Error;
+using enum ck::error::CryptoErrc;
 
-      std::span<std::byte> bytes() { 
-        return std::span<std::byte>{data_.data(), data_.size()}; 
-      }
-      std::span<const std::byte> bytes() const { 
-        return std::span< const std::byte>{data_.data(), data_.size()}; 
-      }
-      
-      void assign(const char* src, std::size_t len) {
+class SecureBytes {
+  public:
+    SecureBytes() = default;
+    explicit SecureBytes(std::size_t size) : data_(size) {
+    }
+
+    SecureBytes(const SecureBytes &) = delete;
+    SecureBytes &operator=(const SecureBytes &) = delete;
+
+    SecureBytes(SecureBytes &&other) noexcept = default;
+    SecureBytes &operator=(SecureBytes &&other) noexcept = default;
+
+    ~SecureBytes() {
+        secure_wipe(data_.data(), data_.size());
+    }
+
+    bool operator==(const SecureBytes &other) const {
+        return std::ranges::equal(this->data_, other.data_);
+    }
+
+    std::byte *data() {
+        return data_.data();
+    }
+    const std::byte *data() const {
+        return data_.data();
+    }
+    std::size_t size() const {
+        return data_.size();
+    }
+
+    char *char_data() {
+        return reinterpret_cast<char *>(data_.data());
+    }
+    const char *char_data() const {
+        return reinterpret_cast<const char *>(data_.data());
+    }
+
+    std::span<std::byte> bytes() {
+        return std::span<std::byte>{data_.data(), data_.size()};
+    }
+    std::span<const std::byte> bytes() const {
+        return std::span<const std::byte>{data_.data(), data_.size()};
+    }
+
+    void assign(const char *src, std::size_t len) {
         if (src == nullptr && len != 0) {
-          throw Error<CryptoErrc>{InvalidSecureBytesArgs};
+            throw Error<CryptoErrc>{InvalidSecureBytesArgs};
         }
         data_.assign(
-          reinterpret_cast<const std::byte*>(src),
-          reinterpret_cast<const std::byte*>(src) + len
+            reinterpret_cast<const std::byte *>(src),
+            reinterpret_cast<const std::byte *>(src) + len
         );
-      }
-    
-    private:
-      std::vector<std::byte> data_;
-  };
-}
+    }
+
+  private:
+    std::vector<std::byte> data_;
+};
+} // namespace ck::crypto

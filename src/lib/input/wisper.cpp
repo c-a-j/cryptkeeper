@@ -1,5 +1,5 @@
-#include <iostream>
 #include <csignal>
+#include <iostream>
 #include <vector>
 
 #include "lib/crypto/secure_bytes.hpp"
@@ -13,134 +13,134 @@
 #endif
 
 namespace ck::input {
-  using ck::ui::console::console;
+using ck::ui::console::console;
 
 #ifndef _WIN32
-  struct TerminalInputGuard {
+struct TerminalInputGuard {
     int fd;
-    termios oldt {};
-    bool active {false};
+    termios oldt{};
+    bool active{false};
 
     explicit TerminalInputGuard(int fd_) : fd(fd_) {
-      if (tcgetattr(fd, &oldt) != 0) {
-        return;
-      }
+        if (tcgetattr(fd, &oldt) != 0) {
+            return;
+        }
 
-      termios newt = oldt;
-      newt.c_lflag &= ~static_cast<tcflag_t>(ECHO);
-      newt.c_lflag &= ~static_cast<tcflag_t>(ICANON);
-      newt.c_lflag &= ~static_cast<tcflag_t>(ISIG);
-      newt.c_cc[VMIN] = 1;
-      newt.c_cc[VTIME] = 0;
+        termios newt = oldt;
+        newt.c_lflag &= ~static_cast<tcflag_t>(ECHO);
+        newt.c_lflag &= ~static_cast<tcflag_t>(ICANON);
+        newt.c_lflag &= ~static_cast<tcflag_t>(ISIG);
+        newt.c_cc[VMIN] = 1;
+        newt.c_cc[VTIME] = 0;
 
-      if (tcsetattr(fd, TCSANOW, &newt) == 0) {
-        active = true;
-      }
+        if (tcsetattr(fd, TCSANOW, &newt) == 0) {
+            active = true;
+        }
     }
 
     ~TerminalInputGuard() {
-      if (active) {
-        tcsetattr(fd, TCSANOW, &oldt);
-      }
+        if (active) {
+            tcsetattr(fd, TCSANOW, &oldt);
+        }
     }
-  };
+};
 #endif
 
-  namespace {
-    void erase_last_masked_char(std::vector<char>& value) {
-      if (value.empty()) {
+namespace {
+void erase_last_masked_char(std::vector<char> &value) {
+    if (value.empty()) {
         return;
-      }
-
-      value.pop_back();
-      std::cout << "\b \b";
-      std::cout.flush();
     }
 
-    void append_masked_char(std::vector<char>& value, const char ch) {
-      value.push_back(ch);
-      std::cout << '*';
-      std::cout.flush();
-    }
-  }
+    value.pop_back();
+    std::cout << "\b \b";
+    std::cout.flush();
+}
 
-  ck::crypto::SecureBytes wisper(std::string_view prompt) {
+void append_masked_char(std::vector<char> &value, const char ch) {
+    value.push_back(ch);
+    std::cout << '*';
+    std::cout.flush();
+}
+} // namespace
+
+ck::crypto::SecureBytes wisper(std::string_view prompt) {
     console.info(prompt);
-    
+
     std::vector<char> value;
     bool interrupted = false;
 
 #ifdef _WIN32
     for (;;) {
-      int ch = _getch();
+        int ch = _getch();
 
-      if (ch == 3) {
-        interrupted = true;
-        break;
-      }
+        if (ch == 3) {
+            interrupted = true;
+            break;
+        }
 
-      if (ch == 0 || ch == 224) {
-        (void)_getch();
-        continue;
-      }
+        if (ch == 0 || ch == 224) {
+            (void)_getch();
+            continue;
+        }
 
-      if (ch == '\r') {
-        break;
-      }
+        if (ch == '\r') {
+            break;
+        }
 
-      if (ch == '\b') {
-        erase_last_masked_char(value);
-        continue;
-      }
+        if (ch == '\b') {
+            erase_last_masked_char(value);
+            continue;
+        }
 
-      if (ch >= 32 && ch <= 126) {
-        append_masked_char(value, static_cast<char>(ch));
-      }
+        if (ch >= 32 && ch <= 126) {
+            append_masked_char(value, static_cast<char>(ch));
+        }
     }
     std::cout << "\n";
 #else
     {
-      TerminalInputGuard guard(STDIN_FILENO);
+        TerminalInputGuard guard(STDIN_FILENO);
 
-      for (;;) {
-        char ch {};
-        ssize_t n = read(STDIN_FILENO, &ch, 1);
-        if (n <= 0) {
-          break;
+        for (;;) {
+            char ch{};
+            ssize_t n = read(STDIN_FILENO, &ch, 1);
+            if (n <= 0) {
+                break;
+            }
+
+            if (ch == 3) {
+                interrupted = true;
+                break;
+            }
+
+            if (ch == '\n' || ch == '\r') {
+                break;
+            }
+
+            if (ch == 127 || ch == '\b') {
+                erase_last_masked_char(value);
+                continue;
+            }
+
+            if (static_cast<unsigned char>(ch) < 32) {
+                continue;
+            }
+
+            append_masked_char(value, ch);
         }
-
-        if (ch == 3) {
-          interrupted = true;
-          break;
-        }
-
-        if (ch == '\n' || ch == '\r') {
-          break;
-        }
-
-        if (ch == 127 || ch == '\b') {
-          erase_last_masked_char(value);
-          continue;
-        }
-
-        if (static_cast<unsigned char>(ch) < 32) {
-          continue;
-        }
-
-        append_masked_char(value, ch);
-      }
     }
     std::cout << "\n";
 #endif
 
     if (interrupted) {
-      ck::crypto::secure_wipe(value.data(), value.size());
-      std::raise(SIGINT);
+        ck::crypto::secure_wipe(value.data(), value.size());
+        std::raise(SIGINT);
     }
 
     ck::crypto::SecureBytes result;
     result.assign(value.data(), value.size());
     ck::crypto::secure_wipe(value.data(), value.size());
     return result;
-  }
 }
+} // namespace ck::input

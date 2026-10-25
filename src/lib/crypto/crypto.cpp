@@ -1,229 +1,241 @@
 #include "lib/crypto/crypto.hpp"
-#include <gpgme.h>
 #include <cstddef>
 #include <filesystem>
 #include <fstream>
+#include <gpgme.h>
 
-#include "ui/console/console.hpp"
-#include "lib/fio/atomic_write.hpp"
 #include "error.hpp"
 #include "lib/crypto/error.hpp"
+#include "lib/fio/atomic_write.hpp"
+#include "ui/console/console.hpp"
 
-#include "./lib/crypto/secure_wipe.hpp"
 #include "./lib/crypto/secure_bytes.hpp"
+#include "./lib/crypto/secure_wipe.hpp"
 
 namespace {
-  using ck::ui::console::console;
-  using ck::error::Error;
-  using ck::error::CryptoErrc;
-  using enum ck::error::CryptoErrc;
+using ck::error::CryptoErrc;
+using ck::error::Error;
+using ck::ui::console::console;
+using enum ck::error::CryptoErrc;
 
-  gpgme_ctx_t make_openpgp_ctx() {
+gpgme_ctx_t make_openpgp_ctx() {
     ck::crypto::init_gpgme();
 
     gpgme_ctx_t ctx = nullptr;
     gpgme_error_t err = gpgme_new(&ctx);
     if (err != 0) {
-      throw Error<CryptoErrc>{GpgmeNewFailed, gpgme_strerror(err)};
+        throw Error<CryptoErrc>{GpgmeNewFailed, gpgme_strerror(err)};
     }
 
     err = gpgme_set_protocol(ctx, GPGME_PROTOCOL_OpenPGP);
     if (err != 0) {
-      gpgme_release(ctx);
-      throw Error<CryptoErrc>{GpgmeSetProtocolFailed, gpgme_strerror(err)};
+        gpgme_release(ctx);
+        throw Error<CryptoErrc>{GpgmeSetProtocolFailed, gpgme_strerror(err)};
     }
 
     return ctx;
-  }
+}
 
-  
-  bool key_exists(const std::string& key_id, const bool secret) {
+bool key_exists(const std::string &key_id, const bool secret) {
     gpgme_ctx_t ctx = make_openpgp_ctx();
     gpgme_key_t key = nullptr;
-    
-    gpgme_error_t err = gpgme_get_key(ctx, key_id.c_str(), &key, secret ? 1 : 0);
+
+    gpgme_error_t err =
+        gpgme_get_key(ctx, key_id.c_str(), &key, secret ? 1 : 0);
     if (key != nullptr) {
-      gpgme_key_unref(key);
+        gpgme_key_unref(key);
     }
     gpgme_release(ctx);
 
     // not found is a normal false condition
-    if (gpgme_err_code(err) == GPG_ERR_EOF || gpgme_err_code(err) == GPG_ERR_NOT_FOUND) {
-      return false;
+    if (gpgme_err_code(err) == GPG_ERR_EOF ||
+        gpgme_err_code(err) == GPG_ERR_NOT_FOUND) {
+        return false;
     }
 
     // any other error should surface
     if (err != 0) {
-      throw Error<CryptoErrc>{GpgmeGetKeyFailed, gpgme_strerror(err)};
+        throw Error<CryptoErrc>{GpgmeGetKeyFailed, gpgme_strerror(err)};
     }
 
     return true;
-  }
-} 
+}
+} // namespace
 
-  
 namespace ck::crypto {
-  void init_gpgme() {
+void init_gpgme() {
     if (!gpgme_check_version(nullptr)) {
-      throw Error<CryptoErrc>{GpgmeFailed, "gpgme initialization failed"};
+        throw Error<CryptoErrc>{GpgmeFailed, "gpgme initialization failed"};
     }
-  }
-  bool public_key_exists(const std::string& key_fpr) {return key_exists(key_fpr, false);}
-  bool private_key_exists(const std::string& key_fpr) {return key_exists(key_fpr, true);}
-  
-  SecureBytes decrypt_bytes(const SecureBytes& bytes) {
+}
+bool public_key_exists(const std::string &key_fpr) {
+    return key_exists(key_fpr, false);
+}
+bool private_key_exists(const std::string &key_fpr) {
+    return key_exists(key_fpr, true);
+}
+
+SecureBytes decrypt_bytes(const SecureBytes &bytes) {
     gpgme_ctx_t ctx = make_openpgp_ctx();
     gpgme_data_t cipher = nullptr;
     gpgme_data_t plain = nullptr;
-    
-    gpgme_error_t err = gpgme_data_new_from_mem(&cipher, bytes.char_data(), bytes.size(), 0);
+
+    gpgme_error_t err =
+        gpgme_data_new_from_mem(&cipher, bytes.char_data(), bytes.size(), 0);
     if (err != 0) {
-      gpgme_release(ctx);
-      throw Error<CryptoErrc>{GpgmeNewFromMemFailed, gpgme_strerror(err)};
+        gpgme_release(ctx);
+        throw Error<CryptoErrc>{GpgmeNewFromMemFailed, gpgme_strerror(err)};
     }
-    
+
     err = gpgme_data_new(&plain);
     if (err != 0) {
-      gpgme_release(ctx);
-      gpgme_data_release(cipher);
-      throw Error<CryptoErrc>{GpgmeDataNewFailed, gpgme_strerror(err)};
+        gpgme_release(ctx);
+        gpgme_data_release(cipher);
+        throw Error<CryptoErrc>{GpgmeDataNewFailed, gpgme_strerror(err)};
     }
-    
+
     err = gpgme_op_decrypt(ctx, cipher, plain);
     gpgme_data_release(cipher);
     if (err != 0) {
-      gpgme_release(ctx);
-      gpgme_data_release(plain);
-      throw Error<CryptoErrc>{GpgmeDataReleaseFailed, gpgme_strerror(err)};
+        gpgme_release(ctx);
+        gpgme_data_release(plain);
+        throw Error<CryptoErrc>{GpgmeDataReleaseFailed, gpgme_strerror(err)};
     }
-    
+
     size_t plain_len = 0;
-    char* plain_buf = gpgme_data_release_and_get_mem(plain, &plain_len);
+    char *plain_buf = gpgme_data_release_and_get_mem(plain, &plain_len);
     if (plain_buf == nullptr) {
-      gpgme_release(ctx);
-      throw Error<CryptoErrc>{GpgmeDataReleaseAndGetMemFailed, gpgme_strerror(err)};
+        gpgme_release(ctx);
+        throw Error<CryptoErrc>{
+            GpgmeDataReleaseAndGetMemFailed, gpgme_strerror(err)};
     }
-    
+
     SecureBytes result;
     result.assign(plain_buf, plain_len);
     secure_wipe(plain_buf, plain_len);
     gpgme_free(plain_buf);
     gpgme_release(ctx);
     return result;
-  };
-  
-  SecureBytes read_file(const std::filesystem::path& path) {
+};
+
+SecureBytes read_file(const std::filesystem::path &path) {
     std::ifstream file(path);
     if (!file) {
-      console.debug("ck::crypto::read_file()");
-      throw Error<CryptoErrc>{FailedToOpenFile, path.string()};
+        console.debug("ck::crypto::read_file()");
+        throw Error<CryptoErrc>{FailedToOpenFile, path.string()};
     }
     file.seekg(0, std::ios::end);
     const auto size = static_cast<std::size_t>(file.tellg());
     file.seekg(0, std::ios::beg);
-    
+
     SecureBytes bytes(size);
     file.read(bytes.char_data(), static_cast<std::streamsize>(size));
-    
+
     if (!file) {
-      throw Error<CryptoErrc>{FailedToReadFile, path.string()};
+        throw Error<CryptoErrc>{FailedToReadFile, path.string()};
     }
     return bytes;
-  };
-  
-  void release_keys(std::vector<gpgme_key_t>& key_fprs) {
-    for (auto& fpr : key_fprs) {
-      gpgme_key_unref(fpr);
+};
+
+void release_keys(std::vector<gpgme_key_t> &key_fprs) {
+    for (auto &fpr : key_fprs) {
+        gpgme_key_unref(fpr);
     }
-  }
-  
-  std::vector<gpgme_key_t> add_sentinel(std::vector<gpgme_key_t>& keys) {
+}
+
+std::vector<gpgme_key_t> add_sentinel(std::vector<gpgme_key_t> &keys) {
     std::vector<gpgme_key_t> k;
     k.reserve(keys.size() + 1);
-    for (auto& key : keys) {
-      k.push_back(key);
+    for (auto &key : keys) {
+        k.push_back(key);
     }
     k.push_back(nullptr);
     return k;
-  }
-  
-  SecureBytes encrypt_bytes(const SecureBytes& bytes, const std::vector<std::string>& key_fprs) {
+}
+
+SecureBytes encrypt_bytes(
+    const SecureBytes &bytes,
+    const std::vector<std::string> &key_fprs
+) {
     gpgme_ctx_t ctx = make_openpgp_ctx();
     gpgme_data_t cipher = nullptr;
     gpgme_data_t plain = nullptr;
     std::vector<gpgme_key_t> recipients;
-    
-    for (const auto& fpr : key_fprs) {
-      gpgme_key_t key = nullptr;
-      gpgme_error_t err = gpgme_get_key(ctx, fpr.c_str(), &key, 0);
-      if (err != 0) {
-        gpgme_release(ctx);
-        release_keys(recipients);
-        throw Error<CryptoErrc>{GpgmeGetKeyFailed, gpgme_strerror(err)};
-      }
-      if (key == nullptr) {
-        gpgme_release(ctx);
-        release_keys(recipients);
-        throw Error<CryptoErrc>{GpgKeyNotFound, fpr};
-      }
-      recipients.push_back(key);
+
+    for (const auto &fpr : key_fprs) {
+        gpgme_key_t key = nullptr;
+        gpgme_error_t err = gpgme_get_key(ctx, fpr.c_str(), &key, 0);
+        if (err != 0) {
+            gpgme_release(ctx);
+            release_keys(recipients);
+            throw Error<CryptoErrc>{GpgmeGetKeyFailed, gpgme_strerror(err)};
+        }
+        if (key == nullptr) {
+            gpgme_release(ctx);
+            release_keys(recipients);
+            throw Error<CryptoErrc>{GpgKeyNotFound, fpr};
+        }
+        recipients.push_back(key);
     }
-    
-    gpgme_error_t err = gpgme_data_new_from_mem(&plain, bytes.char_data(), bytes.size(), 0);
+
+    gpgme_error_t err =
+        gpgme_data_new_from_mem(&plain, bytes.char_data(), bytes.size(), 0);
     if (err != 0) {
-      gpgme_release(ctx);
-      release_keys(recipients);
-      throw Error<CryptoErrc>{GpgmeDataNewFromMemFailed, gpgme_strerror(err)};
+        gpgme_release(ctx);
+        release_keys(recipients);
+        throw Error<CryptoErrc>{GpgmeDataNewFromMemFailed, gpgme_strerror(err)};
     }
-    
+
     err = gpgme_data_new(&cipher);
     if (err != 0) {
-      gpgme_release(ctx);
-      gpgme_data_release(plain);
-      release_keys(recipients);
-      throw Error<CryptoErrc>{GpgmeDataNewFailed, gpgme_strerror(err)};
+        gpgme_release(ctx);
+        gpgme_data_release(plain);
+        release_keys(recipients);
+        throw Error<CryptoErrc>{GpgmeDataNewFailed, gpgme_strerror(err)};
     }
-    
+
     const auto flags = static_cast<gpgme_encrypt_flags_t>(0);
     err = gpgme_op_encrypt(
-      ctx, 
-      add_sentinel(recipients).data(), 
-      flags,
-      plain, 
-      cipher
+        ctx, add_sentinel(recipients).data(), flags, plain, cipher
     );
     gpgme_data_release(plain);
     release_keys(recipients);
     if (err != 0) {
-      gpgme_release(ctx);
-      gpgme_data_release(cipher);
-      throw Error<CryptoErrc>{GpgmeDataReleaseFailed, gpgme_strerror(err)};
+        gpgme_release(ctx);
+        gpgme_data_release(cipher);
+        throw Error<CryptoErrc>{GpgmeDataReleaseFailed, gpgme_strerror(err)};
     }
-    
+
     size_t cipher_len = 0;
-    char* cipher_buf = gpgme_data_release_and_get_mem(cipher, &cipher_len);
+    char *cipher_buf = gpgme_data_release_and_get_mem(cipher, &cipher_len);
     if (cipher_buf == nullptr) {
-      gpgme_release(ctx);
-      throw Error<CryptoErrc>{GpgmeDataReleaseAndGetMemFailed, gpgme_strerror(err)};
+        gpgme_release(ctx);
+        throw Error<CryptoErrc>{
+            GpgmeDataReleaseAndGetMemFailed, gpgme_strerror(err)};
     }
-   
+
     SecureBytes result;
     result.assign(cipher_buf, cipher_len);
     secure_wipe(cipher_buf, cipher_len);
     gpgme_free(cipher_buf);
     gpgme_release(ctx);
     return result;
-  };
+};
 
-  SecureBytes encrypt_bytes(const SecureBytes& bytes, const std::string& key_fpr) {
+SecureBytes
+encrypt_bytes(const SecureBytes &bytes, const std::string &key_fpr) {
     std::vector<std::string> fprs;
     fprs.push_back(key_fpr);
     return encrypt_bytes(bytes, fprs);
-  }
-  
-  void write(const SecureBytes& plain, const std::vector<std::string>& key_fprs, const std::filesystem::path& path) {
+}
+
+void write(
+    const SecureBytes &plain,
+    const std::vector<std::string> &key_fprs,
+    const std::filesystem::path &path
+) {
     const SecureBytes cipher = encrypt_bytes(plain, key_fprs);
     ck::fio::atomic_write(path, std::span(cipher.data(), cipher.size()));
-  };
-  
-}
+};
+
+} // namespace ck::crypto

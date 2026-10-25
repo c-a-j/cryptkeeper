@@ -1,41 +1,40 @@
 #include <filesystem>
 #include <unordered_map>
 
-#include "lib/mount/mount.hpp"
 #include "lib/mount/error.hpp"
+#include "lib/mount/mount.hpp"
 #include "lib/path/parse_path.hpp"
 
 #include "../path/internal/join.hpp"
 
-namespace {
-}
+namespace {}
 
 namespace ck::mount {
-  using ck::error::Error;
-  using ck::error::MountErrc;
-  using enum ck::error::MountErrc;
-  
-  ResolvedPath Mounts::resolve(const std::string& path) {
+using ck::error::Error;
+using ck::error::MountErrc;
+using enum ck::error::MountErrc;
+
+ResolvedPath Mounts::resolve(const std::string &path) {
     if (this->empty()) {
-      this->load();
+        this->load();
     }
-    
+
     ResolvedPath rp;
     auto parts = ck::path::parse_path(path);
 
     for (std::size_t n = parts.size(); n > 0; --n) {
-      std::string alias = ck::path::join_prefix(parts, n);
-      auto it = this->state_.mounts.find(alias);
-      if (it != this->state_.mounts.end()) {
-        rp.alias = alias;
-        rp.crypt_path = it->second.path;
-        rp.relative_path = ck::path::join_suffix(parts, n);
-        return rp;
-      }
+        std::string alias = ck::path::join_prefix(parts, n);
+        auto it = this->state_.mounts.find(alias);
+        if (it != this->state_.mounts.end()) {
+            rp.alias = alias;
+            rp.crypt_path = it->second.path;
+            rp.relative_path = ck::path::join_suffix(parts, n);
+            return rp;
+        }
     }
     rp.alias = {};
     rp.crypt_path = this->state_.root.path;
     rp.relative_path = ck::path::join_suffix(parts, 0);
     return rp;
-  }
 }
+} // namespace ck::mount

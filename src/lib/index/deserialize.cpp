@@ -1,155 +1,156 @@
-#include <toml++/toml.hpp>
 #include <filesystem>
+#include <toml++/toml.hpp>
 
-#include "lib/index/index.hpp"
 #include "lib/index/error.hpp"
+#include "lib/index/index.hpp"
 #include "ui/console/console.hpp"
 
 #include "./internal/tree.hpp"
 #include "./internal/types.hpp"
 #include "./internal/vars.hpp"
 
+namespace {
+using namespace ck::index;
+using ck::error::Error;
+using ck::error::IndexErrc;
+using ck::ui::console::console;
+using enum ck::error::IndexErrc;
 
-namespace { 
-  using namespace ck::index;
-  using ck::ui::console::console;
-  using ck::error::Error;
-  using ck::error::IndexErrc;
-  using enum ck::error::IndexErrc;
-  
-  bool is_valid_uuid(std::string_view uuid) {
+bool is_valid_uuid(std::string_view uuid) {
     if (uuid.size() != 36) {
-      return false;
-    }
-  
-    auto is_hex = [](char c) {
-      return ('0' <= c && c <= '9')
-        || ('a' <= c && c <= 'f');
-    };
-  
-    for (std::size_t i = 0; i < uuid.size(); ++i) {
-      if (i == 8 || i == 13 || i == 18 || i == 23) {
-        if (uuid[i] != '-') {
-          return false;
-        }
-        continue;
-      }
-  
-      if (!is_hex(uuid[i])) {
         return false;
-      }
     }
-  
+
+    auto is_hex = [](char c) {
+        return ('0' <= c && c <= '9') || ('a' <= c && c <= 'f');
+    };
+
+    for (std::size_t i = 0; i < uuid.size(); ++i) {
+        if (i == 8 || i == 13 || i == 18 || i == 23) {
+            if (uuid[i] != '-') {
+                return false;
+            }
+            continue;
+        }
+
+        if (!is_hex(uuid[i])) {
+            return false;
+        }
+    }
+
     if (uuid[14] != '4') {
-      return false;
+        return false;
     }
-  
-    if (uuid[19] != '8' &&
-        uuid[19] != '9' &&
-        uuid[19] != 'a' &&
+
+    if (uuid[19] != '8' && uuid[19] != '9' && uuid[19] != 'a' &&
         uuid[19] != 'b') {
-      return false;
+        return false;
     }
-  
+
     return true;
-  }
-  
-  std::string parse_uuid(const toml::table& tbl, const std::string& file_path) {
+}
+
+std::string parse_uuid(const toml::table &tbl, const std::string &file_path) {
     std::optional<std::string> uuid = tbl["uuid"].value<std::string>();
     if (!uuid) {
-      std::string msg = file_path + " -> " + "an entry is missing a uuid mapping";
-      throw Error<IndexErrc>{CorruptedIndex, msg};
+        std::string msg =
+            file_path + " -> " + "an entry is missing a uuid mapping";
+        throw Error<IndexErrc>{CorruptedIndex, msg};
     }
-    
-    if (!is_valid_uuid(*uuid)) {
-      std::string msg = file_path + " -> [" + *uuid + "] " + "is not a valid uuid";
-      throw Error<IndexErrc>{CorruptedIndex, msg};
-    }
-    
-    return *uuid;
-  }
 
-  
-  std::vector<std::string> parse_path(
-    const toml::table& tbl, 
-    const std::string& file_path,
-    const std::string& uuid
-  ) {
-    auto msg = [&file_path, &uuid](const std::string& info) {
-      std::string msg = file_path;
-      msg += " -> [";
-      msg += uuid;
-      msg += "] ";
-      msg += info;
-      return msg;
+    if (!is_valid_uuid(*uuid)) {
+        std::string msg =
+            file_path + " -> [" + *uuid + "] " + "is not a valid uuid";
+        throw Error<IndexErrc>{CorruptedIndex, msg};
+    }
+
+    return *uuid;
+}
+
+std::vector<std::string> parse_path(
+    const toml::table &tbl,
+    const std::string &file_path,
+    const std::string &uuid
+) {
+    auto msg = [&file_path, &uuid](const std::string &info) {
+        std::string msg = file_path;
+        msg += " -> [";
+        msg += uuid;
+        msg += "] ";
+        msg += info;
+        return msg;
     };
 
     std::vector<std::string> path;
     if (const auto *arr = tbl["path"].as_array()) {
-      path.reserve(arr->size());
-      for (const toml::node& n : *arr) {
-        std::optional<std::string> part = n.value<std::string>();
-        if (!part) {
-          throw Error<IndexErrc>{CorruptedIndex, msg("contains non string path element")};
+        path.reserve(arr->size());
+        for (const toml::node &n : *arr) {
+            std::optional<std::string> part = n.value<std::string>();
+            if (!part) {
+                throw Error<IndexErrc>{
+                    CorruptedIndex, msg("contains non string path element")};
+            }
+            if (part->empty()) {
+                throw Error<IndexErrc>{
+                    CorruptedIndex, msg("contains empty path element")};
+            }
+            if (part->contains('/')) {
+                throw Error<IndexErrc>{
+                    CorruptedIndex, msg("contains path element including '/'")};
+            }
+            path.push_back(*part);
         }
-        if (part->empty()) {
-          throw Error<IndexErrc>{CorruptedIndex, msg("contains empty path element")};
-        }
-        if (part->contains('/')) {
-          throw Error<IndexErrc>{CorruptedIndex, msg("contains path element including '/'")};
-        }
-        path.push_back(*part);
-      }
     } else {
-      throw Error<IndexErrc>{CorruptedIndex, msg("is missing a path")};
+        throw Error<IndexErrc>{CorruptedIndex, msg("is missing a path")};
     }
-    
+
     if (path.empty()) {
-      throw Error<IndexErrc>{CorruptedIndex, msg("has empty path")};
+        throw Error<IndexErrc>{CorruptedIndex, msg("has empty path")};
     }
-    
+
     return path;
-  }
-  
-  IndexObj parse_entry(const toml::node& node, const std::string& file_path) {
+}
+
+IndexObj parse_entry(const toml::node &node, const std::string &file_path) {
     IndexObj obj;
 
-    const toml::table* tbl = node.as_table();
-    if (tbl == nullptr) { 
-      std::string msg = std::string(file_path) 
-        + std::string(" -> all entries must be a valid toml table");
-      throw Error<IndexErrc>{CorruptedIndex, msg}; 
+    const toml::table *tbl = node.as_table();
+    if (tbl == nullptr) {
+        std::string msg =
+            std::string(file_path) +
+            std::string(" -> all entries must be a valid toml table");
+        throw Error<IndexErrc>{CorruptedIndex, msg};
     }
 
     obj.uuid = parse_uuid(*tbl, file_path);
     obj.path = parse_path(*tbl, file_path, obj.uuid);
 
     return obj;
-  }
-
 }
 
-namespace ck::index::codec { 
-  using ck::ui::console::console;
-  using ck::error::Error;
-  using ck::error::IndexErrc;
-  using enum ck::error::IndexErrc;
-  namespace fs = std::filesystem;
+} // namespace
 
-  Node deserialize(std::string_view toml_text, const fs::path& file_path) {
+namespace ck::index::codec {
+using ck::error::Error;
+using ck::error::IndexErrc;
+using ck::ui::console::console;
+using enum ck::error::IndexErrc;
+namespace fs = std::filesystem;
+
+Node deserialize(std::string_view toml_text, const fs::path &file_path) {
     toml::table tbl = toml::parse(toml_text);
 
     console.debug("deserialize() - parsing index file");
     Node root;
-    if (toml::array* entries = tbl[IDX_ARR_NAME].as_array()) {
-      for (toml::node& n : *entries) {
-        IndexObj obj = parse_entry(n, file_path);
-        Node* node = ck::index::tree::break_trail(&root, obj.path);
-        node->entry = Entry{obj.uuid};
-      }
+    if (toml::array *entries = tbl[IDX_ARR_NAME].as_array()) {
+        for (toml::node &n : *entries) {
+            IndexObj obj = parse_entry(n, file_path);
+            Node *node = ck::index::tree::break_trail(&root, obj.path);
+            node->entry = Entry{obj.uuid};
+        }
     } else {
-      throw Error<IndexErrc>{InvalidOrEmptyIndexFile, file_path};
+        throw Error<IndexErrc>{InvalidOrEmptyIndexFile, file_path};
     }
     return root;
-  }
 }
+} // namespace ck::index::codec

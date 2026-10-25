@@ -1,7 +1,7 @@
-#include <iostream>
-#include <unordered_map>
-#include <optional>
 #include <algorithm>
+#include <iostream>
+#include <optional>
+#include <unordered_map>
 
 #include "global.hpp"
 #include "lib/mount/mount.hpp"
@@ -12,136 +12,108 @@
 namespace fs = std::filesystem;
 
 namespace {
-  using ck::ui::term::reset;
-  using enum ck::mount::OutputComponent;
+using ck::ui::term::reset;
+using enum ck::mount::OutputComponent;
 
-  inline const std::string_view ARROW = " \u27F6  ";
-  // inline const std::string_view ARROW = " \u2192 "
+inline const std::string_view ARROW = " \u27F6  ";
+// inline const std::string_view ARROW = " \u2192 "
 
-  struct Node {
+struct Node {
     std::optional<ck::mount::Mount> mount;
     std::unordered_map<std::string, Node> children;
-  };
+};
 
-  Node* walk_path(Node* node, const std::string& alias) {
+Node *walk_path(Node *node, const std::string &alias) {
     std::vector<std::string> path = ck::path::parse_path(alias);
 
-    for (const auto& part : path) {
-      node = &node->children[part];
+    for (const auto &part : path) {
+        node = &node->children[part];
     }
     return node;
-  }
+}
 
-  Node mount_tree(const ck::mount::Mounts& mounts) {
-    Node root; 
+Node mount_tree(const ck::mount::Mounts &mounts) {
+    Node root;
     root.mount = mounts.root();
 
     for (auto [alias, mount] : mounts.mounts()) {
-      Node* node = walk_path(&root, alias);
-      node->mount = std::move(mount);
+        Node *node = walk_path(&root, alias);
+        node->mount = std::move(mount);
     }
 
     return root;
-  }
+}
 
-  void print_root(const std::string& path) {
-    std::cout 
-      << get_scheme_ansi(RootMountAlias)
-      << APP_NAME 
-      << reset()
-      << get_scheme_ansi(RootMountArrow)
-      << ARROW
-      << reset()
-      << get_scheme_ansi(RootMountPath)
-      << "(" << path << ")" 
-      << reset()
-      << "\n";
-  }
+void print_root(const std::string &path) {
+    std::cout << get_scheme_ansi(RootMountAlias) << APP_NAME << reset()
+              << get_scheme_ansi(RootMountArrow) << ARROW << reset()
+              << get_scheme_ansi(RootMountPath) << "(" << path << ")" << reset()
+              << "\n";
+}
 
-  void print_child(
-      const std::string& prefix, 
-      const bool is_last, 
-      const std::string& alias, 
-      const std::string& path
-    ) {
-    std::cout 
-      << get_scheme_ansi(Line)
-      << prefix 
-      << reset()
-      << get_scheme_ansi(Line)
-      << (is_last ? "└── " : "├── " )
-      << reset()
-      << get_scheme_ansi(MountAlias)
-      << alias
-      << reset()
-      << get_scheme_ansi(MountArrow)
-      << ARROW
-      << reset()
-      << get_scheme_ansi(MountPath)
-      << "("
-      << path
-      << ")"
-      << reset()
-      << "\n";
-  }
+void print_child(
+    const std::string &prefix,
+    const bool is_last,
+    const std::string &alias,
+    const std::string &path
+) {
+    std::cout << get_scheme_ansi(Line) << prefix << reset()
+              << get_scheme_ansi(Line) << (is_last ? "└── " : "├── ") << reset()
+              << get_scheme_ansi(MountAlias) << alias << reset()
+              << get_scheme_ansi(MountArrow) << ARROW << reset()
+              << get_scheme_ansi(MountPath) << "(" << path << ")" << reset()
+              << "\n";
+}
 
-  void print_child(
-      const std::string& prefix, 
-      const bool is_last, 
-      const std::string& alias
-    ) {
-    std::cout 
-      << get_scheme_ansi(Line)
-      << prefix 
-      << reset()
-      << get_scheme_ansi(Line)
-      << (is_last ? "└── " : "├── " )
-      << reset()
-      << get_scheme_ansi(MountSubDir)
-      << alias
-      << reset()
-      << "\n";
-  }
+void print_child(
+    const std::string &prefix,
+    const bool is_last,
+    const std::string &alias
+) {
+    std::cout << get_scheme_ansi(Line) << prefix << reset()
+              << get_scheme_ansi(Line) << (is_last ? "└── " : "├── ") << reset()
+              << get_scheme_ansi(MountSubDir) << alias << reset() << "\n";
+}
 
-  void print_tree(const Node& node, const std::string& prefix) {
+void print_tree(const Node &node, const std::string &prefix) {
     std::vector<std::string> aliases;
     aliases.reserve(node.children.size());
 
-    for (const auto& [alias, _] : node.children) {
-      aliases.push_back(alias);
+    for (const auto &[alias, _] : node.children) {
+        aliases.push_back(alias);
     }
 
     std::ranges::sort(aliases);
 
     for (std::size_t i = 0; i < aliases.size(); ++i) {
-      const bool is_last = (i + 1 == aliases.size());
-      const auto& alias = aliases[i];
-      const Node& child = node.children.at(alias);
+        const bool is_last = (i + 1 == aliases.size());
+        const auto &alias = aliases[i];
+        const Node &child = node.children.at(alias);
 
-      if (child.mount) {
-        print_child(prefix, is_last, alias, child.mount->path);
-      } else {
-        print_child(prefix, is_last, alias);
-      }
-        
-      print_tree(child, prefix + (is_last ? "    " : "│   "));
-    }
-  }
+        if (child.mount) {
+            print_child(prefix, is_last, alias, child.mount->path);
+        } else {
+            print_child(prefix, is_last, alias);
+        }
 
-  void print_tree(const Node& node) {
-    if (node.mount) {
-      print_root(node.mount->path);
-      print_tree(node, "");
+        print_tree(child, prefix + (is_last ? "    " : "│   "));
     }
-  }
 }
 
+void print_tree(const Node &node) {
+    if (node.mount) {
+        print_root(node.mount->path);
+        print_tree(node, "");
+    }
+}
+} // namespace
+
 namespace ck::mount {
-  void Mounts::print() {
+void Mounts::print() {
     if (this->empty()) {
-      this->load();
+        this->load();
     }
     Node root = mount_tree(*this);
     print_tree(root);
-  }
 }
+} // namespace ck::mount

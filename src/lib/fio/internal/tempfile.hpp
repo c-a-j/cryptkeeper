@@ -1,18 +1,18 @@
 #pragma once
 
 #include <cstddef>
-#include <string>
 #include <filesystem>
 #include <span>
+#include <string>
 
 #ifdef _WIN32
-  #include <windows.h>
+#include <windows.h>
 #endif
 
 namespace ck::fio {
-  namespace fs = std::filesystem;
-  
-  struct TempFile {
+namespace fs = std::filesystem;
+
+struct TempFile {
     fs::path path;
     fs::path target;
     bool active = true;
@@ -21,21 +21,21 @@ namespace ck::fio {
 #else
     int fd = -1;
 #endif
-    
+
     explicit TempFile(fs::path target);
 
-    TempFile(const TempFile&) = delete;
-    TempFile& operator=(const TempFile&) = delete;
-    
+    TempFile(const TempFile &) = delete;
+    TempFile &operator=(const TempFile &) = delete;
+
     int write(std::span<const std::byte> bytes) const noexcept;
-    int write(const std::string& contents) const noexcept;
+    int write(const std::string &contents) const noexcept;
 
     int sync() const noexcept;
 
     int close() noexcept;
-    
+
     int commit() noexcept;
 
     ~TempFile() noexcept;
-  };
-}
+};
+} // namespace ck::fio

@@ -2,6 +2,5 @@
 #include <filesystem>
 
 namespace ck::mount {
-  bool initialized(const std::filesystem::path&);
+bool initialized(const std::filesystem::path &);
 }
-

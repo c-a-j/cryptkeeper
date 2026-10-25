@@ -1,42 +1,44 @@
 #include <deque>
 
-#include "ui/console/console.hpp"
 #include "cli/types.hpp"
-#include "lib/mount/mount.hpp"
 #include "lib/index/index.hpp"
+#include "lib/mount/mount.hpp"
 #include "lib/path/parse_path.hpp"
+#include "ui/console/console.hpp"
 
 namespace {
-  bool mount_is_child(
-      const std::string& alias, 
-      const std::string& resolved_alias, 
-      const std::string& relative_path
-  ) {
+bool mount_is_child(
+    const std::string &alias,
+    const std::string &resolved_alias,
+    const std::string &relative_path
+) {
     std::string resolved = relative_path + "/" + resolved_alias;
     std::vector<std::string> resolved_parts = ck::path::parse_path(resolved);
     std::vector<std::string> alias_parts = ck::path::parse_path(alias);
-    std::deque<std::string> q_resolved(resolved_parts.begin(), resolved_parts.end());
+    std::deque<std::string> q_resolved(
+        resolved_parts.begin(), resolved_parts.end()
+    );
     std::deque<std::string> q_alias(alias_parts.begin(), alias_parts.end());
-    
+
     while (!q_resolved.empty() && !q_alias.empty()) {
-      auto r = q_resolved.front();
-      auto a = q_alias.front();
-      if (r == a) {
-        q_resolved.pop_front();
-        q_alias.pop_front();
-        continue;
-      }
-      return false;
+        auto r = q_resolved.front();
+        auto a = q_alias.front();
+        if (r == a) {
+            q_resolved.pop_front();
+            q_alias.pop_front();
+            continue;
+        }
+        return false;
     }
     return true;
-  }
 }
+} // namespace
 
 namespace ck::cmd {
-  using ck::ui::console::console;
-  using ck::mount::mnt;
-  
-  void show(const ck::cli::Context& _, const ck::cli::ShowArgs& args){
+using ck::mount::mnt;
+using ck::ui::console::console;
+
+void show(const ck::cli::Context &_, const ck::cli::ShowArgs &args) {
     // resolve the path
     // only generate the index needed
 
@@ -44,36 +46,35 @@ namespace ck::cmd {
     // root nodes will need to be inserted in their alias locations for printing
 
     mnt.load();
-    
 
     if (!args.path) {
-      console.debug("Printing the whole tree");
-      console.debug("path", mnt.root().path);
-      
-      ck::index::Index idx(mnt.root().path);
-      for (const auto& [alias, mount] : mnt.mounts()) {
-        ck::index::Index i(mount.path);
-        idx.insert_node(i.root(), alias);
-      }
-      idx.print();
-    } else {
-      console.debug("Printing the subtree tree or secret");
-      
-      ck::mount::ResolvedPath rp = mnt.resolve(*args.path);
-      ck::index::Index idx(rp.crypt_path, rp.alias);
+        console.debug("Printing the whole tree");
+        console.debug("path", mnt.root().path);
 
-      if (rp.relative_path.empty()) {
-        idx.print(false);
-        return;
-      }
-
-      for (const auto& [alias, mount] : mnt.mounts()) {
-        if (mount_is_child(alias, rp.alias, rp.relative_path)) {
-          ck::index::Index i(mount.path);
-          idx.insert_node(i.root(), alias);
+        ck::index::Index idx(mnt.root().path);
+        for (const auto &[alias, mount] : mnt.mounts()) {
+            ck::index::Index i(mount.path);
+            idx.insert_node(i.root(), alias);
         }
-      }
-      idx.print(rp.relative_path);
+        idx.print();
+    } else {
+        console.debug("Printing the subtree tree or secret");
+
+        ck::mount::ResolvedPath rp = mnt.resolve(*args.path);
+        ck::index::Index idx(rp.crypt_path, rp.alias);
+
+        if (rp.relative_path.empty()) {
+            idx.print(false);
+            return;
+        }
+
+        for (const auto &[alias, mount] : mnt.mounts()) {
+            if (mount_is_child(alias, rp.alias, rp.relative_path)) {
+                ck::index::Index i(mount.path);
+                idx.insert_node(i.root(), alias);
+            }
+        }
+        idx.print(rp.relative_path);
     }
-  }
 }
+} // namespace ck::cmd

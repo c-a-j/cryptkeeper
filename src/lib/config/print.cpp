@@ -12,18 +12,27 @@ using ck::error::Error;
 using enum ck::error::ConfigErrc;
 using ck::ui::console::console;
 
-void print_ln(const std::string_view section, const std::string_view key,
-              const std::string_view value) {
+void print_ln(
+    const std::string_view section,
+    const std::string_view key,
+    const std::string_view value
+) {
     std::cout << "[" << section << "." << key << "] = " << value << "\n";
 }
 
-void print_ln(const std::string_view section, const std::string_view key,
-              const int value) {
+void print_ln(
+    const std::string_view section,
+    const std::string_view key,
+    const int value
+) {
     std::cout << "[" << section << "." << key << "] = " << value << "\n";
 }
 
-void print_ln(const std::string_view section, const std::string_view key,
-              const bool value) {
+void print_ln(
+    const std::string_view section,
+    const std::string_view key,
+    const bool value
+) {
     std::cout << "[" << section << "." << key
               << "] = " << (value ? "true" : "false") << "\n";
 }
