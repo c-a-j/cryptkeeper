@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.30)
 project(crypt-keeper VERSION 0.1.0 LANGUAGES CXX)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -14,14 +14,9 @@ endif()
 option(CK_ENABLE_DEBUG_LOGS "Enable debug logging" ${CK_ENABLE_DEBUG_LOGS_DEFAULT})
 
 option(CK_ENABLE_CLANG_TIDY "Enable clang-tidy" OFF)
-if(CK_ENABLE_CLANG_TIDY)
-  set(CMAKE_CXX_CLANG_TIDY clang-tidy)
-else()
-  unset(CMAKE_CXX_CLANG_TIDY CACHE)
-endif()
 
 find_package(PkgConfig REQUIRED)
-pkg_check_modules(GPGME REQUIRED gpgme)
+pkg_check_modules(GPGME REQUIRED IMPORTED_TARGET gpgme)
 
 include(FetchContent)
 FetchContent_Declare(
@@ -48,6 +43,5 @@ ck_apply_compiler_options(ck_lib)
 
 include(CTest)
 if (BUILD_TESTING)
-  enable_testing()
   add_subdirectory(tests)
 endif()

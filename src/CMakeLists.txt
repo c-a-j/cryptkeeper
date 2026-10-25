@@ -6,13 +6,10 @@ add_subdirectory(cli)
 add_subdirectory(cmd)
 add_subdirectory(ui)
 
-target_compile_features(ck PRIVATE cxx_std_26)
 target_compile_features(ck_lib PUBLIC cxx_std_26)
 
-target_include_directories(ck PRIVATE ${PROJECT_SRC_DIR}/include)
 target_include_directories(ck_lib PUBLIC
   ${PROJECT_SOURCE_DIR}/include
-  ${GPGME_INCLUDE_DIRS}
 )
 target_compile_definitions(ck PRIVATE
   CK_ENABLE_DEBUG_LOGS=$<BOOL:${CK_ENABLE_DEBUG_LOGS}>
@@ -23,6 +20,6 @@ target_link_libraries(ck PRIVATE
   CLI11::CLI11
 )
 target_link_libraries(ck_lib PUBLIC
-  ${GPGME_LIBRARIES}
+  PkgConfig::GPGME
   tomlplusplus::tomlplusplus
 )

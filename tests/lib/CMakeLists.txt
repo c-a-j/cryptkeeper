@@ -7,9 +7,6 @@ target_link_libraries(crypto_test PRIVATE
   ck_lib
   GTest::gtest_main
 )
-target_include_directories(crypto_test PRIVATE
-  ${PROJECT_SOURCE_DIR}/include
-)
 gtest_add_tests(TARGET crypto_test
   EXTRA_ARGS --gtest_print_time=0 --gtest_brief=1
 )
@@ -27,7 +24,6 @@ target_link_libraries(config_test PRIVATE
   GTest::gtest_main
 )
 target_include_directories(config_test PRIVATE
-  ${PROJECT_SOURCE_DIR}/include
   ${PROJECT_SOURCE_DIR}/src
 )
 gtest_add_tests(TARGET config_test

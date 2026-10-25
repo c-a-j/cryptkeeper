@@ -10,7 +10,6 @@ target_link_libraries(init_test PRIVATE
   GTest::gtest_main
 )
 target_include_directories(init_test PRIVATE
-  ${PROJECT_SOURCE_DIR}/include
   ${PROJECT_SOURCE_DIR}/src
 )
 gtest_add_tests(TARGET init_test

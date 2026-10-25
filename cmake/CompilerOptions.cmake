@@ -6,7 +6,7 @@ function(ck_apply_compiler_options target)
       target_compile_options(${target} PRIVATE /WX)
     endif()
     
-  else()
+  elseif (CMAKE_CXX_COMPILER_ID MATCHES "^(GNU|Clang|AppleClang)$")
     target_compile_options(${target} PRIVATE
       -Wall -Wextra -Wpedantic
       -Wformat=2 -Wconversion -Wsign-conversion
@@ -34,9 +34,9 @@ function(ck_apply_compiler_options target)
   endif()
 
   if (CK_ENABLE_CLANG_TIDY)
-    find_program(CLANG_TIDY_EXE NAMES clang-tidy)
-    if (CLANG_TIDY_EXE)
-      set_target_properties(${target} PROPERTIES CXX_CLANG_TIDY "${CLANG_TIDY_EXE}")
-    endif()
+    find_program(CLANG_TIDY_BIN NAMES clang-tidy REQUIRED)
+    set_target_properties(${target} PROPERTIES 
+      CXX_CLANG_TIDY "${CLANG_TIDY_BIN}"
+    )
   endif()
 endfunction()

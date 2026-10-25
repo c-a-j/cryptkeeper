@@ -1,46 +1,42 @@
 set shell := ["bash", "-cu"]
 
 build_dir := "build"
-build_type := "Debug"
+preset := "debug"
 binary_name := "ck"
-binary := build_dir + "/src/" + binary_name
 crypt_dir := "~/.local/share/crypt-keeper"
 config_dir := "~/.config/crypt-keeper"
 asan_env := "ASAN_SYMBOLIZER_PATH=" + `which llvm-symbolizer` + " ASAN_OPTIONS=symbolize=1"
 bindir := "~/.local/bin"
 
-configure build_type="Debug" sanitizers="OFF" tests="OFF" debug_logs="OFF" clang_tidy="OFF":
-  cmake -S . -B {{ build_dir }} -G Ninja \
-    -DCMAKE_CXX_COMPILER=clang++ \
-    -DCK_ENABLE_SANITIZERS={{ sanitizers }} \
-    -DCMAKE_BUILD_TYPE={{ build_type }} \
-    -DCK_ENABLE_DEBUG_LOGS={{ debug_logs }} \
-    -DBUILD_TESTING={{ tests }} \
-    -DCK_ENABLE_CLANG_TIDY={{ clang_tidy }}
+configure preset=preset tests="OFF":
+  cmake --preset "{{ preset }}" -DBUILD_TESTING="{{ tests }}"
 
-build tests="OFF": (configure "Debug" "ON" (tests) "ON" "OFF")
-  cmake --build {{ build_dir }} -- -j$(nproc)
+build preset=preset tests="OFF": (configure (preset) (tests))
+  cmake --build --preset "{{ preset }}"
 
-release: (configure "Release" "OFF" "OFF" "OFF" "OFF")
-  cmake --build {{ build_dir }} -- -j$(nproc)
+test preset=preset regex="": (build (preset) ("ON"))
+  ctest --preset "{{ preset }}" -R "{{ regex }}"
 
-run *args: build
- {{ asan_env }} ./{{ binary }} {{ args }}
+lint: (configure ("tidy") ("ON"))
+  cmake --build --preset tidy --clean-first
 
-test filter="": (build ("ON"))
-  cd {{ build_dir }} && ctest --output-on-failure {{ if filter != "" { "-R " + filter } else { "" }}} 
-  
-lint: (configure "Debug" "ON" "OFF" "ON" "ON")
-  cmake --build {{ build_dir }} --clean-first -- -j$(nproc)
+format:
+  @find src include tests -type f \
+    \( -name '*.c' -o -name '*.h' -o -name '*.cpp' -o -name '*.hpp' \
+    -o -name '*.cc' -o -name '*.hh' -o -name '*.cxx' -o -name '*.hxx' \) \
+    -exec clang-format -i {} +
 
 [unix]
-install dir=bindir: release
+install dir=bindir: (build ("release"))
   /usr/bin/install -d {{ dir }}
-  /usr/bin/install -m 0755 {{ binary }} {{ dir }}/{{ binary_name }}
+  /usr/bin/install -m 0755 "./{{ build_dir }}/release/src/{{ binary_name }}" {{ dir }}/{{ binary_name }}
 
 [windows]
 install dir=bindir:
   {{ error("Windows install not supported. Use WSL or install the binary manually.") }}
+
+run preset=preset *args: (build (preset))
+ {{ asan_env }} "./{{ build_dir }}/{{ preset }}/src/{{ binary_name }}" {{ args }}
 
 destroy:
   rm -rf {{ crypt_dir }}
