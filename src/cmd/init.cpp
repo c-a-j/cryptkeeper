@@ -31,6 +31,7 @@ void init(const ck::cli::Context &_, const ck::cli::InitArgs &args) {
         throw Error<InitErrc>{KeyNotFound, args.key_fpr};
     }
 
+    load_cfg(cfg);
     fs::path crypt_path;
 
     if (!args.path) {
@@ -56,7 +57,7 @@ void init(const ck::cli::Context &_, const ck::cli::InitArgs &args) {
 
     if (!ck::mount::Mounts::file_exists()) {
         console.info("Welcome to Crypt Keeper - the spooky password manager");
-        ck::mount::mnt.chroot(crypt_path);
+        ck::mount::mnt.chroot(crypt_path, home_dir(cfg));
     }
 }
 } // namespace ck::cmd

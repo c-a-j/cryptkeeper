@@ -3,7 +3,6 @@
 #include "../path/internal/path.hpp"
 #include "./internal/hash.hpp"
 #include "./internal/initialized.hpp"
-#include "lib/config/config.hpp"
 #include "lib/mount/error.hpp"
 #include "lib/mount/mount.hpp"
 #include "lib/path/existence.hpp"
@@ -11,20 +10,18 @@
 #include "ui/console/console.hpp"
 
 namespace ck::mount {
-using ck::config::cfg;
 using ck::error::Error;
 using ck::error::MountErrc;
 using ck::ui::console::console;
 using enum ck::error::MountErrc;
 
-void Mounts::chroot(const std::string &path) {
+void Mounts::chroot(const std::string &path, const fs::path &crypt_home) {
     std::vector<std::string> alias_parts = ck::path::parse_path(path);
     fs::path crypt_path;
 
-    // if alias is single path element, it is assumed to refer to a crypt in
-    // cfg.home
+    // A single path element names a crypt under the supplied home directory.
     if (alias_parts.size() == 1) {
-        crypt_path = fs::path(ck::config::home_dir(cfg)) / fs::path(path);
+        crypt_path = crypt_home / fs::path(path);
     } else {
         crypt_path = fs::path(path);
     }
@@ -48,7 +45,7 @@ void Mounts::chroot(const std::string &path) {
 
     for (const auto &[alias, mount] : this->state_.mounts) {
         try {
-            tmp.mount(alias, mount.path);
+            tmp.mount(mount.path, alias, crypt_home);
         } catch (const Error<MountErrc> &_) {
             throw Error<MountErrc>{
                 ChrootConflict, "try removing other mounts first"};

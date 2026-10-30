@@ -5,6 +5,8 @@
 #include <string>
 #include <unordered_map>
 
+#include "lib/config/pwgen.hpp"
+
 namespace ck::index {
 namespace fs = std::filesystem;
 // entry in index tree
@@ -32,7 +34,11 @@ class Index {
     Node &root();
 
     static Index empty(const std::string &crypt_path);
-    void insert(const std::string &path, bool pwgen);
+    void insert(
+        const std::string &path,
+        const ck::config::PwgenCfg &cfg,
+        bool genpw
+    );
     void show(const std::optional<std::string> &);
     void insert_node(const Node &n, const std::string &path);
     void print(bool is_root = true);

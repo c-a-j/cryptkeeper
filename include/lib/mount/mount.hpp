@@ -54,10 +54,14 @@ class Mounts {
     std::unordered_map<std::string, Mount> &mounts();
     const std::unordered_map<std::string, Mount> &mounts() const;
 
-    void mount(const std::string &path, const std::string &alias);
-    void mount(const std::string &alias);
+    void mount(
+        const std::string &path,
+        const std::string &alias,
+        const fs::path &crypt_home
+    );
+    void mount(const fs::path &crypt_home, const std::string &alias);
     void umount(const std::string &alias);
-    void chroot(const std::string &path);
+    void chroot(const std::string &path, const fs::path &crypt_home);
     ResolvedPath resolve(const std::string &path);
     void print();
     bool empty() const noexcept;

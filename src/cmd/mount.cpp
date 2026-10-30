@@ -1,3 +1,4 @@
+#include "lib/config/config.hpp"
 #include "lib/mount/mount.hpp"
 
 #include "cli/types.hpp"
@@ -17,6 +18,10 @@ void mount(const ck::cli::Context &_, const ck::cli::MountArgs &args) {
         return;
     }
 
+    ck::config::Config cfg;
+    load_cfg(cfg);
+    const std::filesystem::path crypt_home = ck::config::home_dir(cfg);
+
     if (args.path && !args.alias) {
         // When one argument is given, args.path essentially serves as the crypt
         // path and alias. In this case the argument is expected to be a crypt
@@ -28,7 +33,7 @@ void mount(const ck::cli::Context &_, const ck::cli::MountArgs &args) {
         // this will attemt to mount the actual directory core.home/foo with
         // with the alias foo
         if (args.path) {
-            mnt.mount(*args.path);
+            mnt.mount(crypt_home, *args.path);
         }
         return;
     }
@@ -44,7 +49,7 @@ void mount(const ck::cli::Context &_, const ck::cli::MountArgs &args) {
     // with the alias foo/bar
 
     if (args.path && args.alias) {
-        mnt.mount(*args.path, *args.alias);
+        mnt.mount(*args.path, *args.alias, crypt_home);
     }
 };
 } // namespace ck::cmd

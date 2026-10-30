@@ -3,7 +3,6 @@
 
 #include "./internal/fingerprints.hpp"
 #include "./internal/tree.hpp"
-#include "lib/config/config.hpp"
 #include "lib/crypto/crypto.hpp"
 #include "lib/crypto/random.hpp"
 #include "lib/index/error.hpp"
@@ -39,13 +38,15 @@ FlatEntry create_entry(const std::string &path) {
 } // namespace
 
 namespace ck::index {
-using ck::config::cfg;
-using namespace ck::config;
 using namespace ck::crypto;
 using ck::error::Error;
 using ck::error::IndexErrc;
 using enum ck::error::IndexErrc;
-void Index::insert(const std::string &path, const bool pwgen) {
+void Index::insert(
+    const std::string &path,
+    const ck::config::PwgenCfg &cfg,
+    const bool genpw
+) {
     FlatEntry flat = create_entry(path);
 
     std::vector<std::string> keys = get_fingerprints(this->path_);
@@ -64,8 +65,8 @@ void Index::insert(const std::string &path, const bool pwgen) {
         return listen1;
     };
 
-    const SecureBytes secret = pwgen
-        ? ck::crypto::pwgen(cfg.pwgen)
+    const SecureBytes secret = genpw
+        ? ck::crypto::pwgen(cfg)
         : wisper();
 
     fs::path secret_file = this->path_ / fs::path(flat.uuid);

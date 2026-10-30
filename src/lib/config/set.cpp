@@ -3,8 +3,6 @@
 #include "lib/config/config.hpp"
 #include "ui/console/console.hpp"
 
-using ck::config::cfg;
-
 namespace {
 using namespace ck::config;
 using ck::error::ConfigErrc;

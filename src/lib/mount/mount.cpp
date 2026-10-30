@@ -6,20 +6,22 @@
 #include "../path/internal/path.hpp"
 #include "./internal/hash.hpp"
 #include "./internal/initialized.hpp"
-#include "lib/config/config.hpp"
 #include "lib/index/index.hpp"
 #include "lib/mount/error.hpp"
 #include "lib/path/parse_path.hpp"
 #include "ui/console/console.hpp"
 
 namespace ck::mount {
-using ck::config::cfg;
 using ck::error::Error;
 using ck::error::MountErrc;
 using ck::ui::console::console;
 using enum ck::error::MountErrc;
 
-void Mounts::mount(const std::string &path, const std::string &alias) {
+void Mounts::mount(
+    const std::string &path,
+    const std::string &alias,
+    const fs::path &crypt_home
+) {
     fs::path mnt_file = ck::path::mount_file();
     bool mnt_file_exists = fs::exists(mnt_file);
 
@@ -35,7 +37,7 @@ void Mounts::mount(const std::string &path, const std::string &alias) {
     std::vector<std::string> alias_parts = ck::path::parse_path(path);
     fs::path crypt_path;
     if (alias_parts.size() == 1) {
-        crypt_path = fs::path(ck::config::home_dir(cfg)) / fs::path(path);
+        crypt_path = crypt_home / fs::path(path);
     } else {
         crypt_path = fs::path(path);
     }
@@ -65,11 +67,9 @@ void Mounts::mount(const std::string &path, const std::string &alias) {
     this->print();
 }
 
-void Mounts::mount(const std::string &alias) {
-    // this function provides a quick way to mount a crypt that is in
-    // cfg.core_.home 'ck mount foo' will attempt to mount a crypt on disk at
-    // cfg.core_.home/foo supplying an alias comprised of more than one
-    // component, ex foo/bar is not supported
+void Mounts::mount(const fs::path &crypt_home, const std::string &alias) {
+    // Mount a crypt at crypt_home/alias. Aliases with more than one path
+    // component, such as foo/bar, are not supported by this overload.
     std::vector<std::string> alias_parts = ck::path::parse_path(alias);
     console.debug("Mounts::mount() - adding a mount with a single argument");
     if (alias_parts.size() > 1) {
@@ -77,9 +77,9 @@ void Mounts::mount(const std::string &alias) {
             InvalidArguments, "a path must be specified for this alias"};
     }
 
-    fs::path crypt_path = fs::path(ck::config::home_dir(cfg)) / fs::path(alias);
+    fs::path crypt_path = crypt_home / fs::path(alias);
     if (initialized(crypt_path)) {
-        this->mount(alias, crypt_path);
+        this->mount(crypt_path.string(), alias, crypt_home);
         return;
     }
     throw Error<MountErrc>{CryptNotInitialized, crypt_path};

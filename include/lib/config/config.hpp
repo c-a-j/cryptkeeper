@@ -38,5 +38,4 @@ void load_cfg(Config &cfg);
 const std::string &home_dir(const Config &cfg);
 std::string &home_dir(Config &cfg);
 
-extern Config cfg;
 } // namespace ck::config

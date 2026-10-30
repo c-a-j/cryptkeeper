@@ -23,5 +23,4 @@ std::string &home_dir(Config &cfg) {
     return cfg.core.home;
 }
 
-Config cfg;
 } // namespace ck::config
