@@ -1,4 +1,6 @@
 #include <filesystem>
+#include <fstream>
+#include <iterator>
 #include <sstream>
 
 #include "toml++/toml.hpp"
@@ -17,10 +19,10 @@ using ck::error::Error;
 using enum ck::error::ConfigErrc;
 using ck::ui::console::console;
 
-void Config::load() {
+void load_state(State &state) {
     std::filesystem::path cfg_file = ck::path::config_file();
     if (!ck::path::file_exists(cfg_file)) {
-        this->state_.core.home = ck::path::crypt_root();
+        state.core.home = ck::path::crypt_root();
         return;
     }
 
@@ -29,14 +31,12 @@ void Config::load() {
         (std::istreambuf_iterator<char>(in)), std::istreambuf_iterator<char>()
     );
 
-    State state = codec::deserialize(text);
-    this->state_ = state;
+    State tmp = codec::deserialize(text);
+    state = tmp;
 }
 
-void Config::save() {
+void save_state(const State &state) {
     ck::path::create_config_dir();
-
-    State state = this->state_;
 
     toml::table tbl = codec::serialize(state);
     std::filesystem::path cfg_file = ck::path::config_file();
@@ -58,6 +58,14 @@ void Config::save() {
     } else {
         console.info("Updated config file", cfg_file.string());
     }
-    this->print();
+    print_state(state);
+}
+
+void Config::save() {
+    save_state(state_);
+}
+
+void Config::load() {
+    load_state(state_);
 }
 } // namespace ck::config

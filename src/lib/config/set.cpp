@@ -98,7 +98,7 @@ using ck::error::Error;
 using enum ck::error::ConfigErrc;
 using ck::ui::console::console;
 
-void Config::set(std::vector<std::string> args) {
+void set_state(State &state, const std::vector<std::string>& args) {
     std::vector<std::string> key_parts = parse_key(args[0]);
     const std::string &value = args[1];
 
@@ -106,17 +106,17 @@ void Config::set(std::vector<std::string> args) {
         throw Error<ConfigErrc>{InvalidConfigKey, std::string(args[0])};
     }
 
-    State state = this->state_;
+    State tmp = state;
     bool found = false;
 
     if (key_parts[0] == "core") {
-        found = set_field(state.core, key_parts[1], value);
+        found = set_field(tmp.core, key_parts[1], value);
     }
     if (key_parts[0] == "ui") {
-        found = set_field(state.ui, key_parts[1], value);
+        found = set_field(tmp.ui, key_parts[1], value);
     }
     if (key_parts[0] == "pwgen") {
-        found = set_field(state.pwgen, key_parts[1], value);
+        found = set_field(tmp.pwgen, key_parts[1], value);
     }
 
     if (!found) {
@@ -124,10 +124,14 @@ void Config::set(std::vector<std::string> args) {
     }
 
     // if pwgen setup isn't valid, throw
-    if (auto result = validate_pwgen(state.pwgen); !result) {
+    if (auto result = validate_pwgen(tmp.pwgen); !result) {
         throw result.error();
     }
 
-    this->state_ = state;
+    state = tmp;
+}
+
+void Config::set(const std::vector<std::string>& args) {
+    set_state(state_, args);
 }
 } // namespace ck::config

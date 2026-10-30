@@ -49,7 +49,7 @@ class Config {
 
     void print() const;
     void print(std::string_view key) const;
-    void set(std::vector<std::string> args);
+    void set(const std::vector<std::string>& args);
 
     void load();
     void save();
@@ -57,6 +57,15 @@ class Config {
   private:
     State state_;
 };
+
+void print_state(const State &state);
+void print_state(const State &state, std::string_view key);
+void set_state(State &state, const std::vector<std::string>& args);
+void save_state(const State &state);
+void load_state(State &state);
+const std::string &home_dir(const State &state);
+std::string &home_dir(State &state);
+
 
 extern Config cfg;
 } // namespace ck::config

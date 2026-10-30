@@ -29,19 +29,27 @@ PwgenCfg &Config::pwgen() {
     return state_.pwgen;
 }
 
-const std::string &Config::home() const {
-    if (state_.core.home.empty()) {
+const std::string &home_dir(const State &state) {
+    if (state.core.home.empty()) {
         throw Error<ConfigErrc>{
             InvalidConfigFile, "core.home must be defined without --path "};
     }
-    return state_.core.home;
+    return state.core.home;
+}
+
+std::string &home_dir(State &state) {
+    if (state.core.home.empty()) {
+        state.core.home = ck::path::crypt_root();
+    }
+    return state.core.home;
+}
+
+const std::string &Config::home() const {
+    return home_dir(state_);
 }
 
 std::string &Config::home() {
-    if (state_.core.home.empty()) {
-        state_.core.home = ck::path::crypt_root();
-    }
-    return state_.core.home;
+    return home_dir(state_);
 }
 
 Config cfg;
