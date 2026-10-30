@@ -21,50 +21,21 @@ struct UiCfg {
     bool insert_with_editor = false;
 };
 
-std::expected<void, Err> validate_pwgen(const PwgenCfg &pwgen);
+std::expected<void, Err> validate_pwgen(const PwgenCfg &cfg);
 
-struct State {
+struct Config {
     CoreCfg core;
     UiCfg ui;
     PwgenCfg pwgen;
 };
 
-class Config {
-  public:
-    explicit Config() = default;
-
-    static Config empty();
-
-    const CoreCfg &core() const;
-    CoreCfg &core();
-
-    const UiCfg &ui() const;
-    UiCfg &ui();
-
-    const PwgenCfg &pwgen() const;
-    PwgenCfg &pwgen();
-
-    const std::string &home() const;
-    std::string &home();
-
-    void print() const;
-    void print(std::string_view key) const;
-    void set(const std::vector<std::string>& args);
-
-    void load();
-    void save();
-
-  private:
-    State state_;
-};
-
-void print_state(const State &state);
-void print_state(const State &state, std::string_view key);
-void set_state(State &state, const std::vector<std::string>& args);
-void save_state(const State &state);
-void load_state(State &state);
-const std::string &home_dir(const State &state);
-std::string &home_dir(State &state);
+void print_cfg(const Config &cfg);
+void print_cfg(const Config &cfg, std::string_view key);
+void set_cfg(Config &cfg, const std::vector<std::string>& args);
+void save_cfg(const Config &cfg);
+void load_cfg(Config &cfg);
+const std::string &home_dir(const Config &cfg);
+std::string &home_dir(Config &cfg);
 
 
 extern Config cfg;

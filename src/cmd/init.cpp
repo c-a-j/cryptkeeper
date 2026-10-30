@@ -34,7 +34,7 @@ void init(const ck::cli::Context &_, const ck::cli::InitArgs &args) {
     fs::path crypt_path;
 
     if (!args.path) {
-        crypt_path = fs::path(cfg.home()) / args.crypt_name;
+        crypt_path = fs::path(home_dir(cfg)) / args.crypt_name;
     } else {
         crypt_path = *args.path;
     }
