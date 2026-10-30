@@ -13,5 +13,5 @@ struct PwSpec {
     std::size_t lowercase;
 };
 
-PwSpec pwgen_spec(const ck::config::PwGen &pwgen);
+PwSpec pwgen_spec(const ck::config::PwgenCfg &pwgen);
 } // namespace ck::crypto

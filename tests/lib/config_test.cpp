@@ -295,7 +295,7 @@ lowercase = 9
     EXPECT_EQ(cfg.pwgen().lowercase, 5);
 }
 
-TEST_F(ConfigTest, MissingCoreHomeMakesConstHomeThrow) {
+TEST_F(ConfigTest, MissingCoreCfgHomeMakesConstHomeThrow) {
     write_config(R"toml(
 [core]
 autopush = false

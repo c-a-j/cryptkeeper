@@ -42,7 +42,7 @@ int parse_int(
     return out;
 }
 
-bool set_field(Ui &cfg, std::string_view field, std::string_view value) {
+bool set_field(UiCfg &cfg, std::string_view field, std::string_view value) {
     if (field == "insert_with_editor") {
         cfg.insert_with_editor = (value == "true");
         return true;
@@ -50,7 +50,7 @@ bool set_field(Ui &cfg, std::string_view field, std::string_view value) {
     return false;
 }
 
-bool set_field(Core &cfg, std::string_view field, std::string_view value) {
+bool set_field(CoreCfg &cfg, std::string_view field, std::string_view value) {
     if (field == "home") {
         cfg.home = value;
         return true;
@@ -66,7 +66,7 @@ bool set_field(Core &cfg, std::string_view field, std::string_view value) {
     return false;
 }
 
-bool set_field(PwGen &cfg, const std::string &field, const std::string &value) {
+bool set_field(PwgenCfg &cfg, const std::string &field, const std::string &value) {
     const std::string section = "pwgen";
     if (field == "length") {
         cfg.length = parse_int(section, field, value);

@@ -8,24 +8,24 @@ using ck::error::ConfigErrc;
 using ck::error::Error;
 using enum ck::error::ConfigErrc;
 
-const Core &Config::core() const {
+const CoreCfg &Config::core() const {
     return state_.core;
 }
-Core &Config::core() {
+CoreCfg &Config::core() {
     return state_.core;
 }
 
-const Ui &Config::ui() const {
+const UiCfg &Config::ui() const {
     return state_.ui;
 }
-Ui &Config::ui() {
+UiCfg &Config::ui() {
     return state_.ui;
 }
 
-const PwGen &Config::pwgen() const {
+const PwgenCfg &Config::pwgen() const {
     return state_.pwgen;
 }
-PwGen &Config::pwgen() {
+PwgenCfg &Config::pwgen() {
     return state_.pwgen;
 }
 

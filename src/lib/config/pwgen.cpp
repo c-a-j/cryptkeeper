@@ -8,7 +8,7 @@ using ck::error::Error;
 using enum ck::error::ConfigErrc;
 using ck::ui::console::console;
 
-std::expected<void, Error<ConfigErrc>> validate_pwgen(const PwGen &pwgen) {
+std::expected<void, Error<ConfigErrc>> validate_pwgen(const PwgenCfg &pwgen) {
     auto fail = [](const std::string &msg) {
         auto err = Error<ConfigErrc>{InvalidConfigValue, msg};
         return std::unexpected(err);

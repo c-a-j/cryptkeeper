@@ -37,19 +37,19 @@ void print_ln(
               << "] = " << (value ? "true" : "false") << "\n";
 }
 
-void print_section(const Core &cfg) {
+void print_section(const CoreCfg &cfg) {
     std::string section = "core";
     print_ln(section, "home", cfg.home);
     print_ln(section, "autopush", cfg.autopush);
     print_ln(section, "autosync", cfg.autosync);
 }
 
-void print_section(const Ui &cfg) {
+void print_section(const UiCfg &cfg) {
     std::string section = "ui";
     print_ln(section, "insert_with_editor", cfg.insert_with_editor);
 }
 
-void print_section(const PwGen &cfg) {
+void print_section(const PwgenCfg &cfg) {
     std::string section = "pwgen";
     print_ln(section, "length", cfg.length);
     print_ln(section, "symbols", cfg.symbols);
@@ -58,7 +58,7 @@ void print_section(const PwGen &cfg) {
     print_ln(section, "lowercase", cfg.lowercase);
 }
 
-bool print_field(const Core &cfg, std::string_view key) {
+bool print_field(const CoreCfg &cfg, std::string_view key) {
     if (key == "home") {
         print_ln("core", key, cfg.home);
     } else if (key == "autopush") {
@@ -71,7 +71,7 @@ bool print_field(const Core &cfg, std::string_view key) {
     return true;
 }
 
-bool print_field(const Ui &cfg, std::string_view key) {
+bool print_field(const UiCfg &cfg, std::string_view key) {
     if (key == "insert_with_editor") {
         print_ln("ui", key, cfg.insert_with_editor);
     } else {
@@ -80,7 +80,7 @@ bool print_field(const Ui &cfg, std::string_view key) {
     return true;
 }
 
-bool print_field(const PwGen &cfg, std::string_view key) {
+bool print_field(const PwgenCfg &cfg, std::string_view key) {
     if (key == "length") {
         print_ln("pwgen", key, cfg.length);
     } else if (key == "numbers") {

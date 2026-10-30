@@ -11,22 +11,22 @@
 namespace ck::config {
 using Err = ck::error::Error<ck::error::ConfigErrc>;
 
-struct Core {
+struct CoreCfg {
     std::string home;
     bool autopush = true;
     bool autosync = true;
 };
 
-struct Ui {
+struct UiCfg {
     bool insert_with_editor = false;
 };
 
-std::expected<void, Err> validate_pwgen(const PwGen &pwgen);
+std::expected<void, Err> validate_pwgen(const PwgenCfg &pwgen);
 
 struct State {
-    Core core;
-    Ui ui;
-    PwGen pwgen;
+    CoreCfg core;
+    UiCfg ui;
+    PwgenCfg pwgen;
 };
 
 class Config {
@@ -35,14 +35,14 @@ class Config {
 
     static Config empty();
 
-    const Core &core() const;
-    Core &core();
+    const CoreCfg &core() const;
+    CoreCfg &core();
 
-    const Ui &ui() const;
-    Ui &ui();
+    const UiCfg &ui() const;
+    UiCfg &ui();
 
-    const PwGen &pwgen() const;
-    PwGen &pwgen();
+    const PwgenCfg &pwgen() const;
+    PwgenCfg &pwgen();
 
     const std::string &home() const;
     std::string &home();

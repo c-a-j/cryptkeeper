@@ -11,7 +11,7 @@
 // using Err = ck::error::Error<ck::error::ConfigErrc>;
 // using ck::ui::console::console;
 //
-// std::expected<void, Err> validate_pwgen(const PwGen &pwgen) {
+// std::expected<void, Err> validate_pwgen(const PwgenCfg &pwgen) {
 //     auto fail = [](const std::string &msg) {
 //         auto err = Err{InvalidConfigValue, msg};
 //         return std::unexpected(err);

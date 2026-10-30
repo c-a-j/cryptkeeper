@@ -25,7 +25,7 @@ void missing_section_warning(std::string_view section) {
     console.warning(msg1, msg2);
 }
 
-void parse_fields(Ui &cfg, const toml::table &tbl, std::string_view section) {
+void parse_fields(UiCfg &cfg, const toml::table &tbl, std::string_view section) {
     std::string field = "insert_with_editor";
     if (auto val = tbl[field].value<bool>()) {
         cfg.insert_with_editor = *val;
@@ -35,7 +35,7 @@ void parse_fields(Ui &cfg, const toml::table &tbl, std::string_view section) {
 }
 
 void parse_fields(
-    PwGen &cfg,
+    PwgenCfg &cfg,
     const toml::table &tbl,
     std::string_view section
 ) {
@@ -75,7 +75,7 @@ void parse_fields(
     }
 }
 
-void parse_fields(Core &cfg, const toml::table &tbl, std::string_view section) {
+void parse_fields(CoreCfg &cfg, const toml::table &tbl, std::string_view section) {
     std::string field = "home";
     if (auto val = tbl[field].value<std::string>()) {
         cfg.home = *val;
@@ -98,10 +98,10 @@ void parse_fields(Core &cfg, const toml::table &tbl, std::string_view section) {
     }
 }
 
-void valid_or_default(PwGen &pwgen) {
+void valid_or_default(PwgenCfg &pwgen) {
     if (auto result = validate_pwgen(pwgen); !result) {
         console.error(result.error().msg1(), result.error().msg2());
-        PwGen def;
+        PwgenCfg def;
         pwgen = def;
     }
 }

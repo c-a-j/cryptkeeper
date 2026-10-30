@@ -3,7 +3,7 @@
 #include "lib/config/pwgen.hpp"
 
 namespace ck::crypto {
-PwSpec pwgen_spec(const ck::config::PwGen &pwgen) {
+PwSpec pwgen_spec(const ck::config::PwgenCfg &pwgen) {
     PwSpec spec = {
         .length = static_cast<std::size_t>(pwgen.length),
         .symbols = static_cast<std::size_t>(pwgen.symbols),

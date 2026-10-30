@@ -144,7 +144,7 @@ void shuffle_bytes(SecureBytes &out) {
     }
 }
 
-SecureBytes pwgen(const ck::config::PwGen &cfg) {
+SecureBytes pwgen(const ck::config::PwgenCfg &cfg) {
     PwSpec spec = pwgen_spec(cfg);
     std::size_t length, nlow, nupp, nnum, nsym, nrest;
     static constexpr std::string_view uppset = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
