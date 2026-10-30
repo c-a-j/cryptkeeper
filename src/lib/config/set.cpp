@@ -66,7 +66,7 @@ bool set_field(Core &cfg, std::string_view field, std::string_view value) {
     return false;
 }
 
-bool set_field(Pwgen &cfg, const std::string &field, const std::string &value) {
+bool set_field(PwGen &cfg, const std::string &field, const std::string &value) {
     const std::string section = "pwgen";
     if (field == "length") {
         cfg.length = parse_int(section, field, value);
@@ -124,7 +124,7 @@ void Config::set(std::vector<std::string> args) {
     }
 
     // if pwgen setup isn't valid, throw
-    if (auto result = state.valid_pwgen(); !result) {
+    if (auto result = validate_pwgen(state.pwgen); !result) {
         throw result.error();
     }
 

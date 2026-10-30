@@ -22,10 +22,10 @@ Ui &Config::ui() {
     return state_.ui;
 }
 
-const Pwgen &Config::pwgen() const {
+const PwGen &Config::pwgen() const {
     return state_.pwgen;
 }
-Pwgen &Config::pwgen() {
+PwGen &Config::pwgen() {
     return state_.pwgen;
 }
 

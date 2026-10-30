@@ -323,16 +323,16 @@ TEST(CryptoUtilityTest, UuidV4ProducesCanonicalUniqueValues) {
     EXPECT_EQ(uuids.size(), 64U);
 }
 
-TEST(CryptoUtilityTest, PwgenDefaultsToAllowedCharactersAndLength20) {
-    ck::crypto::PwSpec spec = ck::config::Pwgen{}.spec();
+TEST(CryptoUtilityTest, PwGenDefaultsToAllowedCharactersAndLength20) {
+    ck::crypto::PwSpec spec = ck::config::PwGen{}.spec();
     const SecureBytes password = ck::crypto::pwgen(spec);
 
     EXPECT_EQ(password.size(), 20U);
     EXPECT_TRUE(contains_only_charset(password, kPasswordChars));
 }
 
-TEST(CryptoUtilityTest, PwgenHonorsRequestedCharacterCounts) {
-    ck::config::Pwgen pwgen{
+TEST(CryptoUtilityTest, PwGenHonorsRequestedCharacterCounts) {
+    ck::config::PwGen pwgen{
         .length = 14,
         .symbols = 5,
         .numbers = 4,
@@ -348,8 +348,8 @@ TEST(CryptoUtilityTest, PwgenHonorsRequestedCharacterCounts) {
     EXPECT_EQ(count_chars_in_charset(password, kSymbols), 5U);
 }
 
-TEST(CryptoUtilityTest, PwgenRejectsZeroLength) {
-    ck::config::Pwgen pwgen{
+TEST(CryptoUtilityTest, PwGenRejectsZeroLength) {
+    ck::config::PwGen pwgen{
         .length = 0,
         .symbols = 0,
         .numbers = 0,
@@ -365,8 +365,8 @@ TEST(CryptoUtilityTest, PwgenRejectsZeroLength) {
     );
 }
 
-TEST(CryptoUtilityTest, PwgenRejectsCountsLargerThanLength) {
-    ck::config::Pwgen pwgen{
+TEST(CryptoUtilityTest, PwGenRejectsCountsLargerThanLength) {
+    ck::config::PwGen pwgen{
         .length = 4,
         .symbols = 2,
         .numbers = 2,

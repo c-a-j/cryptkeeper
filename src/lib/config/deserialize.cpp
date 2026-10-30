@@ -35,7 +35,7 @@ void parse_fields(Ui &cfg, const toml::table &tbl, std::string_view section) {
 }
 
 void parse_fields(
-    Pwgen &cfg,
+    PwGen &cfg,
     const toml::table &tbl,
     std::string_view section
 ) {
@@ -98,10 +98,10 @@ void parse_fields(Core &cfg, const toml::table &tbl, std::string_view section) {
     }
 }
 
-void valid_or_default(Pwgen &pwgen) {
-    if (auto result = pwgen.valid(); !result) {
+void valid_or_default(PwGen &pwgen) {
+    if (auto result = validate_pwgen(pwgen); !result) {
         console.error(result.error().msg1(), result.error().msg2());
-        Pwgen def;
+        PwGen def;
         pwgen = def;
     }
 }

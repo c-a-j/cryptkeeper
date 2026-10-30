@@ -49,7 +49,7 @@ void print_section(const Ui &cfg) {
     print_ln(section, "insert_with_editor", cfg.insert_with_editor);
 }
 
-void print_section(const Pwgen &cfg) {
+void print_section(const PwGen &cfg) {
     std::string section = "pwgen";
     print_ln(section, "length", cfg.length);
     print_ln(section, "symbols", cfg.symbols);
@@ -80,7 +80,7 @@ bool print_field(const Ui &cfg, std::string_view key) {
     return true;
 }
 
-bool print_field(const Pwgen &cfg, std::string_view key) {
+bool print_field(const PwGen &cfg, std::string_view key) {
     if (key == "length") {
         print_ln("pwgen", key, cfg.length);
     } else if (key == "numbers") {

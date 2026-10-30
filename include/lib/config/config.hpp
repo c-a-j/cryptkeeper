@@ -6,7 +6,7 @@
 #include <vector>
 
 #include "lib/config/error.hpp"
-#include "lib/crypto/types.hpp"
+#include "lib/config/pwgen.hpp"
 
 namespace ck::config {
 using Err = ck::error::Error<ck::error::ConfigErrc>;
@@ -21,23 +21,12 @@ struct Ui {
     bool insert_with_editor = false;
 };
 
-struct Pwgen {
-    int length = 20;
-    int symbols = 5;
-    int numbers = 5;
-    int uppercase = 5;
-    int lowercase = 5;
-
-    std::expected<void, Err> valid() const;
-    ck::crypto::PwSpec spec() const;
-};
+std::expected<void, Err> validate_pwgen(const PwGen &pwgen);
 
 struct State {
     Core core;
     Ui ui;
-    Pwgen pwgen;
-
-    std::expected<void, Err> valid_pwgen() const;
+    PwGen pwgen;
 };
 
 class Config {
@@ -52,8 +41,8 @@ class Config {
     const Ui &ui() const;
     Ui &ui();
 
-    const Pwgen &pwgen() const;
-    Pwgen &pwgen();
+    const PwGen &pwgen() const;
+    PwGen &pwgen();
 
     const std::string &home() const;
     std::string &home();

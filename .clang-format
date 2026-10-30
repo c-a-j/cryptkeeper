@@ -2,6 +2,7 @@ AlignAfterOpenBracket: false
 AllowAllParametersOfDeclarationOnNextLine: false
 AllowShortFunctionsOnASingleLine: None
 BasedOnStyle: LLVM
+BinPackArguments: False
 BinPackParameters: OnePerLine
 BreakAfterOpenBracketFunction: true
 BreakBeforeBraces: Attach

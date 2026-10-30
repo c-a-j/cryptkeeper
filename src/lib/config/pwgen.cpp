@@ -8,13 +8,38 @@ using ck::error::Error;
 using enum ck::error::ConfigErrc;
 using ck::ui::console::console;
 
-ck::crypto::PwSpec Pwgen::spec() const {
-    ck::crypto::PwSpec spec = {.length = static_cast<std::size_t>(this->length),
-        .symbols = static_cast<std::size_t>(this->symbols),
-        .numbers = static_cast<std::size_t>(this->numbers),
-        .uppercase = static_cast<std::size_t>(this->uppercase),
-        .lowercase = static_cast<std::size_t>(this->lowercase)};
+std::expected<void, Error<ConfigErrc>> validate_pwgen(const PwGen &pwgen) {
+    auto fail = [](const std::string &msg) {
+        auto err = Error<ConfigErrc>{InvalidConfigValue, msg};
+        return std::unexpected(err);
+    };
 
-    return spec;
+    if (pwgen.length < 1 || pwgen.length > 100) {
+        return fail("pwgen password length must be between 1 and 100");
+    }
+
+    if (pwgen.numbers < 0 || pwgen.numbers > 100) {
+        return fail("values must be between 0 and 100");
+    }
+
+    if (pwgen.symbols < 0 || pwgen.symbols > 100) {
+        return fail("values must be between 0 and 100");
+    }
+
+    if (pwgen.uppercase < 0 || pwgen.uppercase > 100) {
+        return fail("values must be between 0 and 100");
+    }
+
+    if (pwgen.lowercase < 0 || pwgen.lowercase > 100) {
+        return fail("values must be between 0 and 100");
+    }
+
+    int sum = pwgen.symbols + pwgen.numbers + pwgen.uppercase + pwgen.lowercase;
+
+    if (pwgen.length < sum) {
+        return fail("password length cannot be shorter than the sum of its parts");
+    }
+
+    return {};
 }
 } // namespace ck::config

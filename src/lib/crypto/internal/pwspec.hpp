@@ -1,5 +1,7 @@
 #pragma once
 
+#include "lib/config/pwgen.hpp"
+
 #include <cstddef>
 
 namespace ck::crypto {
@@ -10,4 +12,6 @@ struct PwSpec {
     std::size_t uppercase;
     std::size_t lowercase;
 };
-} // namespace ck::crypto
+
+PwSpec pwgen_spec(const ck::config::PwGen &pwgen);
+}

@@ -1,55 +1,48 @@
-#include <expected>
-
-#include "error.hpp"
-#include "lib/config/config.hpp"
-#include "ui/console/console.hpp"
-
-namespace ck::config {
-using ck::error::ConfigErrc;
-using ck::error::Error;
-using enum ck::error::ConfigErrc;
-using ck::ui::console::console;
-
-std::expected<void, Error<ConfigErrc>> State::valid_pwgen() const {
-    return this->pwgen.valid();
-}
-
-std::expected<void, Error<ConfigErrc>> Pwgen::valid() const {
-    auto fail = [](const std::string &msg) {
-        auto err = Error<ConfigErrc>{InvalidConfigValue, msg};
-        return std::unexpected(err);
-    };
-
-    if (length > 100) {
-        return fail("maximum pwgen password length is 100");
-    }
-
-    if (length < 1) {
-        return fail("minimum pwgen password length is 1");
-    }
-
-    if (numbers < 0) {
-        return fail("values must be >= 0");
-    }
-
-    if (symbols < 0) {
-        return fail("values must be >= 0");
-    }
-
-    if (uppercase < 0) {
-        return fail("values must be >= 0");
-    }
-
-    if (lowercase < 0) {
-        return fail("values must be >= 0");
-    }
-
-    int sum = symbols + numbers + uppercase + lowercase;
-
-    if (length < sum) {
-        return fail("password length must be longer than the sum of its parts");
-    }
-
-    return {};
-}
-} // namespace ck::config
+// #include <expected>
+//
+// #include "error.hpp"
+// #include "lib/config/config.hpp"
+// #include "ui/console/console.hpp"
+//
+// namespace ck::config {
+// using enum ck::error::ConfigErrc;
+// using ck::error::ConfigErrc;
+// using ck::error::Error;
+// using Err = ck::error::Error<ck::error::ConfigErrc>;
+// using ck::ui::console::console;
+//
+// std::expected<void, Err> validate_pwgen(const PwGen &pwgen) {
+//     auto fail = [](const std::string &msg) {
+//         auto err = Err{InvalidConfigValue, msg};
+//         return std::unexpected(err);
+//     };
+//
+//     if (pwgen.length < 1 || pwgen.length > 100) {
+//         return fail("pwgen password length must be between 1 and 100");
+//     }
+//
+//     if (pwgen.numbers < 0 || pwgen.numbers > 100) {
+//         return fail("values must be between 0 and 100");
+//     }
+//
+//     if (pwgen.symbols < 0 || pwgen.symbols > 100) {
+//         return fail("values must be between 0 and 100");
+//     }
+//
+//     if (pwgen.uppercase < 0 || pwgen.uppercase > 100) {
+//         return fail("values must be between 0 and 100");
+//     }
+//
+//     if (pwgen.lowercase < 0 || pwgen.lowercase > 100) {
+//         return fail("values must be between 0 and 100");
+//     }
+//
+//     int sum = pwgen.symbols + pwgen.numbers + pwgen.uppercase + pwgen.lowercase;
+//
+//     if (pwgen.length < sum) {
+//         return fail("password length cannot be shorter than the sum of its parts");
+//     }
+//
+//     return {};
+// }
+// } // namespace ck::config

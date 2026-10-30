@@ -1,5 +1,6 @@
 target_sources(ck_lib PRIVATE 
     crypto/crypto.cpp
+    crypto/pwspec.cpp
     crypto/random.cpp
     crypto/secure_wipe.cpp
     
@@ -11,7 +12,6 @@ target_sources(ck_lib PRIVATE
     config/pwgen.cpp
     config/serialize.cpp
     config/set.cpp
-    config/validate.cpp
     
     input/wisper.cpp
     

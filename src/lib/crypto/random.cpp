@@ -9,8 +9,9 @@
 #include "error.hpp"
 #include "lib/crypto/error.hpp"
 #include "lib/crypto/secure_bytes.hpp"
-#include "lib/crypto/types.hpp"
 #include "ui/console/console.hpp"
+#include "lib/config/pwgen.hpp"
+#include "./internal/pwspec.hpp"
 
 #ifdef __linux__
 #include <sys/random.h>
@@ -19,7 +20,6 @@
 #elifdef _WIN32
 #include <bcrypt.h>
 #endif
-
 namespace {
 using ck::error::CryptoErrc;
 using ck::error::Error;
@@ -144,7 +144,8 @@ void shuffle_bytes(SecureBytes &out) {
     }
 }
 
-SecureBytes pwgen(const PwSpec &spec) {
+SecureBytes pwgen(const ck::config::PwGen &cfg) {
+    PwSpec spec = pwgen_spec(cfg);
     std::size_t length, nlow, nupp, nnum, nsym, nrest;
     static constexpr std::string_view uppset = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     static constexpr std::string_view lowset = "abcdefghijklmnopqrstuvwxyz";
