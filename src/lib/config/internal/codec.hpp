@@ -7,6 +7,6 @@
 #include "lib/config/config.hpp"
 
 namespace ck::config::codec {
-State deserialize(std::string_view);
-toml::table serialize(const State &);
+Config deserialize(std::string_view);
+toml::table serialize(const Config &);
 } // namespace ck::config::codec

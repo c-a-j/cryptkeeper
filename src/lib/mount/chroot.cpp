@@ -24,7 +24,7 @@ void Mounts::chroot(const std::string &path) {
     // if alias is single path element, it is assumed to refer to a crypt in
     // cfg.home
     if (alias_parts.size() == 1) {
-        crypt_path = fs::path(cfg.home()) / fs::path(path);
+        crypt_path = fs::path(ck::config::home_dir(cfg)) / fs::path(path);
     } else {
         crypt_path = fs::path(path);
     }

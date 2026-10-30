@@ -3,33 +3,33 @@
 #include "lib/config/config.hpp"
 
 namespace ck::config::codec {
-toml::table serialize(const State &state) {
+toml::table serialize(const Config &cfg) {
     toml::table tbl;
 
     tbl.insert(
         "core",
         toml::table{
-            {"home", state.core.home},
-            {"autopush", state.core.autopush},
-            {"autosync", state.core.autosync},
+            {"home", cfg.core.home},
+            {"autopush", cfg.core.autopush},
+            {"autosync", cfg.core.autosync},
         }
     );
 
     tbl.insert(
         "ui",
         toml::table{
-            {"insert_with_editor", state.ui.insert_with_editor},
+            {"insert_with_editor", cfg.ui.insert_with_editor},
         }
     );
 
     tbl.insert(
         "pwgen",
         toml::table{
-            {"length", state.pwgen.length},
-            {"symbols", state.pwgen.symbols},
-            {"numbers", state.pwgen.numbers},
-            {"uppercase", state.pwgen.uppercase},
-            {"lowercase", state.pwgen.lowercase},
+            {"length", cfg.pwgen.length},
+            {"symbols", cfg.pwgen.symbols},
+            {"numbers", cfg.pwgen.numbers},
+            {"uppercase", cfg.pwgen.uppercase},
+            {"lowercase", cfg.pwgen.lowercase},
         }
     );
 

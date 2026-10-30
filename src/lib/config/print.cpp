@@ -105,13 +105,13 @@ using enum ck::error::ConfigErrc;
 using ck::ui::console::console;
 
 
-void print_state(const State &state) {
-    print_section(state.core);
-    print_section(state.ui);
-    print_section(state.pwgen);
+void print_cfg(const Config &cfg) {
+    print_section(cfg.core);
+    print_section(cfg.ui);
+    print_section(cfg.pwgen);
 }
 
-void print_state(const State &state, std::string_view key) {
+void print_cfg(const Config &cfg, std::string_view key) {
     std::vector<std::string> key_parts = parse_key(key);
     bool found = false;
 
@@ -119,13 +119,13 @@ void print_state(const State &state, std::string_view key) {
         const std::string &section = key_parts[0];
 
         if (section == "core") {
-            print_section(state.core);
+            print_section(cfg.core);
             found = true;
         } else if (section == "ui") {
-            print_section(state.ui);
+            print_section(cfg.ui);
             found = true;
         } else if (section == "pwgen") {
-            print_section(state.pwgen);
+            print_section(cfg.pwgen);
             found = true;
         }
     }
@@ -135,11 +135,11 @@ void print_state(const State &state, std::string_view key) {
         const std::string &field = key_parts[1];
 
         if (section == "core") {
-            found = print_field(state.core, field);
+            found = print_field(cfg.core, field);
         } else if (section == "ui") {
-            found = print_field(state.ui, field);
+            found = print_field(cfg.ui, field);
         } else if (section == "pwgen") {
-            found = print_field(state.pwgen, field);
+            found = print_field(cfg.pwgen, field);
         }
     }
 
@@ -148,11 +148,4 @@ void print_state(const State &state, std::string_view key) {
     }
 }
 
-void Config::print() const {
-    print_state(state_);
-}
-
-void Config::print(std::string_view key) const {
-    print_state(state_, key);
-}
 } // namespace ck::config

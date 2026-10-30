@@ -65,7 +65,7 @@ void Index::insert(const std::string &path, const bool pwgen) {
     };
 
     const SecureBytes secret = pwgen
-        ? ck::crypto::pwgen(cfg.pwgen())
+        ? ck::crypto::pwgen(cfg.pwgen)
         : wisper();
 
     fs::path secret_file = this->path_ / fs::path(flat.uuid);

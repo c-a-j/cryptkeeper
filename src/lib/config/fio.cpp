@@ -19,10 +19,10 @@ using ck::error::Error;
 using enum ck::error::ConfigErrc;
 using ck::ui::console::console;
 
-void load_state(State &state) {
+void load_cfg(Config &cfg) {
     std::filesystem::path cfg_file = ck::path::config_file();
     if (!ck::path::file_exists(cfg_file)) {
-        state.core.home = ck::path::crypt_root();
+        cfg.core.home = ck::path::crypt_root();
         return;
     }
 
@@ -31,14 +31,14 @@ void load_state(State &state) {
         (std::istreambuf_iterator<char>(in)), std::istreambuf_iterator<char>()
     );
 
-    State tmp = codec::deserialize(text);
-    state = tmp;
+    Config cfg_tmp = codec::deserialize(text);
+    cfg = cfg_tmp;
 }
 
-void save_state(const State &state) {
+void save_cfg(const Config &cfg) {
     ck::path::create_config_dir();
 
-    toml::table tbl = codec::serialize(state);
+    toml::table tbl = codec::serialize(cfg);
     std::filesystem::path cfg_file = ck::path::config_file();
 
     std::error_code ec;
@@ -58,14 +58,6 @@ void save_state(const State &state) {
     } else {
         console.info("Updated config file", cfg_file.string());
     }
-    print_state(state);
-}
-
-void Config::save() {
-    save_state(state_);
-}
-
-void Config::load() {
-    load_state(state_);
+    print_cfg(cfg);
 }
 } // namespace ck::config

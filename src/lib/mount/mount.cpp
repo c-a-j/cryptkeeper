@@ -35,7 +35,7 @@ void Mounts::mount(const std::string &path, const std::string &alias) {
     std::vector<std::string> alias_parts = ck::path::parse_path(path);
     fs::path crypt_path;
     if (alias_parts.size() == 1) {
-        crypt_path = fs::path(cfg.home()) / fs::path(path);
+        crypt_path = fs::path(ck::config::home_dir(cfg)) / fs::path(path);
     } else {
         crypt_path = fs::path(path);
     }
@@ -77,7 +77,7 @@ void Mounts::mount(const std::string &alias) {
             InvalidArguments, "a path must be specified for this alias"};
     }
 
-    fs::path crypt_path = fs::path(cfg.home()) / fs::path(alias);
+    fs::path crypt_path = fs::path(ck::config::home_dir(cfg)) / fs::path(alias);
     if (initialized(crypt_path)) {
         this->mount(alias, crypt_path);
         return;

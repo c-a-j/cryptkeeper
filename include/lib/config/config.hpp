@@ -34,9 +34,9 @@ void print_cfg(const Config &cfg, std::string_view key);
 void set_cfg(Config &cfg, const std::vector<std::string>& args);
 void save_cfg(const Config &cfg);
 void load_cfg(Config &cfg);
+
 const std::string &home_dir(const Config &cfg);
 std::string &home_dir(Config &cfg);
-
 
 extern Config cfg;
 } // namespace ck::config

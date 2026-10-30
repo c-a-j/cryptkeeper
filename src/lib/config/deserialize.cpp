@@ -113,7 +113,7 @@ using ck::error::Error;
 using enum ck::error::ConfigErrc;
 using ck::ui::console::console;
 
-State deserialize(std::string_view toml_text) {
+Config deserialize(std::string_view toml_text) {
     toml::table cfg_toml;
     try {
         cfg_toml = toml::parse(toml_text);
@@ -122,30 +122,30 @@ State deserialize(std::string_view toml_text) {
             InvalidConfigFile, std::string(e.description())};
     }
 
-    State state;
+    Config cfg_tmp;
 
     std::string section = "core";
     if (auto *tbl = cfg_toml[section].as_table()) {
-        parse_fields(state.core, *tbl, section);
+        parse_fields(cfg_tmp.core, *tbl, section);
     } else {
         missing_section_warning(section);
     }
 
     section = "ui";
     if (auto *tbl = cfg_toml[section].as_table()) {
-        parse_fields(state.ui, *tbl, section);
+        parse_fields(cfg_tmp.ui, *tbl, section);
     } else {
         missing_section_warning(section);
     }
 
     section = "pwgen";
     if (auto *tbl = cfg_toml[section].as_table()) {
-        parse_fields(state.pwgen, *tbl, section);
+        parse_fields(cfg_tmp.pwgen, *tbl, section);
     } else {
         missing_section_warning(section);
     }
-    valid_or_default(state.pwgen);
+    valid_or_default(cfg_tmp.pwgen);
 
-    return state;
+    return cfg_tmp;
 }
 } // namespace ck::config::codec
