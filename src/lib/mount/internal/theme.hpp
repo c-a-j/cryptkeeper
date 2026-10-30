@@ -1,7 +1,8 @@
 #pragma once
 
-#include "ui/term.hpp"
 #include <string>
+
+#include "ui/term.hpp"
 
 namespace ck::mount {
 enum class OutputComponent {

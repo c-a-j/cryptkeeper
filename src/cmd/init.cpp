@@ -3,6 +3,8 @@
 #include <string>
 
 #include "cli/error.hpp"
+
+#include "./internal/handlers.hpp"
 #include "error.hpp"
 #include "global.hpp"
 #include "lib/config/config.hpp"
@@ -12,8 +14,6 @@
 #include "lib/mount/mount.hpp"
 #include "lib/path/existence.hpp"
 #include "ui/console/console.hpp"
-
-#include "./internal/handlers.hpp"
 
 namespace ck::cmd {
 namespace fs = std::filesystem;

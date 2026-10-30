@@ -1,5 +1,3 @@
-#include <gtest/gtest.h>
-
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -10,16 +8,17 @@
 #include <utility>
 #include <vector>
 
+#include <gtest/gtest.h>
+
 // include directory includes
 #include "lib/config/types.hpp"
 #include "util/error.hpp"
 #include "util/logger/logger.hpp"
 
 // src directory includes
+#include "../util/scoped_config_dir.hpp"
 #include "lib/path/existence.hpp"
 #include "lib/path/path.hpp"
-
-#include "../util/scoped_config_dir.hpp"
 
 namespace {
 namespace fs = std::filesystem;
@@ -47,7 +46,8 @@ class StdoutCapture {
     std::streambuf *old_;
 };
 
-template <typename Fn> std::string capture_stdout(Fn &&fn) {
+template <typename Fn>
+std::string capture_stdout(Fn &&fn) {
     StdoutCapture capture;
     std::forward<Fn>(fn)();
     return capture.str();
@@ -524,10 +524,10 @@ TEST_F(ConfigTest, PrintSectionOutputsOnlySection) {
     const std::string output = capture_stdout([&] { cfg.print("pwgen"); });
 
     const std::string expected = format_line("pwgen", "length", 24) +
-                                 format_line("pwgen", "symbols", 4) +
-                                 format_line("pwgen", "numbers", 5) +
-                                 format_line("pwgen", "uppercase", 6) +
-                                 format_line("pwgen", "lowercase", 9);
+        format_line("pwgen", "symbols", 4) +
+        format_line("pwgen", "numbers", 5) +
+        format_line("pwgen", "uppercase", 6) +
+        format_line("pwgen", "lowercase", 9);
 
     EXPECT_EQ(output, expected);
 }

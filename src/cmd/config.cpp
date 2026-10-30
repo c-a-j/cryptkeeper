@@ -1,8 +1,9 @@
+#include "lib/config/config.hpp"
+
+#include "cli/types.hpp"
 #include <CLI/CLI.hpp>
 
 #include "./internal/handlers.hpp"
-#include "cli/types.hpp"
-#include "lib/config/config.hpp"
 
 namespace ck::cmd {
 using ck::config::cfg;

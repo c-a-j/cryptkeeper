@@ -16,7 +16,8 @@ enum class MountErrc {
     SecretAlongAlias,
     ChrootConflict,
 };
-template <> inline std::string_view Error<MountErrc>::label(MountErrc c) {
+template <>
+inline std::string_view Error<MountErrc>::label(MountErrc c) {
     switch (c) {
     case MountErrc::MountFileNotFound:
         return "Mount file not found";

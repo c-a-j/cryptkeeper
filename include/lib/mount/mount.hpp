@@ -7,9 +7,11 @@
 
 namespace ck::mount {
 namespace fs = std::filesystem;
-template <typename Owner, typename Member> using MemberPtr = Member Owner::*;
+template <typename Owner, typename Member>
+using MemberPtr = Member Owner::*;
 
-template <typename T> struct Field {
+template <typename T>
+struct Field {
     std::string_view key;
     T member;
 };

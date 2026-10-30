@@ -1,5 +1,6 @@
-#include "toml++/toml.hpp"
 #include <optional>
+
+#include "toml++/toml.hpp"
 
 #include "lib/mount/error.hpp"
 #include "lib/mount/mount.hpp"
@@ -17,8 +18,8 @@ Mount parse_root(const toml::table &tbl, const std::string &file_path) {
         std::optional<std::string> value = tbl[field.key].value<std::string>();
         if (!value) {
             std::string msg = std::string(file_path) + " -> " +
-                              std::string(field.key) +
-                              std::string(" contains a non-string element");
+                std::string(field.key) +
+                std::string(" contains a non-string element");
             throw Error<MountErrc>{InvalidMountFile, msg};
         }
         m.*(field.member) = *value;
@@ -26,7 +27,7 @@ Mount parse_root(const toml::table &tbl, const std::string &file_path) {
 
     if (m.path.empty()) {
         std::string msg = std::string(file_path) +
-                          std::string(" has a root mount with no path");
+            std::string(" has a root mount with no path");
         throw Error<MountErrc>{InvalidMountFile, msg};
     }
 
@@ -53,8 +54,8 @@ parse_mounts(const toml::array &arr, const std::string &file_path) {
                 (*tbl)[field.key].value<std::string>();
             if (!value) {
                 std::string msg = std::string(file_path) + " -> " +
-                                  std::string(field.key) +
-                                  std::string(" contains a non-string element");
+                    std::string(field.key) +
+                    std::string(" contains a non-string element");
                 throw Error<MountErrc>{InvalidMountFile, msg};
             }
             m.*(field.member) = *value;
@@ -63,14 +64,14 @@ parse_mounts(const toml::array &arr, const std::string &file_path) {
         std::optional<std::string> alias = (*tbl)["alias"].value<std::string>();
         if (!alias) {
             std::string msg = std::string(file_path) + " -> " +
-                              std::string(file_path) +
-                              std::string(" contains a mount with no alias");
+                std::string(file_path) +
+                std::string(" contains a mount with no alias");
             throw Error<MountErrc>{NoAlias, msg};
         }
 
         if (m.path.empty()) {
             std::string msg = std::string(file_path) +
-                              std::string(" has a mount with no path");
+                std::string(" has a mount with no path");
             throw Error<MountErrc>{InvalidMountFile, msg};
         }
 

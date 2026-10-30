@@ -1,11 +1,10 @@
 #include "toml++/toml.hpp"
 
-#include "lib/index/error.hpp"
-#include "lib/index/index.hpp"
-
 #include "../path/internal/get_idx_file.hpp"
 #include "./internal/types.hpp"
 #include "./internal/vars.hpp"
+#include "lib/index/error.hpp"
+#include "lib/index/index.hpp"
 
 namespace {
 using ck::error::Error;

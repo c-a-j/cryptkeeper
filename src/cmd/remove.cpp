@@ -1,4 +1,5 @@
 #include "cli/types.hpp"
+
 #include "ui/console/console.hpp"
 
 namespace ck::cmd {

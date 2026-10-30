@@ -1,6 +1,8 @@
 #include <algorithm>
 #include <iostream>
 
+#include "../path/internal/join.hpp"
+#include "./internal/theme.hpp"
 #include "global.hpp"
 #include "lib/crypto/crypto.hpp"
 #include "lib/index/error.hpp"
@@ -8,9 +10,6 @@
 #include "lib/path/parse_path.hpp"
 #include "ui/console/console.hpp"
 #include "ui/term.hpp"
-
-#include "../path/internal/join.hpp"
-#include "./internal/theme.hpp"
 
 namespace {
 using ck::error::Error;

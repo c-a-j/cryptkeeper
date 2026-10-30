@@ -1,10 +1,10 @@
 #include "lib/index/index.hpp"
-#include "global.hpp"
-#include "lib/crypto/crypto.hpp"
-#include "lib/index/error.hpp"
 
 #include "../path/internal/get_idx_file.hpp"
 #include "./internal/codec.hpp"
+#include "global.hpp"
+#include "lib/crypto/crypto.hpp"
+#include "lib/index/error.hpp"
 
 namespace {}
 

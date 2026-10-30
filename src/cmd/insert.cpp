@@ -1,5 +1,6 @@
-#include "./internal/handlers.hpp"
 #include "cli/types.hpp"
+
+#include "./internal/handlers.hpp"
 #include "lib/index/index.hpp"
 #include "lib/mount/mount.hpp"
 #include "ui/console/console.hpp"

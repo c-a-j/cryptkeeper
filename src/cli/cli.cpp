@@ -1,11 +1,12 @@
 #include "cli/cli.hpp"
-#include <CLI/CLI.hpp>
+
 #include <string>
 
 #include "cli/types.hpp"
-#include "ui/console/console.hpp"
+#include <CLI/CLI.hpp>
 
 #include "global.hpp"
+#include "ui/console/console.hpp"
 
 namespace ck::cli {
 using ck::ui::console::console;

@@ -4,9 +4,15 @@
 #include "ui/term.hpp"
 
 namespace ck::ui::console {
-enum class Stream { Out, Err, Default };
+enum class Stream { Out,
+    Err,
+    Default };
 
-enum class Level { Info, Success, Warning, Error, Debug };
+enum class Level { Info,
+    Success,
+    Warning,
+    Error,
+    Debug };
 
 struct Overrides {
     std::optional<ck::ui::term::TextStyle> style;

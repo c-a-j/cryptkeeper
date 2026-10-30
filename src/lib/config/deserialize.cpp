@@ -13,7 +13,7 @@ using ck::ui::console::console;
 
 void parse_default_warning(std::string_view section, std::string_view field) {
     std::string msg1 = "Parameter [" + std::string(section) + "." +
-                       std::string(field) + "] contains an invalid data type";
+        std::string(field) + "] contains an invalid data type";
     std::string msg2 = "default will be applied";
     console.warning(msg1, msg2);
 }

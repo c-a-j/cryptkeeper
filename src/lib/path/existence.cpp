@@ -5,8 +5,7 @@
 
 namespace {
 bool missing_path(const std::error_code &ec) {
-    return ec == std::errc::no_such_file_or_directory ||
-           ec == std::errc::not_a_directory;
+    return ec == std::errc::no_such_file_or_directory || ec == std::errc::not_a_directory;
 }
 } // namespace
 

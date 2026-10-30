@@ -1,13 +1,13 @@
 #include <filesystem>
-#include <toml++/toml.hpp>
 
-#include "lib/index/error.hpp"
-#include "lib/index/index.hpp"
-#include "ui/console/console.hpp"
+#include <toml++/toml.hpp>
 
 #include "./internal/tree.hpp"
 #include "./internal/types.hpp"
 #include "./internal/vars.hpp"
+#include "lib/index/error.hpp"
+#include "lib/index/index.hpp"
+#include "ui/console/console.hpp"
 
 namespace {
 using namespace ck::index;

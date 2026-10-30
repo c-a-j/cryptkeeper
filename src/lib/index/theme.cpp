@@ -1,6 +1,6 @@
-#include "ui/term.hpp"
-
 #include "./internal/theme.hpp"
+
+#include "ui/term.hpp"
 
 namespace ck::index {
 using namespace ck::ui::term;

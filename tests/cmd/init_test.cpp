@@ -1,12 +1,11 @@
-#include <gtest/gtest.h>
-
 #include "cli/types.hpp"
-#include "cmd/_internal.hpp"
-#include "lib/crypto/crypto.hpp"
+#include <gtest/gtest.h>
 
 #include "../util/gen_key.hpp"
 #include "../util/scoped_config_dir.hpp"
 #include "../util/scoped_crypt_root.hpp"
+#include "cmd/_internal.hpp"
+#include "lib/crypto/crypto.hpp"
 
 using namespace ck;
 using namespace ck::tests::util;

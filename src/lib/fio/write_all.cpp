@@ -1,6 +1,7 @@
+#include <unistd.h>
+
 #include <cerrno>
 #include <cstring>
-#include <unistd.h>
 
 #include "lib/fio/error.hpp"
 

@@ -19,7 +19,9 @@ enum class InitErrc {
     NoPathToIndex,
     WriteIndexFailed
 };
-template <> inline std::string_view Error<InitErrc>::label(InitErrc c) {
+
+template <>
+inline std::string_view Error<InitErrc>::label(InitErrc c) {
     switch (c) {
     case InitErrc::KeyNotFound:
         return "Public key not found";

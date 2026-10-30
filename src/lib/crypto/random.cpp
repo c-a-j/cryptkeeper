@@ -6,12 +6,12 @@
 #include <ranges>
 #include <string>
 
+#include "./internal/pwspec.hpp"
 #include "error.hpp"
+#include "lib/config/pwgen.hpp"
 #include "lib/crypto/error.hpp"
 #include "lib/crypto/secure_bytes.hpp"
 #include "ui/console/console.hpp"
-#include "lib/config/pwgen.hpp"
-#include "./internal/pwspec.hpp"
 
 #ifdef __linux__
 #include <sys/random.h>

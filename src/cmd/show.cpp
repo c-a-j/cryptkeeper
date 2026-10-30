@@ -1,6 +1,7 @@
 #include <deque>
 
 #include "cli/types.hpp"
+
 #include "lib/index/index.hpp"
 #include "lib/mount/mount.hpp"
 #include "lib/path/parse_path.hpp"

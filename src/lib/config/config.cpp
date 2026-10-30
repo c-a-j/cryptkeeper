@@ -1,7 +1,7 @@
 #include "lib/config/config.hpp"
-#include "error.hpp"
 
 #include "../path/internal/path.hpp"
+#include "error.hpp"
 
 namespace ck::config {
 using ck::error::ConfigErrc;

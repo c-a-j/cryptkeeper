@@ -1,5 +1,6 @@
-#include "toml++/toml.hpp"
 #include <string_view>
+
+#include "toml++/toml.hpp"
 
 #include "lib/index/index.hpp"
 

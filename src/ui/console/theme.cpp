@@ -1,4 +1,5 @@
 #include "ui/console/theme.hpp"
+
 #include "ui/term.hpp"
 
 namespace ck::ui::console {

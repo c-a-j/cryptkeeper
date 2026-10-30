@@ -1,6 +1,6 @@
-#include "global.hpp"
 #include <filesystem>
 
+#include "global.hpp"
 #include "lib/path/existence.hpp"
 
 namespace ck::mount {

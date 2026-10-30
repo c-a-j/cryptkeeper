@@ -1,11 +1,14 @@
-#include <cstdlib>
-#include <filesystem>
-#include <gpgme.h>
-#include <gtest/gtest.h>
-#include <stdexcept>
+#include "gen_key.hpp"
+
 #include <sys/stat.h>
 
-#include "gen_key.hpp"
+#include <cstdlib>
+#include <filesystem>
+#include <stdexcept>
+
+#include <gpgme.h>
+#include <gtest/gtest.h>
+
 #include "lib/crypto/crypto.hpp"
 #include "util/error.hpp"
 

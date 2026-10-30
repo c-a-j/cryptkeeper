@@ -19,7 +19,8 @@ enum class IndexErrc {
     CorruptedIndex
 };
 
-template <> inline std::string_view Error<IndexErrc>::label(IndexErrc c) {
+template <>
+inline std::string_view Error<IndexErrc>::label(IndexErrc c) {
     switch (c) {
     case IndexErrc::CryptUnspecified:
         return "Crypt unspecified";

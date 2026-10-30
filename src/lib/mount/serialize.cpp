@@ -1,5 +1,6 @@
-#include "toml++/toml.hpp"
 #include <optional>
+
+#include "toml++/toml.hpp"
 
 #include "lib/mount/error.hpp"
 #include "lib/mount/mount.hpp"

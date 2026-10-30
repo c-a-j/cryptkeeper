@@ -1,7 +1,8 @@
+#include "ui/console/console.hpp"
+
 #include <iostream>
 
 #include "global.hpp"
-#include "ui/console/console.hpp"
 #include "ui/console/theme.hpp"
 #include "ui/term.hpp"
 

@@ -22,7 +22,8 @@ enum class CryptoErrc {
     FailedToReadFile,
     FailedToOpenFile,
 };
-template <> inline std::string_view Error<CryptoErrc>::label(CryptoErrc c) {
+template <>
+inline std::string_view Error<CryptoErrc>::label(CryptoErrc c) {
     switch (c) {
     case CryptoErrc::FillRandomBytesFailed:
         return "Fill random bytes failure";

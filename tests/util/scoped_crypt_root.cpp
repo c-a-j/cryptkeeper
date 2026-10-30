@@ -1,10 +1,12 @@
+#include "scoped_crypt_root.hpp"
+
 #include <filesystem>
-#include <gpgme.h>
-#include <gtest/gtest.h>
 #include <stdexcept>
 
+#include <gpgme.h>
+#include <gtest/gtest.h>
+
 #include "global.hpp"
-#include "scoped_crypt_root.hpp"
 
 namespace ck::tests::util {
 namespace fs = std::filesystem;

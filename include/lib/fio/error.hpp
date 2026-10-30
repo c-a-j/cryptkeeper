@@ -15,7 +15,8 @@ enum class FsErrc {
     SyncDirectoryFailed,
     WriteFailed,
 };
-template <> inline std::string_view Error<FsErrc>::label(FsErrc c) {
+template <>
+inline std::string_view Error<FsErrc>::label(FsErrc c) {
     switch (c) {
     case FsErrc::CloseFailed:
         return "Failed to close file";

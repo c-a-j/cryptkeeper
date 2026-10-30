@@ -1,7 +1,8 @@
 #pragma once
 #include <filesystem>
-#include <gpgme.h>
 #include <string>
+
+#include <gpgme.h>
 
 #include "lib/crypto/secure_bytes.hpp"
 

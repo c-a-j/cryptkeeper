@@ -8,4 +8,4 @@ struct PwGen {
     int uppercase = 5;
     int lowercase = 5;
 };
-}
+} // namespace ck::config

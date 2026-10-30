@@ -1,11 +1,12 @@
 #ifdef _WIN32
 
+#include <windows.h>
+
 #include <filesystem>
 #include <limits>
 #include <string>
 #include <utility>
 #include <vector>
-#include <windows.h>
 
 #include "./internal/msg.hpp"
 #include "./internal/tempfile.hpp"
@@ -56,9 +57,9 @@ int TempFile::write(std::span<const std::byte> bytes) const noexcept {
     while (remaining > 0) {
         DWORD chunk =
             remaining >
-                    static_cast<std::size_t>(std::numeric_limits<DWORD>::max())
-                ? std::numeric_limits<DWORD>::max()
-                : static_cast<DWORD>(remaining);
+                static_cast<std::size_t>(std::numeric_limits<DWORD>::max())
+            ? std::numeric_limits<DWORD>::max()
+            : static_cast<DWORD>(remaining);
         DWORD written = 0;
         if (!::WriteFile(handle, data, chunk, &written, nullptr)) {
             return last_error();

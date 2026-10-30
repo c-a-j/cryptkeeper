@@ -15,7 +15,8 @@ enum class PathErrc {
     CryptUnspecified,
 };
 
-template <> inline std::string_view Error<PathErrc>::label(PathErrc c) {
+template <>
+inline std::string_view Error<PathErrc>::label(PathErrc c) {
     switch (c) {
     case PathErrc::CreateDirectoryFailed:
         return "Failed to create config directory";

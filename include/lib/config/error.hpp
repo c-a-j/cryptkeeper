@@ -16,7 +16,8 @@ enum class ConfigErrc {
     InvalidConfigValue,
     IoError,
 };
-template <> inline std::string_view Error<ConfigErrc>::label(ConfigErrc c) {
+template <>
+inline std::string_view Error<ConfigErrc>::label(ConfigErrc c) {
     switch (c) {
     case ConfigErrc::CreateDirectoryFailed:
         return "Failed to create crypt";

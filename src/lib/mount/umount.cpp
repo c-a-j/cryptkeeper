@@ -1,11 +1,10 @@
 #include <filesystem>
 
+#include "../path/internal/path.hpp"
 #include "lib/mount/error.hpp"
 #include "lib/mount/mount.hpp"
 #include "lib/path/existence.hpp"
 #include "ui/console/console.hpp"
-
-#include "../path/internal/path.hpp"
 
 namespace ck::mount {
 using ck::error::Error;

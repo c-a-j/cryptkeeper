@@ -17,7 +17,11 @@ enum class Color {
     Reset
 };
 
-enum class Style { Normal, Bold, Faint, Italic, Underline };
+enum class Style { Normal,
+    Bold,
+    Faint,
+    Italic,
+    Underline };
 
 struct TextStyle {
     Color color = Color::Default;

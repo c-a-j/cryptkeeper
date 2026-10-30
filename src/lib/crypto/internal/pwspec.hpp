@@ -1,8 +1,8 @@
 #pragma once
 
-#include "lib/config/pwgen.hpp"
-
 #include <cstddef>
+
+#include "lib/config/pwgen.hpp"
 
 namespace ck::crypto {
 struct PwSpec {
@@ -14,4 +14,4 @@ struct PwSpec {
 };
 
 PwSpec pwgen_spec(const ck::config::PwGen &pwgen);
-}
+} // namespace ck::crypto

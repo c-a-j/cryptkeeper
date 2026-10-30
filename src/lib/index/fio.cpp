@@ -1,7 +1,12 @@
-#include "toml++/toml.hpp"
 #include <filesystem>
 #include <sstream>
 
+#include "toml++/toml.hpp"
+
+#include "../path/internal/get_idx_file.hpp"
+#include "./internal/codec.hpp"
+#include "./internal/fingerprints.hpp"
+#include "./internal/types.hpp"
 #include "global.hpp"
 #include "lib/crypto/crypto.hpp"
 #include "lib/crypto/error.hpp"
@@ -9,11 +14,6 @@
 #include "lib/index/error.hpp"
 #include "lib/index/index.hpp"
 #include "ui/console/console.hpp"
-
-#include "../path/internal/get_idx_file.hpp"
-#include "./internal/codec.hpp"
-#include "./internal/fingerprints.hpp"
-#include "./internal/types.hpp"
 
 namespace ck::index {
 using namespace ck;

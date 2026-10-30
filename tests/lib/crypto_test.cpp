@@ -1,5 +1,3 @@
-#include <gtest/gtest.h>
-
 #include <algorithm>
 #include <array>
 #include <cstddef>
@@ -10,13 +8,14 @@
 #include <string>
 #include <string_view>
 
+#include <gtest/gtest.h>
+
+#include "../util/gen_key.hpp"
 #include "lib/config/types.hpp"
 #include "lib/crypto/crypto.hpp"
 #include "lib/crypto/random.hpp"
 #include "lib/crypto/secure_wipe.hpp"
 #include "util/error.hpp"
-
-#include "../util/gen_key.hpp"
 
 namespace {
 namespace fs = std::filesystem;

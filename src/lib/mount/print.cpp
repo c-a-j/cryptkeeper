@@ -3,11 +3,10 @@
 #include <optional>
 #include <unordered_map>
 
+#include "./internal/theme.hpp"
 #include "global.hpp"
 #include "lib/mount/mount.hpp"
 #include "lib/path/parse_path.hpp"
-
-#include "./internal/theme.hpp"
 
 namespace fs = std::filesystem;
 

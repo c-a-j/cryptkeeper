@@ -1,8 +1,9 @@
-#include <CLI/CLI.hpp>
 #include <string>
 
 #include "cli/cli.hpp"
 #include "cli/types.hpp"
+#include <CLI/CLI.hpp>
+
 #include "cmd/run_command.hpp"
 #include "error.hpp"
 #include "ui/console/console.hpp"

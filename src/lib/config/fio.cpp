@@ -1,16 +1,15 @@
-#include "toml++/toml.hpp"
-
 #include <filesystem>
 #include <sstream>
 
+#include "toml++/toml.hpp"
+
+#include "../path/internal/path.hpp"
+#include "./internal/codec.hpp"
 #include "error.hpp"
 #include "lib/config/config.hpp"
 #include "lib/fio/atomic_write.hpp"
 #include "lib/path/existence.hpp"
 #include "ui/console/console.hpp"
-
-#include "../path/internal/path.hpp"
-#include "./internal/codec.hpp"
 
 namespace ck::config {
 using ck::error::ConfigErrc;

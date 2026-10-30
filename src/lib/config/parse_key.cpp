@@ -1,8 +1,8 @@
+#include "internal/parse_key.hpp"
+
 #include <sstream>
 #include <string>
 #include <vector>
-
-#include "internal/parse_key.hpp"
 
 namespace ck::config {
 std::vector<std::string> parse_key(std::string_view key) {

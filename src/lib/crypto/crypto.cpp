@@ -1,16 +1,17 @@
 #include "lib/crypto/crypto.hpp"
+
 #include <cstddef>
 #include <filesystem>
 #include <fstream>
+
 #include <gpgme.h>
 
+#include "./lib/crypto/secure_bytes.hpp"
+#include "./lib/crypto/secure_wipe.hpp"
 #include "error.hpp"
 #include "lib/crypto/error.hpp"
 #include "lib/fio/atomic_write.hpp"
 #include "ui/console/console.hpp"
-
-#include "./lib/crypto/secure_bytes.hpp"
-#include "./lib/crypto/secure_wipe.hpp"
 
 namespace {
 using ck::error::CryptoErrc;

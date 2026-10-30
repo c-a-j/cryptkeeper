@@ -33,7 +33,8 @@ class AppError : public std::runtime_error {
     }
 };
 
-template <typename T> struct Error : AppError {
+template <typename T>
+struct Error : AppError {
     T code;
 
     Error(T c, std::string m2 = {})

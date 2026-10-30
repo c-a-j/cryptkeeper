@@ -1,12 +1,11 @@
 #include <string>
 #include <vector>
 
+#include "../path/internal/join.hpp"
 #include "lib/index/error.hpp"
 #include "lib/index/index.hpp"
 #include "lib/path/parse_path.hpp"
 #include "ui/console/console.hpp"
-
-#include "../path/internal/join.hpp"
 
 namespace {
 std::string
